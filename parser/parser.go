@@ -12,7 +12,7 @@ func Parse() (flight.Flight, error) {
 	cmd := exec.Command(
 		"./goigc",
 		"parse",
-		"/mnt/c/Users/TheGosu/Desktop/9-9-2023--13-47.igc",
+		"/mnt/c/Users/TheGosu/Desktop/record.igc",
 		"--output-format",
 		"json")
 

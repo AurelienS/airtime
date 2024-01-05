@@ -13,51 +13,84 @@ type Flight struct {
 	Pilot          string
 	ID             string
 	Points         []Point
-	Thermals       []Thermal
-	Stats          ThermicStats
+	Thermals       []*Thermal
+	Stats          FlightStatistics
 }
 
-const (
-	minRateOfClimb        = 2                // m/s, the threshold for considering it thermic activity
-	minThermalDuration    = 40 * time.Second // Minimum duration to consider a sustained climb as thermal
-	allowedDownwardPoints = 8                // Number of consecutive downward points allowed in a thermal
-)
+func (f *Flight) GenerateThermals(minRateOfClimb float64, maxDownwardTolerance int, minThermalDuration time.Duration, climbRateIntegrationPeriod int) {
+	var current *Thermal
+	var rateOfClimbHistory []float64
 
-func (f *Flight) GenerateThermals() {
-	f.generateThermals()
-}
+	for i, point := range f.Points {
+		if i == 0 {
+			continue
+		}
 
-// generateThermals analyzes the flight points and identifies thermal segments.
-func (f *Flight) generateThermals() {
-	var inThermal bool
-	var currentThermal Thermal
+		rateOfClimb := f.calculateRateOfClimb(i)
+		rateOfClimbHistory = updateRateOfClimbHistory(rateOfClimbHistory, rateOfClimb, climbRateIntegrationPeriod)
+		smoothedRateOfClimb := average(rateOfClimbHistory)
 
-	for i := 1; i < len(f.Points); i++ {
-		altitudeGain := f.Points[i].GNSSAltitude - f.Points[i-1].GNSSAltitude
-		timeElapsed := f.Points[i].Time.Sub(f.Points[i-1].Time).Seconds()
-		rateOfClimb := float64(altitudeGain) / timeElapsed
-
-		if inThermal {
-			currentThermal.Update(altitudeGain, rateOfClimb, f.Points[i].GNSSAltitude)
-			if currentThermal.ShouldEnd() {
-				inThermal = false
-				currentThermal.End = f.Points[i].Time
-				currentThermal.EndIndex = i
-				f.Thermals = append(f.Thermals, currentThermal)
-				f.Stats.AddThermal(currentThermal)
-			}
-		} else if rateOfClimb >= minRateOfClimb {
-			inThermal = true
-			currentThermal = NewThermal(f.Points[i].Time, f.Points[i].GNSSAltitude, i)
+		if current != nil {
+			current.Update(point, smoothedRateOfClimb)
+			current = f.checkAndFinalizeThermal(current, maxDownwardTolerance, minThermalDuration, i)
+		} else {
+			current = f.maybeStartNewThermal(smoothedRateOfClimb, minRateOfClimb, climbRateIntegrationPeriod, point, i)
 		}
 	}
 
-	if inThermal {
-		f.Thermals = append(f.Thermals, currentThermal)
-	}
-	// f.Stats.Finalize(f.)
+	f.finalizeLastThermal(current, minThermalDuration)
+	f.Stats.Finalize(f)
 }
 
-func (f *Flight) endT(thermal Thermal) {
+func (f *Flight) calculateRateOfClimb(i int) float64 {
+	altitudeGain := f.Points[i].GNSSAltitude - f.Points[i-1].GNSSAltitude
+	timeElapsed := f.Points[i].Time.Sub(f.Points[i-1].Time).Seconds()
+	return float64(altitudeGain) / timeElapsed
+}
 
+func updateRateOfClimbHistory(history []float64, rateOfClimb float64, period int) []float64 {
+	history = append(history, rateOfClimb)
+	if len(history) > period {
+		history = history[1:]
+	}
+	return history
+}
+
+func (f *Flight) checkAndFinalizeThermal(current *Thermal, tolerance int, duration time.Duration, index int) *Thermal {
+	if current.ShouldEnd(tolerance) {
+		if current.Duration() >= duration {
+			current.EndIndex = index
+			current.AverageClimbRate = float64(current.Climb()) / current.Duration().Seconds()
+			f.Thermals = append(f.Thermals, current)
+			f.Stats.AddThermal(*current, duration)
+		}
+		return nil
+	}
+	return current
+}
+
+func (f *Flight) maybeStartNewThermal(smoothedRate float64, minRate float64, period int, point Point, index int) *Thermal {
+	if smoothedRate >= minRate && len(f.Points) >= period {
+		return NewThermal(point.Time, point.GNSSAltitude, index)
+	}
+	return nil
+}
+
+func (f *Flight) finalizeLastThermal(current *Thermal, duration time.Duration) {
+	if current != nil && current.Duration() >= duration {
+		current.EndIndex = len(f.Points) - 1
+		f.Thermals = append(f.Thermals, current)
+		f.Stats.AddThermal(*current, duration)
+	}
+}
+
+func average(numbers []float64) float64 {
+	total := 0.0
+	for _, number := range numbers {
+		total += number
+	}
+	if len(numbers) == 0 {
+		return 0
+	}
+	return total / float64(len(numbers))
 }

@@ -8,38 +8,40 @@ type Thermal struct {
 	End               time.Time
 	StartAltitude     int
 	MaxAltitude       int
-	downwardTolerance int
-	ClimbRateTotal    float64
-	ClimbRateCount    int
+	DownwardTolerance int
+	MaxClimbRate      float64
+	AverageClimbRate  float64
 	StartIndex        int
 	EndIndex          int
 }
 
-func NewThermal(startTime time.Time, startAltitude, startIndex int) Thermal {
-	return Thermal{
+func NewThermal(startTime time.Time, startAltitude, startIndex int) *Thermal {
+	return &Thermal{
 		Start:         startTime,
 		StartAltitude: startAltitude,
-		MaxAltitude:   startAltitude,
 		StartIndex:    startIndex,
+		MaxAltitude:   startAltitude,
 	}
 }
 
-func (t *Thermal) Update(altitudeGain int, rateOfClimb float64, currentAltitude int) {
+func (t *Thermal) Update(point Point, integratedClimbRate float64) {
+	altitudeGain := point.GNSSAltitude - t.MaxAltitude
 	if altitudeGain < 0 {
-		t.downwardTolerance++
+		t.DownwardTolerance++
 	} else {
-		t.downwardTolerance = 0
-		t.ClimbRateTotal += rateOfClimb
-		t.ClimbRateCount++
+		t.DownwardTolerance = 0
+		if point.GNSSAltitude > t.MaxAltitude {
+			t.MaxAltitude = point.GNSSAltitude
+		}
+		if integratedClimbRate > t.MaxClimbRate {
+			t.MaxClimbRate = integratedClimbRate
+		}
 	}
-
-	if currentAltitude > t.MaxAltitude {
-		t.MaxAltitude = currentAltitude
-	}
+	t.End = point.Time
 }
 
-func (t *Thermal) ShouldEnd() bool {
-	return t.downwardTolerance > allowedDownwardPoints
+func (t *Thermal) ShouldEnd(maxDownwardTolerance int) bool {
+	return t.DownwardTolerance > maxDownwardTolerance
 }
 
 func (t *Thermal) Duration() time.Duration {
@@ -52,11 +54,4 @@ func (t *Thermal) Duration() time.Duration {
 
 func (t *Thermal) Climb() int {
 	return t.MaxAltitude - t.StartAltitude
-}
-
-func (t *Thermal) AverageClimbRate() float64 {
-	if t.ClimbRateCount == 0 {
-		return 0
-	}
-	return t.ClimbRateTotal / float64(t.ClimbRateCount)
 }
