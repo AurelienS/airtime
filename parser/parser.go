@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/AurelienS/cigare/model"
+	"github.com/AurelienS/cigare/flight"
 )
 
-func Parse() (model.Flight, error) {
+func Parse() (flight.Flight, error) {
 	cmd := exec.Command(
 		"./goigc",
 		"parse",
@@ -16,7 +16,7 @@ func Parse() (model.Flight, error) {
 		"--output-format",
 		"json")
 
-	var flight model.Flight
+	var flight flight.Flight
 
 	// Run the command and capture the output
 	output, err := cmd.CombinedOutput()
@@ -30,6 +30,6 @@ func Parse() (model.Flight, error) {
 		fmt.Println("Error unmarshalling JSON:", err)
 		return flight, err
 	}
-
+	// flight.Points = flight.Points[:600]
 	return flight, nil
 }

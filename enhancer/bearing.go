@@ -3,10 +3,10 @@ package enhancer
 import (
 	"math"
 
-	"github.com/AurelienS/cigare/model"
+	"github.com/AurelienS/cigare/flight"
 )
 
-func EnhanceWithBearing(flight *model.Flight) {
+func EnhanceWithBearing(flight *flight.Flight) {
 	points := flight.Points
 
 	for i := 0; i < len(points)-1; i++ {
@@ -23,7 +23,7 @@ func EnhanceWithBearing(flight *model.Flight) {
 	}
 }
 
-func calculateBearing(p1 model.Point, p2 model.Point) float64 {
+func calculateBearing(p1 flight.Point, p2 flight.Point) float64 {
 	lat1 := degToRad(p1.Lat)
 	lon1 := degToRad(p1.Lng)
 	lat2 := degToRad(p2.Lat)
