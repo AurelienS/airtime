@@ -1,22 +1,22 @@
-package parser
+package igcparser
 
 import (
 	"encoding/json"
 	"fmt"
 	"os/exec"
 
-	"github.com/AurelienS/cigare/flight"
+	"github.com/AurelienS/cigare/pkg/model"
 )
 
-func Parse() (flight.Flight, error) {
+func Parse() (model.Flight, error) {
 	cmd := exec.Command(
-		"./goigc",
+		"lib/executables/goigc",
 		"parse",
 		"/mnt/c/Users/TheGosu/Desktop/9-9-2023--13-47.igc",
 		"--output-format",
 		"json")
 
-	var flight flight.Flight
+	var flight model.Flight
 
 	// Run the command and capture the output
 	output, err := cmd.CombinedOutput()

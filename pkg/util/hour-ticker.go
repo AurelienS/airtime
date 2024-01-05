@@ -1,4 +1,4 @@
-package drawer
+package util
 
 import (
 	"math"
@@ -7,13 +7,13 @@ import (
 	"gonum.org/v1/plot"
 )
 
-// CustomTicker is a Ticker that formats the labels as hours and minutes.
-type CustomTicker struct {
+// HourTicker is a Ticker that formats the labels as hours and minutes.
+type HourTicker struct {
 	StartTime time.Time // The start time of the flight
 }
 
 // Ticks computes the Ticks in a specified range
-func (t CustomTicker) Ticks(min, max float64) []plot.Tick {
+func (t HourTicker) Ticks(min, max float64) []plot.Tick {
 	var ticks []plot.Tick
 	// Choose a reasonable step size depending on the duration of your flight
 	step := math.Round((max - min) / 10) // Adjust this depending on your time range

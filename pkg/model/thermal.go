@@ -1,4 +1,4 @@
-package flight
+package model
 
 import "time"
 

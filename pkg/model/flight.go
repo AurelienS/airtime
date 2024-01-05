@@ -1,7 +1,18 @@
-package flight
+package model
 
 import (
+	"image/color"
+	"log"
 	"time"
+
+	"git.sr.ht/~sbinet/gg"
+	"github.com/AurelienS/cigare/pkg/util"
+	"github.com/golang/geo/s1"
+	"github.com/golang/geo/s2"
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+
+	sm "github.com/flopp/go-staticmaps"
 )
 
 type Flight struct {
@@ -47,8 +58,8 @@ func (f *Flight) GenerateThermals(minRateOfClimb float64, maxDownwardTolerance i
 		}
 
 		rateOfClimb := f.calculateRateOfClimb(i)
-		rateOfClimbHistory = updateRateOfClimbHistory(rateOfClimbHistory, rateOfClimb, climbRateIntegrationPeriod)
-		smoothedRateOfClimb := average(rateOfClimbHistory)
+		rateOfClimbHistory = util.Updaterateofclimbhistory(rateOfClimbHistory, rateOfClimb, climbRateIntegrationPeriod)
+		smoothedRateOfClimb := util.Average(rateOfClimbHistory)
 
 		if current != nil {
 			current.Update(point, smoothedRateOfClimb)
@@ -64,7 +75,7 @@ func (f *Flight) GenerateThermals(minRateOfClimb float64, maxDownwardTolerance i
 
 func (f *Flight) calculateBearings() {
 	for i := 0; i < len(f.Points)-1; i++ {
-		f.Points[i].Bearing = calculateBearing(f.Points[i], f.Points[i+1])
+		f.Points[i].Bearing = util.Calculatebearing(f.Points[i].Lat, f.Points[i+1].Lat, f.Points[i].Lng, f.Points[i+1].Lng)
 	}
 
 	if len(f.Points) > 0 {
@@ -103,5 +114,74 @@ func (f *Flight) finalizeLastThermal(current *Thermal, duration time.Duration) {
 		current.EndIndex = len(f.Points) - 1
 		f.Thermals = append(f.Thermals, current)
 		f.Stats.AddThermal(*current, duration)
+	}
+}
+
+// Define colors for different phases
+var cruisingColor = color.Black                            // Green for cruising
+var circlingColor = color.RGBA{R: 255, G: 0, B: 0, A: 255} // Red for circling
+
+// Draw2DMap draws the flight path on a map using different colors for cruising and circling phases
+func (f Flight) Draw2DMap(withThermal bool) {
+	ctx := sm.NewContext()
+	ctx.SetSize(600, 600)
+
+	var flightPath []s2.LatLng
+	for _, point := range f.Points {
+		flightPath = append(flightPath, s2.LatLng{Lat: s1.Angle(point.Lat), Lng: s1.Angle(point.Lng)})
+	}
+
+	ctx.AddObject(sm.NewPath(flightPath, cruisingColor, 2))
+
+	if withThermal {
+		for _, thermal := range f.Thermals {
+			var path []s2.LatLng
+			for i := thermal.StartIndex; i <= thermal.EndIndex; i++ {
+				p := f.Points[i]
+				path = append(path, s2.LatLng{Lat: s1.Angle(p.Lat), Lng: s1.Angle(p.Lng)})
+			}
+
+			ctx.AddObject(sm.NewPath(path, circlingColor, 2))
+		}
+	}
+
+	img, err := ctx.Render()
+	if err != nil {
+		panic(err)
+	}
+
+	if err := gg.SavePNG("2DMap.png", img); err != nil {
+		panic(err)
+	}
+}
+
+func (f Flight) DrawElevation() {
+	p := plot.New()
+
+	p.Title.Text = "Elevation Diagram"
+	p.Y.Label.Text = "Elevation (m)"
+
+	pts := make(plotter.XYs, len(f.Points))
+	startTime := f.Points[0].Time // assuming the slice is not empty and is sorted by time
+	for i, point := range f.Points {
+		pts[i].X = float64(point.Time.Sub(startTime).Minutes()) // X-axis in minutes since start
+		pts[i].Y = float64(point.GNSSAltitude)
+	}
+
+	line, err := plotter.NewLine(pts)
+	if err != nil {
+		log.Fatalf("Could not create line: %v", err)
+	}
+	line.Color = color.RGBA{B: 255, A: 255}
+
+	p.Add(line)
+	p.Y.Min = 0
+
+	// Set the custom ticker
+	p.X.Tick.Marker = util.HourTicker{StartTime: startTime}
+
+	// Save the plot to a PNG file.
+	if err := p.Save(600, 200, "elevationChart.png"); err != nil {
+		log.Fatalf("Could not save elevationChart: %v", err)
 	}
 }
