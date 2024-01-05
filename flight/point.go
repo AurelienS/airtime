@@ -10,4 +10,5 @@ type Point struct {
 	Bearing      float64
 	Time         time.Time
 	GNSSAltitude int
+	// GroundAltitude int
 }

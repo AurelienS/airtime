@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/AurelienS/cigare/drawer"
-	"github.com/AurelienS/cigare/enhancer"
 	"github.com/AurelienS/cigare/parser"
 )
 
@@ -13,19 +13,14 @@ const ouputFile = "test.json"
 const outputFormat = "json"
 
 func main() {
-	const (
-		minClimbRate               = 0.2              // m/s, the threshold for considering it thermic activity
-		climbRateIntegrationPeriod = 10               // Number of seconds to smooth the climbRate
-		minThermalDuration         = 20 * time.Second // Minimum duration to consider a sustained climb as thermal
-		allowedDownwardPoints      = 4                // Number of consecutive downward points allowed in a thermal
-	)
 
+	start := time.Now()
 	flight, _ := parser.Parse()
-	enhancer.EnhanceWithBearing(&flight)
-	flight.GenerateThermals(minClimbRate, allowedDownwardPoints, minThermalDuration, climbRateIntegrationPeriod)
+	flight.Initialize()
 
 	flight.Stats.PrettyPrint()
-
-	drawer.Drawer(flight)
+	drawer.Draw2DMap(flight, true)
+	drawer.DrawElevation(flight)
+	fmt.Println("file: main.go ~ line 25 ~ elapsed : ", time.Now().Sub(start))
 
 }
