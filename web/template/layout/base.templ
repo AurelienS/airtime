@@ -1,0 +1,21 @@
+package layout
+
+templ Base() {
+	<html lang="en">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>Cigare</title>
+			<script src="static/htmx.min.js" crossorigin="anonymous"></script>
+			<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
+		</head>
+		<body class="font-sans bg-gray-600">
+			<header class="bg-gray-800 text-white p-4 flex flex-start items-center gap-6 w-full">
+				<a href="/" class="text-3xl">Ciga<span class="text-red-500" aria-hidden="true">r</span></a>
+			</header>
+			<div class="container mx-auto my-8 p-8 bg-gray-400 shadow-md rounded-md flex-1">
+				{ children... }
+			</div>
+		</body>
+	</html>
+}

@@ -1,0 +1,9 @@
+package page
+
+import "github.com/AurelienS/cigare/web/template/layout"
+
+templ Index(test string) {
+	@layout.Base() {
+		<div>Hello world from templ { test }</div>
+	}
+}
