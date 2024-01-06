@@ -1,39 +1,29 @@
 package webserver
 
 import (
-	"encoding/gob"
-	"log"
-
-	"github.com/AurelienS/cigare/internal/model"
-	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/storage/sqlc"
 	"github.com/AurelienS/cigare/internal/webserver/handler"
-	"github.com/AurelienS/cigare/internal/webserver/session"
+	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 )
 
-func NewServer(isProd bool) *echo.Echo {
-	store := session.NewStore(isProd)
-	session.ConfigureGoth(store)
-	gob.Register(model.User{})
+type Server struct {
+	*echo.Echo
+	Queries *sqlc.Queries
+	Store   sessions.Store
+}
 
-	queries, err := storage.Open()
-	if err != nil {
-		log.Fatal("Cannot open db")
-		return nil
-	}
-
-	serv := echo.New()
+func NewServer(queries *sqlc.Queries, store sessions.Store) *Server {
+	e := echo.New()
 
 	authHandler := handler.AuthHandler{}
-	flightHandler := handler.FlightHandler{
-		Queries: queries,
-	}
+	flightHandler := handler.FlightHandler{Queries: queries}
 
 	router := Router{
 		AuthHandler:   authHandler,
 		FlightHandler: flightHandler,
 	}
-	router.Initialize(serv)
+	router.Initialize(e)
 
-	return serv
+	return &Server{Echo: e, Queries: queries, Store: store}
 }
