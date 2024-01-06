@@ -1,7 +1,7 @@
 package page
 
 import "github.com/AurelienS/cigare/web/template/layout"
-import "github.com/AurelienS/cigare/web/template/component"
+import "github.com/AurelienS/cigare/web/template/flight"
 
 templ Flights() {
 	@layout.Base() {
@@ -14,15 +14,15 @@ templ Flights() {
 			<!-- Cards Container -->
 			<div class="flex gap-4">
 				<div>
-					@component.FightCard()
-					@component.AnnualCard()
+					@flight.FlightCard()
+					@flight.AnnualCard()
 				</div>
 				<div class="flex-1 mx-6">
-					@component.FlightRecord()
+					@flight.FlightRecord("1")
 				</div>
 				<div>
-					@component.SiteCard()
-					@component.GliderCard()
+					@flight.GliderCard()
+					@flight.SiteCard()
 				</div>
 			</div>
 		</div>

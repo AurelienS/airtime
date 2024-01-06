@@ -11,7 +11,7 @@ import "io"
 import "bytes"
 
 import "github.com/AurelienS/cigare/web/template/layout"
-import "github.com/AurelienS/cigare/web/template/component"
+import "github.com/AurelienS/cigare/web/template/flight"
 
 func Flights() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -72,11 +72,11 @@ func Flights() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = component.FightCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = flight.FlightCard().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = component.AnnualCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = flight.AnnualCard().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -84,7 +84,7 @@ func Flights() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = component.FlightRecord().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = flight.FlightRecord("1").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -92,11 +92,11 @@ func Flights() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = component.SiteCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = flight.GliderCard().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = component.GliderCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = flight.SiteCard().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

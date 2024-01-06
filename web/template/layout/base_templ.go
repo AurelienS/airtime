@@ -41,7 +41,7 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><link href=\"https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css\" rel=\"stylesheet\"><link href=\"https://fonts.googleapis.com/icon?family=Material+Icons+Outlined\" rel=\"stylesheet\"><link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap\" rel=\"stylesheet\"><style>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><link href=\"https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css\" rel=\"stylesheet\"><link href=\"https://fonts.googleapis.com/icon?family=Material+Icons+Outlined\" rel=\"stylesheet\"><link href=\"https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&amp;display=swap\" rel=\"stylesheet\"><style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -64,7 +64,7 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><div class=\"\"></div><body class=\"dark:bg-gray-900 dark:text-gray-200 min-w-screen min-h-screen font-roboto font-light\"><nav id=\"header\" class=\"bg-gray-800 w-full z-10 top-0 shadow\"><div class=\"w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2\"><div class=\"pl-4 flex items-center\"><a class=\"text-white  no-underline hover:no-underline font-bold text-xl\" href=\"/\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><div class=\"\"></div><body class=\"dark:bg-gray-900 dark:text-gray-200 min-w-screen min-h-screen font-roboto font-light\"><nav id=\"header\" class=\"bg-gray-800 w-full z-10 top-0 shadow\"><div class=\"w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2\"><div class=\"pl-4 flex items-center\"><a class=\"text-white no-underline hover:no-underline font-medium text-xl\" href=\"/\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
