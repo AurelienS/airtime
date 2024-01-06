@@ -1,6 +1,6 @@
 package layout
 
-templ Base() {
+templ Base(email string) {
 	<!DOCTYPE html>
 	<html lang="en" class="dark">
 		<head>
@@ -51,6 +51,10 @@ templ Base() {
 							</li>
 						</ul>
 					</div>
+					<div>
+						logged in : { email }
+					</div>
+					<a href="/logout">logout</a>
 				</div>
 			</nav>
 			<div class="mx-8">
