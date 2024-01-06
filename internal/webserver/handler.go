@@ -1,8 +1,7 @@
 package webserver
 
 import (
-	"context"
-	"strconv"
+	"net/http"
 
 	"github.com/AurelienS/cigare/internal/storage/sqlc"
 	"github.com/AurelienS/cigare/web/template/page"
@@ -15,9 +14,15 @@ type Handler struct {
 }
 
 func (h *Handler) GetIndex(c echo.Context) error {
-	flights, _ := h.Queries.GetFlights(context.Background())
-	test := strconv.Itoa(len(flights))
-	return render(c, page.Index(test))
+	return c.Redirect(http.StatusFound, "/flights")
+}
+
+func (h *Handler) GetGliders(c echo.Context) error {
+	return render(c, page.Gliders())
+}
+
+func (h *Handler) GetFlights(c echo.Context) error {
+	return render(c, page.Flights())
 }
 
 func render(c echo.Context, component templ.Component) error {

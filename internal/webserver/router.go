@@ -10,4 +10,6 @@ type Router struct {
 
 func (r *Router) Initialize(e *echo.Echo) {
 	e.GET("/", r.Handler.GetIndex)
+	e.GET("/gliders", r.Handler.GetGliders)
+	e.GET("/flights", r.Handler.GetFlights)
 }
