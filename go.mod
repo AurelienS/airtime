@@ -8,6 +8,7 @@ require (
 	github.com/flopp/go-staticmaps v0.0.0-20220221183018-c226716bec53
 	github.com/golang/geo v0.0.0-20230421003525-6adc56603217
 	github.com/labstack/echo/v4 v4.11.4
+	github.com/lib/pq v1.10.9
 	gonum.org/v1/plot v0.14.0
 )
 

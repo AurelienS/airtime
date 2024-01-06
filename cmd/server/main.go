@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fmt"
-	"time"
+	"log"
 
+	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/webserver"
-	"github.com/AurelienS/cigare/pkg/igcparser"
 	"github.com/labstack/echo/v4"
 )
 
@@ -15,18 +14,24 @@ const outputFormat = "json"
 
 func main() {
 
-	start := time.Now()
-	flight, _ := igcparser.Parse()
-	flight.Initialize()
+	// flight, _ := igcparser.Parse()
+	// flight.Initialize()
 
-	flight.Stats.PrettyPrint()
-	flight.Draw2DMap(true)
-	flight.DrawElevation()
-	fmt.Println("file: main.go ~ line 25 ~ elapsed : ", time.Now().Sub(start))
+	// flight.Stats.PrettyPrint()
+	// flight.Draw2DMap(true)
+	// flight.DrawElevation()
+
+	queries, err := storage.Open()
+	if err != nil {
+		log.Fatal("Cannot open db")
+		return
+	}
 
 	e := echo.New()
 	router := webserver.Router{
-		Handler: webserver.Handler{},
+		Handler: webserver.Handler{
+			Queries: queries,
+		},
 	}
 	router.Initialize(e)
 

@@ -1,0 +1,10 @@
+.PHONY: run serve gen
+
+run: gen serve
+
+serve:
+	@go run cmd/server/main.go
+
+gen: 
+	@sqlc generate
+	@templ generate
