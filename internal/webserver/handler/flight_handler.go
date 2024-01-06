@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	"github.com/AurelienS/cigare/internal/storage/sqlc"
-	"github.com/AurelienS/cigare/internal/webserver/middleware"
 	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 )
@@ -22,7 +21,5 @@ func (h *FlightHandler) GetGliders(c echo.Context) error {
 }
 
 func (h *FlightHandler) GetFlights(c echo.Context) error {
-	user, _ := middleware.GetUserFromContext(c)
-
-	return Render(c, page.Flights(user.Email))
+	return Render(c, page.Flights())
 }

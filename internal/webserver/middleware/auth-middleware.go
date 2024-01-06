@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/AurelienS/cigare/internal/model"
@@ -9,32 +10,44 @@ import (
 	"github.com/markbates/goth/gothic"
 )
 
+const UserContextKey = "user"
+
 func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		_, err := GetUserFromContext(c)
+		user, err := getUserFromSession(c)
 		if err != nil {
 			return c.Redirect(http.StatusFound, "/login")
 		}
+
+		c.Set(UserContextKey, user)
 
 		return next(c)
 	}
 }
 
-func GetUserFromContext(c echo.Context) (model.User, error) {
+func getUserFromSession(c echo.Context) (model.User, error) {
 	var user model.User
 	session, err := gothic.Store.Get(c.Request(), "session-name")
 	if err != nil {
-		return user, err // Handle error appropriately
+		return user, err
 	}
 
-	user, ok := session.Values["user"].(model.User)
-	if !ok {
-		return user, fmt.Errorf("no user") // User not found in session
-	}
-
-	if user.Email == "" {
-		return user, fmt.Errorf("no user")
+	if tempUser, ok := session.Values["user"].(model.User); ok {
+		user = tempUser
+		if user.Email == "" {
+			return user, fmt.Errorf("no user email")
+		}
+	} else {
+		return user, fmt.Errorf("no user in session")
 	}
 
 	return user, nil
+}
+
+func GetUserFromContext(c echo.Context) model.User {
+	user, ok := c.Get(UserContextKey).(model.User)
+	if !ok {
+		log.Fatal("no user")
+	}
+	return user
 }

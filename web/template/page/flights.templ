@@ -1,10 +1,10 @@
 package page
 
-import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/web/template/flight"
+import "github.com/AurelienS/cigare/web/template/layout"
 
-templ Flights(email string) {
-	@layout.Base(email) {
+templ Flights() {
+	@layout.Base() {
 		<div class="flex flex-col text-gray-300 ">
 			<!-- Header Section -->
 			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">

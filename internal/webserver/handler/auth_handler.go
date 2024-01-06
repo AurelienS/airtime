@@ -14,54 +14,48 @@ type AuthHandler struct {
 }
 
 func (h *AuthHandler) GetLogout(c echo.Context) error {
-	session, err := gothic.Store.Get(c.Request(), "session-name")
+	session, err := getSession(c)
 	if err != nil {
-		return c.String(http.StatusInternalServerError, "Internal Server Error")
+		return handleError(c, err)
 	}
 
 	session.Values["user"] = nil
-
-	err = session.Save(c.Request(), c.Response())
-	if err != nil {
-		return c.String(http.StatusInternalServerError, "Internal Server Error")
+	if err := saveSession(c, session); err != nil {
+		return handleError(c, err)
 	}
 
 	gothic.Logout(c.Response(), c.Request())
-
-	return c.Redirect(http.StatusFound, "/flights")
+	return c.Redirect(http.StatusFound, "/")
 }
 
 func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
-
 	user, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		return Render(c, page.Error())
 	}
 
-	session, err := gothic.Store.Get(c.Request(), "session-name")
+	session, err := getSession(c)
 	if err != nil {
-		// Handle error - could not get or create the session
-		return Render(c, page.Error())
+		return handleError(c, err)
 	}
 
-	// Save the user in the session
-	session.Values["user"] = model.User{Email: user.Email} // Storing the user object in the session
-	err = session.Save(c.Request(), c.Response())          // Important: Save the session!
-	if err != nil {
-		return Render(c, page.Error())
+	session.Values["user"] = model.User{Email: user.Email}
+	if err := saveSession(c, session); err != nil {
+		return handleError(c, err)
 	}
 
-	return c.Redirect(http.StatusFound, "/flights")
+	return c.Redirect(http.StatusFound, "/")
 }
 
 func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
-	// echo does not setup request with what gothic expect
-	expectedReq := c.Request().WithContext(context.WithValue(context.Background(), "provider", c.Param("provider")))
+	provider := c.Param("provider")
+	expectedReq := c.Request().WithContext(context.WithValue(context.Background(), "provider", provider))
 
 	gothic.BeginAuthHandler(c.Response(), expectedReq)
 	return nil
 }
 
+// GetLogin renders the login page
 func (h *AuthHandler) GetLogin(c echo.Context) error {
 	return Render(c, page.Login())
 }
