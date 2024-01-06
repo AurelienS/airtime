@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/AurelienS/cigare/internal/model"
+	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/labstack/echo/v4"
 	"github.com/markbates/goth/gothic"
 )
@@ -25,14 +25,14 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func getUserFromSession(c echo.Context) (model.User, error) {
-	var user model.User
+func getUserFromSession(c echo.Context) (storage.User, error) {
+	var user storage.User
 	session, err := gothic.Store.Get(c.Request(), "session-name")
 	if err != nil {
 		return user, err
 	}
 
-	if tempUser, ok := session.Values["user"].(model.User); ok {
+	if tempUser, ok := session.Values["user"].(storage.User); ok {
 		user = tempUser
 		if user.Email == "" {
 			return user, fmt.Errorf("no user email")
@@ -44,8 +44,8 @@ func getUserFromSession(c echo.Context) (model.User, error) {
 	return user, nil
 }
 
-func GetUserFromContext(c echo.Context) model.User {
-	user, ok := c.Get(UserContextKey).(model.User)
+func GetUserFromContext(c echo.Context) storage.User {
+	user, ok := c.Get(UserContextKey).(storage.User)
 	if !ok {
 		log.Fatal("no user")
 	}

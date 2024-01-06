@@ -5,6 +5,6 @@ sql:
     schema: "internal/storage/schema.sql"
     gen:
       go:
-        package: sqlc
-        out: "internal/storage/sqlc"
+        package: storage
+        out: "internal/storage"
         

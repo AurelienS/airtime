@@ -4,13 +4,14 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/AurelienS/cigare/internal/model"
+	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 	"github.com/markbates/goth/gothic"
 )
 
 type AuthHandler struct {
+	Queries storage.Queries
 }
 
 func (h *AuthHandler) GetLogout(c echo.Context) error {
@@ -29,7 +30,7 @@ func (h *AuthHandler) GetLogout(c echo.Context) error {
 }
 
 func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
-	user, err := gothic.CompleteUserAuth(c.Response(), c.Request())
+	googleUser, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		return Render(c, page.Error())
 	}
@@ -39,7 +40,19 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		return handleError(c, err)
 	}
 
-	session.Values["user"] = model.User{Email: user.Email}
+	googleUserId := googleUser.UserID
+
+	h.Queries.UpsertUser(context.Background(), storage.UpsertUserParams{
+		GoogleID:   googleUserId,
+		Email:      googleUser.Email,
+		Name:       googleUser.Name,
+		PictureUrl: googleUser.AvatarURL,
+	})
+
+	// we need to refetch to get the actual db ID
+	user, err := h.Queries.GetUserWithGoogleId(context.Background(), googleUserId)
+
+	session.Values["user"] = user
 	if err := saveSession(c, session); err != nil {
 		return handleError(c, err)
 	}

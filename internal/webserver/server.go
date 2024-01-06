@@ -1,7 +1,7 @@
 package webserver
 
 import (
-	"github.com/AurelienS/cigare/internal/storage/sqlc"
+	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/webserver/handler"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
@@ -9,15 +9,15 @@ import (
 
 type Server struct {
 	*echo.Echo
-	Queries *sqlc.Queries
+	Queries *storage.Queries
 	Store   sessions.Store
 }
 
-func NewServer(queries *sqlc.Queries, store sessions.Store) *Server {
+func NewServer(queries *storage.Queries, store sessions.Store) *Server {
 	e := echo.New()
 
-	authHandler := handler.AuthHandler{}
-	flightHandler := handler.FlightHandler{Queries: queries}
+	authHandler := handler.AuthHandler{Queries: *queries}
+	flightHandler := handler.FlightHandler{Queries: *queries}
 
 	router := Router{
 		AuthHandler:   authHandler,

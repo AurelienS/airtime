@@ -4,9 +4,7 @@ import (
 	"encoding/gob"
 	"log"
 
-	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/storage"
-	"github.com/AurelienS/cigare/internal/storage/sqlc"
 	"github.com/AurelienS/cigare/internal/webserver"
 	"github.com/AurelienS/cigare/internal/webserver/session"
 	"github.com/gorilla/sessions"
@@ -23,11 +21,11 @@ func Initialize(isProd bool) *webserver.Server {
 func configureSessionStore(isProd bool) sessions.Store {
 	store := session.NewStore(isProd)
 	session.ConfigureGoth(store)
-	gob.Register(model.User{})
+	gob.Register(storage.User{})
 	return store
 }
 
-func initializeDatabase() *sqlc.Queries {
+func initializeDatabase() *storage.Queries {
 	queries, err := storage.Open()
 	if err != nil {
 		log.Fatal("Cannot open db")

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/AurelienS/cigare/internal/storage/sqlc"
 	_ "github.com/lib/pq" // add support for postgres
 )
 
@@ -17,7 +16,7 @@ const (
 	dbname   = "cigare"
 )
 
-func Open() (*sqlc.Queries, error) {
+func Open() (*Queries, error) {
 	url := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	conn, err := sql.Open("postgres", url)
@@ -26,5 +25,5 @@ func Open() (*sqlc.Queries, error) {
 		return nil, err
 	}
 
-	return sqlc.New(conn), nil
+	return New(conn), nil
 }
