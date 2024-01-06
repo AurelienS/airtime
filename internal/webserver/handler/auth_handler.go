@@ -55,7 +55,6 @@ func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
 	return nil
 }
 
-// GetLogin renders the login page
 func (h *AuthHandler) GetLogin(c echo.Context) error {
 	return Render(c, page.Login())
 }

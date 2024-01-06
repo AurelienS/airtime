@@ -7,7 +7,7 @@ import (
 	"github.com/markbates/goth/providers/google"
 )
 
-const Key = "session-name" // Replace with your SESSION_SECRET or similar
+const Key = "session-name"
 
 func NewStore(isProd bool) sessions.Store {
 	maxAge := 86400 * 30 // 30 days
@@ -15,7 +15,7 @@ func NewStore(isProd bool) sessions.Store {
 	store := sessions.NewCookieStore([]byte(Key))
 	store.MaxAge(maxAge)
 	store.Options.Path = "/"
-	store.Options.HttpOnly = true // HttpOnly should always be enabled
+	store.Options.HttpOnly = true
 	store.Options.Secure = isProd
 
 	return store

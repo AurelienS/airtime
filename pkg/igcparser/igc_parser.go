@@ -18,7 +18,6 @@ func Parse() (model.Flight, error) {
 
 	var flight model.Flight
 
-	// Run the command and capture the output
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Println("Error executing command to goigc:", err)
@@ -30,6 +29,5 @@ func Parse() (model.Flight, error) {
 		fmt.Println("Error unmarshalling JSON:", err)
 		return flight, err
 	}
-	// flight.Points = flight.Points[:600]
 	return flight, nil
 }

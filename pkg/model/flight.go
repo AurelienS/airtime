@@ -36,14 +36,6 @@ func (f *Flight) Initialize() {
 		allowedDownwardPoints      = 4                // Number of consecutive downward points allowed in a thermal
 	)
 
-	// demReader := NewDEMReader("30n000e_20101117_gmted_std300.tif")
-	// elevations, _ := demReader.GetElevations(*f)
-	// fmt.Println("file: flight.go ~ line 31 ~ elevations : ", elevations)
-
-	// for i := range f.Points {
-	// 	f.Points[i].GroundAltitude = int(math.Round(elevations[i]))
-	// }
-
 	f.calculateBearings()
 	f.GenerateThermals(minClimbRate, allowedDownwardPoints, minThermalDuration, climbRateIntegrationPeriod)
 }
@@ -117,11 +109,9 @@ func (f *Flight) finalizeLastThermal(current *Thermal, duration time.Duration) {
 	}
 }
 
-// Define colors for different phases
-var cruisingColor = color.Black                            // Green for cruising
-var circlingColor = color.RGBA{R: 255, G: 0, B: 0, A: 255} // Red for circling
+var cruisingColor = color.Black
+var circlingColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
 
-// Draw2DMap draws the flight path on a map using different colors for cruising and circling phases
 func (f Flight) Draw2DMap(withThermal bool) {
 	ctx := sm.NewContext()
 	ctx.SetSize(600, 600)
@@ -162,9 +152,9 @@ func (f Flight) DrawElevation() {
 	p.Y.Label.Text = "Elevation (m)"
 
 	pts := make(plotter.XYs, len(f.Points))
-	startTime := f.Points[0].Time // assuming the slice is not empty and is sorted by time
+	startTime := f.Points[0].Time
 	for i, point := range f.Points {
-		pts[i].X = float64(point.Time.Sub(startTime).Minutes()) // X-axis in minutes since start
+		pts[i].X = float64(point.Time.Sub(startTime).Minutes())
 		pts[i].Y = float64(point.GNSSAltitude)
 	}
 
@@ -177,10 +167,8 @@ func (f Flight) DrawElevation() {
 	p.Add(line)
 	p.Y.Min = 0
 
-	// Set the custom ticker
 	p.X.Tick.Marker = util.HourTicker{StartTime: startTime}
 
-	// Save the plot to a PNG file.
 	if err := p.Save(600, 200, "elevationChart.png"); err != nil {
 		log.Fatalf("Could not save elevationChart: %v", err)
 	}

@@ -12,6 +12,5 @@ func main() {
 		return
 	}
 
-	// Start the server
 	server.Logger.Fatal(server.Start(":3000"))
 }

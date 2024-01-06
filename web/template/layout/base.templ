@@ -12,14 +12,11 @@ templ Base() {
 			<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
 			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap" rel="stylesheet"/>
 			<style>
-		/* Custom styles for dark mode */
 		.dark {
 			--tw-bg-opacity: 1;
 			background-color: rgba(17, 24, 39, var(--tw-bg-opacity));
-			/* Cool Gray 900 */
 			--tw-text-opacity: 1;
 			color: rgba(229, 231, 235, var(--tw-text-opacity));
-			/* Cool Gray 50 */
 		}
 
 		.font-roboto {
@@ -38,7 +35,6 @@ templ Base() {
 					</div>
 					<div class="block lg:hidden pr-4">
 						<button id="nav-toggle" class=" flex items-center p-1 text-blue-200 hover:text-gray-100">
-							<!-- SVG for the menu icon -->
 						</button>
 					</div>
 					<div class="w-full flex-grow lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-800 z-20" id="nav-content">
@@ -58,7 +54,6 @@ templ Base() {
 				{ children... }
 			</div>
 			<script>
-		//Toggle dropdown menus
 		document.getElementById('nav-toggle').onclick = function () {
 			document.getElementById("nav-content").classList.toggle("hidden");
 		}

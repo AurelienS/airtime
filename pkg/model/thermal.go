@@ -2,7 +2,6 @@ package model
 
 import "time"
 
-// Thermal represents a period of thermic activity
 type Thermal struct {
 	Start             time.Time
 	End               time.Time
@@ -46,7 +45,6 @@ func (t *Thermal) ShouldEnd(maxDownwardTolerance int) bool {
 
 func (t *Thermal) Duration() time.Duration {
 	if t.End.IsZero() {
-		// If the end time is not set, return 0 duration
 		return 0
 	}
 	return t.End.Sub(t.Start)

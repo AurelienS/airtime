@@ -28,16 +28,13 @@ func Calculatebearing(lat1, lat2, lng1, lng2 float64) float64 {
 
 	initialBearing := Radtodeg(math.Atan2(y, x))
 
-	// Normalize the bearing to be within [0, 360) degrees
 	return math.Mod(initialBearing+360, 360)
 }
 
-// Degtorad converts degrees to radians.
 func Degtorad(deg float64) float64 {
 	return deg * (math.Pi / 180)
 }
 
-// radToDeg converts radians to degrees.
 func Radtodeg(rad float64) float64 {
 	return rad * (180 / math.Pi)
 }
