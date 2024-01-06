@@ -8,3 +8,7 @@ serve:
 gen: 
 	@sqlc generate
 	@templ generate
+
+watch:
+	@templ generate
+	@go build -o ./tmp/main ./cmd/server/main.go

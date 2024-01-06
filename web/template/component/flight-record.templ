@@ -1,0 +1,32 @@
+package component
+
+templ FlightRecord() {
+	<!-- Flight Records Table -->
+	<div class="bg-gray-900 rounded-lg p-5 w-full mt-4 shadow-2xl border border-gray-800">
+		<h2 class="text-white text-xl font-semibold mb-4">Flight Records</h2>
+		<div class="overflow-x-auto">
+			<table class="w-full text-white text-sm">
+				<thead class="text-gray-400 text-left">
+					<tr>
+						<th class="p-2">Location</th>
+						<th class="p-2">Date</th>
+						<th class="p-2">Wing</th>
+						<th class="p-2">Duration</th>
+						<th class="p-2">Distance</th>
+						<th class="p-2">Max Alt</th>
+					</tr>
+				</thead>
+				<tbody class="divide-y divide-gray-800">
+					<tr class="hover:bg-gray-800 transition duration-150">
+						<td class="p-2">Alps</td>
+						<td class="p-2">2021-08-15</td>
+						<td class="p-2">X-wing</td>
+						<td class="p-2">2h 30m</td>
+						<td class="p-2">20 km</td>
+						<td class="p-2">3200 m</td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+}

@@ -1,91 +1,29 @@
 package page
 
 import "github.com/AurelienS/cigare/web/template/layout"
+import "github.com/AurelienS/cigare/web/template/component"
 
 templ Flights() {
 	@layout.Base() {
-		<div class="flex justify-between items-center mb-8">
-			<h1 class="text-3xl font-bold">Flights Dashboard</h1>
-			<button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Upload New Flight</button>
-		</div>
-		<div class="flex flex-wrap justify-start gap-4">
-			<!-- Flight Stats Card -->
-			<div class="bg-gray-900 rounded-lg p-4 w-full md:w-auto mt-4 shadow-xl border border-gray-700">
-				<h2 class="text-indigo-400 text-lg font-semibold mb-3">Flight Stats</h2>
-				<div class="grid grid-cols-2 gap-4 text-sm">
-					<div class="space-y-2">
-						<p class="text-indigo-300">
-							<span class="material-icons-outlined text-indigo-400 mr-1">
-								flight_takeoff
-							</span>
-							Flights: <span class="text-white">170</span>
-						</p>
-						<p class="text-indigo-300">
-							<span class="material-icons-outlined text-indigo-400 mr-1">
-								access_time
-							</span>
-							Hours: <span class="text-white">76h</span>
-						</p>
-					</div>
-					<div class="space-y-2">
-						<p class="text-indigo-300">
-							<span class="material-icons-outlined text-indigo-400 mr-1">
-								straighten
-							</span>
-							Total Km: <span class="text-white">2095</span>
-						</p>
-						<p class="text-indigo-300">
-							<span class="material-icons-outlined text-indigo-400 mr-1">
-								timer
-							</span>
-							Avg Time: <span class="text-white">27h</span>
-						</p>
-					</div>
+		<div class="flex flex-col text-gray-300 ">
+			<!-- Header Section -->
+			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">
+				<h1 class="text-xl font-light text-blue-300">Flights Dashboard</h1>
+				<button class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-3 rounded text-sm transition duration-150">Upload New Flight</button>
+			</div>
+			<!-- Cards Container -->
+			<div class="flex gap-4">
+				<div>
+					@component.FightCard()
+					@component.AnnualCard()
 				</div>
-			</div>
-			<!-- My Wings Card -->
-			<div class="bg-gray-900 rounded-lg p-4 w-full md:w-auto mt-4 shadow-xl border border-gray-700">
-				<h2 class="text-blue-400 text-lg font-semibold mb-3">My Wings</h2>
-				<p class="text-blue-300 text-sm">
-					EPSILON 9: <span class="text-white">32h, 950 km, 29 km/h</span>
-				</p>
-			</div>
-			<!-- Where I Flew Card -->
-			<div class="bg-gray-900 rounded-lg p-4 w-full md:w-auto mt-4 shadow-xl border border-gray-700">
-				<h2 class="text-pink-400 text-lg font-semibold mb-3">Where I Flew</h2>
-				<p class="text-pink-300 text-sm">
-					Les Saix: <span class="text-white">82 fl., 28h</span>
-				</p>
-			</div>
-			<!-- Annual Statistics Card -->
-			<div class="bg-gray-900 rounded-lg p-4 w-full md:w-auto mt-4 shadow-xl border border-gray-700">
-				<h2 class="text-white text-lg font-semibold mb-3">Annual Statistics</h2>
-				<div class="flex items-center">
-					<span class="text-white text-sm font-bold mr-2">2021</span>
-					<div class="flex-grow h-2 bg-gray-700 rounded-full overflow-hidden">
-						<div class="bg-blue-400 h-2 rounded-full" style="width: 30%;"></div>
-					</div>
+				<div class="flex-1 mx-6">
+					@component.FlightRecord()
 				</div>
-			</div>
-		</div>
-		<!-- Flight Records Table -->
-		<div class="bg-gray-900 rounded-lg p-4 w-full mt-4 shadow-xl border border-gray-700">
-			<h2 class="text-white text-lg font-semibold mb-3">Flight Records</h2>
-			<div class="grid grid-cols-6 gap-4 text-white text-sm">
-				<div class="col-span-1">Location</div>
-				<div class="col-span-1">Date</div>
-				<div class="col-span-1">Wing</div>
-				<div class="col-span-1">Duration</div>
-				<div class="col-span-1">Distance</div>
-				<div class="col-span-1">Max Alt</div>
-				<!-- Repeat for each flight record -->
-				<div class="col-span-1">Alps</div>
-				<div class="col-span-1">2021-08-15</div>
-				<div class="col-span-1">X-wing</div>
-				<div class="col-span-1">2h 30m</div>
-				<div class="col-span-1">20 km</div>
-				<div class="col-span-1">3200 m</div>
-				<!-- More records... -->
+				<div>
+					@component.SiteCard()
+					@component.GliderCard()
+				</div>
 			</div>
 		</div>
 	}

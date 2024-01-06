@@ -41,24 +41,30 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><link href=\"https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css\" rel=\"stylesheet\"><link href=\"https://fonts.googleapis.com/icon?family=Material+Icons+Outlined\" rel=\"stylesheet\"><style>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><link href=\"https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css\" rel=\"stylesheet\"><link href=\"https://fonts.googleapis.com/icon?family=Material+Icons+Outlined\" rel=\"stylesheet\"><link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap\" rel=\"stylesheet\"><style>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Var4 := `
-        /* Custom styles for dark mode */
-        .dark {
-            --tw-bg-opacity: 1;
-            background-color: rgba(17, 24, 39, var(--tw-bg-opacity)); /* Cool Gray 900 */
-            --tw-text-opacity: 1;
-            color: rgba(229, 231, 235, var(--tw-text-opacity)); /* Cool Gray 50 */
-        }
-    `
+		/* Custom styles for dark mode */
+		.dark {
+			--tw-bg-opacity: 1;
+			background-color: rgba(17, 24, 39, var(--tw-bg-opacity));
+			/* Cool Gray 900 */
+			--tw-text-opacity: 1;
+			color: rgba(229, 231, 235, var(--tw-text-opacity));
+			/* Cool Gray 50 */
+		}
+
+		.font-roboto {
+			font-family: 'Roboto', sans-serif;
+		}
+	`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"dark:bg-gray-900 dark:text-gray-200 min-h-screen\"><nav id=\"header\" class=\"bg-gray-800 w-full z-10 top-0 shadow\"><div class=\"w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2\"><div class=\"pl-4 flex items-center\"><a class=\"text-white text-base no-underline hover:no-underline font-extrabold text-xl\" href=\"/\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><div class=\"\"></div><body class=\"dark:bg-gray-900 dark:text-gray-200 min-w-screen min-h-screen font-roboto font-light\"><nav id=\"header\" class=\"bg-gray-800 w-full z-10 top-0 shadow\"><div class=\"w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2\"><div class=\"pl-4 flex items-center\"><a class=\"text-white  no-underline hover:no-underline font-bold text-xl\" href=\"/\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -67,7 +73,7 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div><div class=\"block lg:hidden pr-4\"><button id=\"nav-toggle\" class=\"flex items-center p-1 text-blue-200 hover:text-gray-100\"><!--")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div><div class=\"block lg:hidden pr-4\"><button id=\"nav-toggle\" class=\" flex items-center p-1 text-blue-200 hover:text-gray-100\"><!--")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -76,7 +82,7 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--></button></div><div class=\"w-full flex-grow lg:flex lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-800 z-20\" id=\"nav-content\"><ul class=\"list-reset lg:flex justify-end flex-1 items-center\"><li class=\"mr-3\"><a class=\"inline-block text-gray-400 no-underline hover:text-gray-200 hover:text-underline py-2 px-4\" href=\"/flights\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--></button></div><div class=\"w-full flex-grow lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-800 z-20\" id=\"nav-content\"><ul class=\"list-reset lg:flex justify-end flex-1 items-center\"><li class=\"mr-3\"><a class=\"inline-block text-gray-400 no-underline hover:text-gray-200 hover:text-underline py-2 px-4\" href=\"/flights\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -94,7 +100,7 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></li></ul></div></div></nav><div class=\"container shadow-lg mx-auto bg-gray-800 mt-24 md:mt-18 p-8\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></li></ul></div></div></nav><div class=\"mx-8\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -107,11 +113,11 @@ func Base() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Var9 := `
-        //Toggle dropdown menus
-        document.getElementById('nav-toggle').onclick = function(){
-            document.getElementById("nav-content").classList.toggle("hidden");
-        }
-    `
+		//Toggle dropdown menus
+		document.getElementById('nav-toggle').onclick = function () {
+			document.getElementById("nav-content").classList.toggle("hidden");
+		}
+	`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
