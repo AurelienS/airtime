@@ -1,7 +1,8 @@
-package session
+package auth
 
 import (
 	"github.com/gorilla/sessions"
+	"github.com/labstack/echo/v4"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
 	"github.com/markbates/goth/providers/google"
@@ -30,4 +31,14 @@ func ConfigureGoth(store sessions.Store) {
 			"profile"),
 	)
 	gothic.Store = store
+}
+
+const sessionName = "session-name"
+
+func getSession(c echo.Context) (*sessions.Session, error) {
+	return gothic.Store.Get(c.Request(), sessionName)
+}
+
+func saveSession(c echo.Context, session *sessions.Session) error {
+	return session.Save(c.Request(), c.Response())
 }

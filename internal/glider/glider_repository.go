@@ -1,4 +1,4 @@
-package storage
+package glider
 
 import (
 	"context"
@@ -6,6 +6,10 @@ import (
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/rs/zerolog/log"
 )
+
+type GliderRepository interface {
+	GetGliders(ctx context.Context, user storage.User) ([]storage.Glider, error)
+}
 
 type SQLGliderRepository struct {
 	Queries storage.Queries

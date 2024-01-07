@@ -1,16 +1,15 @@
-package service
+package flight
 
 import (
 	"context"
 
 	"github.com/AurelienS/cigare/internal/storage"
-	repo "github.com/AurelienS/cigare/internal/storage/repository"
 	"github.com/AurelienS/cigare/pkg/model"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
 type FlightService struct {
-	Repo repo.FlightRepository
+	Repo FlightRepository
 }
 
 func (s *FlightService) UploadFlight(ctx context.Context, byteContent []byte, user storage.User) error {

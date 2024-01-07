@@ -1,12 +1,11 @@
 package webserver
 
 import (
-	"github.com/AurelienS/cigare/internal/service"
+	"github.com/AurelienS/cigare/internal/auth"
+	"github.com/AurelienS/cigare/internal/flight"
+	"github.com/AurelienS/cigare/internal/glider"
 	"github.com/AurelienS/cigare/internal/storage"
-	repo "github.com/AurelienS/cigare/internal/storage/repository"
 
-	"github.com/AurelienS/cigare/internal/webserver/handler"
-	"github.com/AurelienS/cigare/internal/webserver/handler/flight"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 )
@@ -20,28 +19,31 @@ type Server struct {
 func NewServer(queries *storage.Queries, store sessions.Store) *Server {
 	e := echo.New()
 
-	flightRepo := repo.SQLFlightRepository{
+	flightRepo := flight.SQLFlightRepository{
 		Queries: *queries,
 	}
-	gliderRepo := repo.SQLGliderRepository{
-		Queries: *queries,
-	}
-	flightService := service.FlightService{
+	flightService := flight.FlightService{
 		Repo: flightRepo,
 	}
-	gliderService := service.GliderService{
-		Repo: gliderRepo,
-	}
-	authHandler := handler.AuthHandler{Queries: *queries}
-
 	flightHandler := flight.FlightHandler{
 		FlightService: flightService,
+	}
+
+	gliderRepo := glider.SQLGliderRepository{
+		Queries: *queries,
+	}
+	gliderService := glider.GliderService{
+		Repo: gliderRepo,
+	}
+	gliderHandler := glider.GliderHandler{
 		GliderService: gliderService,
 	}
+	authHandler := auth.AuthHandler{Queries: *queries}
 
 	router := Router{
 		AuthHandler:   authHandler,
 		FlightHandler: flightHandler,
+		GliderHandler: gliderHandler,
 	}
 	router.Initialize(e)
 

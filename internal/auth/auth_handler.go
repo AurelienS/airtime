@@ -1,10 +1,11 @@
-package handler
+package auth
 
 import (
 	"context"
 	"net/http"
 
 	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 	"github.com/markbates/goth/gothic"
@@ -19,13 +20,13 @@ func (h *AuthHandler) GetLogout(c echo.Context) error {
 	session, err := getSession(c)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get session during logout")
-		return HandleError(c, err)
+		return util.HandleError(c, err)
 	}
 
 	session.Values["user"] = nil
 	if err := saveSession(c, session); err != nil {
 		log.Error().Err(err).Msg("Failed to save session during logout")
-		return HandleError(c, err)
+		return util.HandleError(c, err)
 	}
 
 	gothic.Logout(c.Response(), c.Request())
@@ -37,13 +38,13 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 	googleUser, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to complete user authentication with Google")
-		return Render(c, page.Error())
+		return util.Render(c, page.Error())
 	}
 
 	session, err := getSession(c)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get session during auth callback")
-		return HandleError(c, err)
+		return util.HandleError(c, err)
 	}
 
 	googleUserId := googleUser.UserID
@@ -56,20 +57,20 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 	})
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to upsert user")
-		return HandleError(c, err)
+		return util.HandleError(c, err)
 	}
 
 	// we need to refetch to get the actual db ID
 	user, err := h.Queries.GetUserWithGoogleId(context.Background(), googleUserId)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to fetch user with Google ID")
-		return HandleError(c, err)
+		return util.HandleError(c, err)
 	}
 
 	session.Values["user"] = user
 	if err := saveSession(c, session); err != nil {
 		log.Error().Err(err).Msg("Failed to save session after getting auth callback")
-		return HandleError(c, err)
+		return util.HandleError(c, err)
 	}
 
 	log.Info().Str("user", user.Email).Msg("User authenticated and session updated successfully")
@@ -88,5 +89,5 @@ func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
 
 func (h *AuthHandler) GetLogin(c echo.Context) error {
 	log.Info().Msg("Rendering login page")
-	return Render(c, page.Login())
+	return util.Render(c, page.Login())
 }

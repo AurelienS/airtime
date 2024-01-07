@@ -1,4 +1,4 @@
-package storage
+package flight
 
 import (
 	"context"
@@ -6,6 +6,11 @@ import (
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/rs/zerolog/log"
 )
+
+type FlightRepository interface {
+	InsertFlight(ctx context.Context, flight storage.Flight, user storage.User) error
+	GetFlights(ctx context.Context, user storage.User) ([]storage.Flight, error)
+}
 
 type SQLFlightRepository struct {
 	Queries storage.Queries

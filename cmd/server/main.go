@@ -1,15 +1,15 @@
 package main
 
 import (
-	logconfig "github.com/AurelienS/cigare/internal"
 	"github.com/AurelienS/cigare/internal/app"
-	"github.com/rs/zerolog/log" // Global logger
+	ourLogger "github.com/AurelienS/cigare/internal/log"
+	"github.com/rs/zerolog/log"
 )
 
 const isProd = false // Set to true when serving over https
 
 func main() {
-	log.Logger = logconfig.SetupLogger()
+	log.Logger = ourLogger.SetupLogger()
 
 	server := app.Initialize(isProd)
 	if server == nil {

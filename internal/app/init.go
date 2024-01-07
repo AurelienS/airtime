@@ -4,9 +4,9 @@ import (
 	"encoding/gob"
 	"log"
 
+	"github.com/AurelienS/cigare/internal/auth"
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/webserver"
-	"github.com/AurelienS/cigare/internal/webserver/session"
 	"github.com/gorilla/sessions"
 )
 
@@ -19,8 +19,8 @@ func Initialize(isProd bool) *webserver.Server {
 }
 
 func configureSessionStore(isProd bool) sessions.Store {
-	store := session.NewStore(isProd)
-	session.ConfigureGoth(store)
+	store := auth.NewStore(isProd)
+	auth.ConfigureGoth(store)
 	gob.Register(storage.User{})
 	return store
 }
