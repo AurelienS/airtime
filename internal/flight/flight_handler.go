@@ -17,9 +17,9 @@ type FlightHandler struct {
 	FlightService FlightService
 }
 
-func NewFlightHandler(flightService FlightService) *FlightHandler {
+func NewFlightHandler(flightService *FlightService) *FlightHandler {
 	return &FlightHandler{
-		FlightService: flightService,
+		FlightService: *flightService,
 	}
 }
 

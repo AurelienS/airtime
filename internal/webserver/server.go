@@ -19,31 +19,20 @@ type Server struct {
 func NewServer(queries *storage.Queries, store sessions.Store) *Server {
 	e := echo.New()
 
-	flightRepo := flight.SQLFlightRepository{
-		Queries: *queries,
-	}
-	flightService := flight.FlightService{
-		Repo: flightRepo,
-	}
-	flightHandler := flight.FlightHandler{
-		FlightService: flightService,
-	}
+	flightRepo := flight.NewSQLFlightRepository(*queries)
+	flightService := flight.NewFlightService(flightRepo)
+	flightHandler := flight.NewFlightHandler(flightService)
 
-	gliderRepo := glider.SQLGliderRepository{
-		Queries: *queries,
-	}
-	gliderService := glider.GliderService{
-		Repo: gliderRepo,
-	}
-	gliderHandler := glider.GliderHandler{
-		GliderService: gliderService,
-	}
-	authHandler := auth.AuthHandler{Queries: *queries}
+	gliderRepo := glider.NewSQLGliderRepository(queries)
+	gliderService := glider.NewGliderService(gliderRepo)
+	gliderHandler := glider.NewGliderHandler(gliderService)
+
+	authHandler := auth.NewAuthHandler(queries)
 
 	router := Router{
-		AuthHandler:   authHandler,
-		FlightHandler: flightHandler,
-		GliderHandler: gliderHandler,
+		AuthHandler:   *authHandler,
+		FlightHandler: *flightHandler,
+		GliderHandler: *gliderHandler,
 	}
 	router.Initialize(e)
 

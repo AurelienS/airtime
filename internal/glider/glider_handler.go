@@ -15,9 +15,9 @@ type GliderHandler struct {
 	GliderService GliderService
 }
 
-func NewGliderHandler(flightService GliderService) *GliderHandler {
+func NewGliderHandler(flightService *GliderService) *GliderHandler {
 	return &GliderHandler{
-		GliderService: flightService,
+		GliderService: *flightService,
 	}
 }
 

@@ -11,6 +11,12 @@ type FlightService struct {
 	Repo FlightRepository
 }
 
+func NewFlightService(repository FlightRepository) *FlightService {
+	return &FlightService{
+		Repo: repository,
+	}
+}
+
 func (s *FlightService) UploadFlight(ctx context.Context, byteContent []byte, user storage.User) error {
 	track, err := igc.Parse(string(byteContent))
 	if err != nil {

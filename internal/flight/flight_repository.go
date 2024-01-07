@@ -16,6 +16,12 @@ type SQLFlightRepository struct {
 	Queries storage.Queries
 }
 
+func NewSQLFlightRepository(queries storage.Queries) *SQLFlightRepository {
+	return &SQLFlightRepository{
+		Queries: queries,
+	}
+}
+
 func (repo SQLFlightRepository) InsertFlight(ctx context.Context, flight storage.Flight, user storage.User) error {
 	params := storage.InsertFlightParams{
 		Date:            flight.Date,

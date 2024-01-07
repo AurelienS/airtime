@@ -16,6 +16,10 @@ type AuthHandler struct {
 	Queries storage.Queries
 }
 
+func NewAuthHandler(queries *storage.Queries) *AuthHandler {
+	return &AuthHandler{Queries: *queries}
+}
+
 func (h *AuthHandler) GetLogout(c echo.Context) error {
 	session, err := getSession(c)
 	if err != nil {
