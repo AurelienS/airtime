@@ -6,6 +6,7 @@ import (
 	repo "github.com/AurelienS/cigare/internal/storage/repository"
 
 	"github.com/AurelienS/cigare/internal/webserver/handler"
+	"github.com/AurelienS/cigare/internal/webserver/handler/flight"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 )
@@ -33,7 +34,7 @@ func NewServer(queries *storage.Queries, store sessions.Store) *Server {
 	}
 	authHandler := handler.AuthHandler{Queries: *queries}
 
-	flightHandler := handler.FlightHandler{
+	flightHandler := flight.FlightHandler{
 		FlightService: flightService,
 		GliderService: gliderService,
 	}

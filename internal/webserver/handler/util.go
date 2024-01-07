@@ -14,7 +14,7 @@ func Render(c echo.Context, component templ.Component) error {
 	return component.Render(c.Request().Context(), c.Response())
 }
 
-func handleError(c echo.Context, err error) error {
+func HandleError(c echo.Context, err error) error {
 	fmt.Printf("Error encountered: %s\n", err)
 	return c.String(http.StatusInternalServerError, "Internal Server Error")
 }

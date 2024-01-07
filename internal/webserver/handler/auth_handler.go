@@ -19,13 +19,13 @@ func (h *AuthHandler) GetLogout(c echo.Context) error {
 	session, err := getSession(c)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get session during logout")
-		return handleError(c, err)
+		return HandleError(c, err)
 	}
 
 	session.Values["user"] = nil
 	if err := saveSession(c, session); err != nil {
 		log.Error().Err(err).Msg("Failed to save session during logout")
-		return handleError(c, err)
+		return HandleError(c, err)
 	}
 
 	gothic.Logout(c.Response(), c.Request())
@@ -43,7 +43,7 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 	session, err := getSession(c)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get session during auth callback")
-		return handleError(c, err)
+		return HandleError(c, err)
 	}
 
 	googleUserId := googleUser.UserID
@@ -56,20 +56,20 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 	})
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to upsert user")
-		return handleError(c, err)
+		return HandleError(c, err)
 	}
 
 	// we need to refetch to get the actual db ID
 	user, err := h.Queries.GetUserWithGoogleId(context.Background(), googleUserId)
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to fetch user with Google ID")
-		return handleError(c, err)
+		return HandleError(c, err)
 	}
 
 	session.Values["user"] = user
 	if err := saveSession(c, session); err != nil {
 		log.Error().Err(err).Msg("Failed to save session after getting auth callback")
-		return handleError(c, err)
+		return HandleError(c, err)
 	}
 
 	log.Info().Str("user", user.Email).Msg("User authenticated and session updated successfully")

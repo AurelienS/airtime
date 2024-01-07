@@ -2,13 +2,14 @@ package webserver
 
 import (
 	"github.com/AurelienS/cigare/internal/webserver/handler"
+	"github.com/AurelienS/cigare/internal/webserver/handler/flight"
 	"github.com/AurelienS/cigare/internal/webserver/middleware"
 	"github.com/labstack/echo/v4"
 )
 
 type Router struct {
 	AuthHandler   handler.AuthHandler
-	FlightHandler handler.FlightHandler
+	FlightHandler flight.FlightHandler
 }
 
 func (r *Router) Initialize(e *echo.Echo) {
