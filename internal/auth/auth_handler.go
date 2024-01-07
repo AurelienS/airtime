@@ -81,10 +81,14 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 	return c.Redirect(http.StatusFound, "/")
 }
 
+type contextKey string
+
+const providerKey contextKey = "provider"
+
 func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
 	provider := c.Param("provider")
 	log.Info().Str("provider", provider).Msg("Initiating authentication with provider")
-	expectedReq := c.Request().WithContext(context.WithValue(context.Background(), "provider", provider))
+	expectedReq := c.Request().WithContext(context.WithValue(context.Background(), providerKey, provider))
 
 	gothic.BeginAuthHandler(c.Response(), expectedReq)
 

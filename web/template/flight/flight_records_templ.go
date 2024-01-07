@@ -30,7 +30,7 @@ func FlightRecords(flights []storage.Flight) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-gray-900 rounded-lg p-5 w-full mt-4 shadow-2xl border border-gray-800\"><h2 class=\"text-white text-xl font-semibold mb-4\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"bg-gray-900 rounded-lg p-5 flex-grow mt-4 shadow-2xl border border-gray-800\"><h2 class=\"text-white text-xl font-semibold mb-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -16,20 +16,18 @@ type Router struct {
 
 func (r *Router) Initialize(e *echo.Echo) {
 	e.Use(log.LoggerMiddleware())
+
 	e.GET("/login", r.AuthHandler.GetLogin)
+	e.GET("/auth/:provider/callback", r.AuthHandler.GetAuthCallback)
+	e.GET("/auth/:provider", r.AuthHandler.GetAuthProvider)
 
 	authGroup := e.Group("/")
 	authGroup.Use(auth.AuthMiddleware)
-	authGroup.GET("", r.FlightHandler.GetIndexPage)
-	authGroup.GET("gliders", r.GliderHandler.GetGlidersPage)
-	authGroup.GET("flights", r.FlightHandler.GetFlightsPage)
-	authGroup.GET("flights/all", r.FlightHandler.GetFlights)
-	authGroup.POST("flight", r.FlightHandler.Upload)
-	authGroup.GET("glidersCard", r.GliderHandler.GetGlidersCard)
 
+	authGroup.GET("", r.FlightHandler.GetIndexPage)
 	authGroup.GET("logout", r.AuthHandler.GetLogout)
 
-	e.GET("/auth/:provider/callback", r.AuthHandler.GetAuthCallback)
-	e.GET("/auth/:provider", r.AuthHandler.GetAuthProvider)
+	authGroup.POST("flight", r.FlightHandler.PostFlight)
+	authGroup.POST("glider", r.GliderHandler.PostGlider)
 
 }

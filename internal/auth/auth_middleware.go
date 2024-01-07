@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"fmt"
+	"errors"
 	"net/http"
 
 	"github.com/AurelienS/cigare/internal/log"
@@ -36,14 +36,14 @@ func getUserFromSession(c echo.Context) (storage.User, error) {
 	if tempUser, ok := session.Values["user"].(storage.User); ok {
 		user = tempUser
 		if user.Email == "" {
-			errMsg := "User email not found in session"
+			errMsg := "user email not found in session"
 			log.Error().Msg(errMsg)
-			return user, fmt.Errorf(errMsg)
+			return user, errors.New(errMsg)
 		}
 	} else {
-		errMsg := "No user found in session"
+		errMsg := "no user found in session"
 		log.Error().Msg(errMsg)
-		return user, fmt.Errorf(errMsg)
+		return user, errors.New(errMsg)
 	}
 
 	return user, nil

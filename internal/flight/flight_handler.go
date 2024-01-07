@@ -6,52 +6,41 @@ import (
 	"net/http"
 
 	"github.com/AurelienS/cigare/internal/auth"
+	"github.com/AurelienS/cigare/internal/glider"
 	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/util"
-	"github.com/AurelienS/cigare/web/template/flight"
 	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 )
 
 type FlightHandler struct {
 	FlightService FlightService
+	GliderService glider.GliderService
 }
 
-func NewFlightHandler(flightService *FlightService) *FlightHandler {
+func NewFlightHandler(flightService *FlightService, GliderService *glider.GliderService) *FlightHandler {
 	return &FlightHandler{
 		FlightService: *flightService,
+		GliderService: *GliderService,
 	}
 }
 
-/* **********************************
- *            PAGES
- ********************************** */
-
 func (h *FlightHandler) GetIndexPage(c echo.Context) error {
-	log.Info().Msg("Redirecting to flights page")
-	return c.Redirect(http.StatusFound, "/flights")
-}
-
-func (h *FlightHandler) GetFlightsPage(c echo.Context) error {
-	log.Info().Msg("Rendering flights page")
-	return util.Render(c, page.Flights())
-}
-
-/* **********************************
- *            DATA
- ********************************** */
-
-func (h *FlightHandler) GetFlights(c echo.Context) error {
 	user := auth.GetUserFromContext(c)
 	flights, err := h.FlightService.GetFlights(context.Background(), user)
 	if err != nil {
 		return util.HandleError(c, err)
 	}
-	log.Info().Str("user", user.Email).Msg("Fetched flights successfully")
-	return util.Render(c, flight.FlightRecords(flights))
+
+	gliders, err := h.GliderService.GetGliders(context.Background(), user)
+	if err != nil {
+		return util.HandleError(c, err)
+	}
+
+	return util.Render(c, page.Flights(flights, gliders))
 }
 
-func (h *FlightHandler) Upload(c echo.Context) error {
+func (h *FlightHandler) PostFlight(c echo.Context) error {
 	file, err := c.FormFile("igcfile")
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to get IGC file from form")

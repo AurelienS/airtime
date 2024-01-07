@@ -49,3 +49,8 @@ VALUES
     $5,
     $6
   );
+
+-- name: InsertGlider :exec
+INSERT INTO gliders(NAME, user_id)
+VALUES
+  ($1, $2);

@@ -7,7 +7,6 @@ import (
 	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/template/flight"
-	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 )
 
@@ -21,18 +20,17 @@ func NewGliderHandler(flightService *GliderService) *GliderHandler {
 	}
 }
 
-/* **********************************
- *            PAGES
- ********************************** */
+func (h *GliderHandler) PostGlider(c echo.Context) error {
+	user := auth.GetUserFromContext(c)
+	gliderName := c.FormValue("gliderName")
 
-func (h *GliderHandler) GetGlidersPage(c echo.Context) error {
-	log.Info().Msg("Rendering gliders page")
-	return util.Render(c, page.Gliders())
+	err := h.GliderService.AddGlider(context.Background(), gliderName, user)
+	if err != nil {
+		return util.HandleError(c, err)
+	}
+
+	return h.GetGlidersCard(c)
 }
-
-/* **********************************
- *            DATA
- ********************************** */
 
 func (h *GliderHandler) GetGlidersCard(c echo.Context) error {
 	user := auth.GetUserFromContext(c)

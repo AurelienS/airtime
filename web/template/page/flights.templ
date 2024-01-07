@@ -2,8 +2,9 @@ package page
 
 import "github.com/AurelienS/cigare/web/template/flight"
 import "github.com/AurelienS/cigare/web/template/layout"
+import "github.com/AurelienS/cigare/internal/storage"
 
-templ Flights() {
+templ Flights(flights []storage.Flight, gliders []storage.Glider) {
 	@layout.Base() {
 		<div class="flex flex-col text-gray-300 ">
 			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">
@@ -15,11 +16,9 @@ templ Flights() {
 					@flight.FlightCard()
 					@flight.AnnualCard()
 				</div>
-				<div class="flex-1 mx-6">
-					<div hx-get="/flights/all" hx-trigger="load"></div>
-				</div>
+				@flight.FlightRecords(flights)
 				<div>
-					<div hx-get="/glidersCard" hx-trigger="load"></div>
+					@flight.GliderCard(gliders)
 					@flight.SiteCard()
 				</div>
 			</div>

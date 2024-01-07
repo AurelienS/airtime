@@ -154,6 +154,22 @@ func (q *Queries) InsertFlight(ctx context.Context, arg InsertFlightParams) erro
 	return err
 }
 
+const insertGlider = `-- name: InsertGlider :exec
+INSERT INTO gliders(NAME, user_id)
+VALUES
+  ($1, $2)
+`
+
+type InsertGliderParams struct {
+	Name   string
+	UserID int32
+}
+
+func (q *Queries) InsertGlider(ctx context.Context, arg InsertGliderParams) error {
+	_, err := q.db.ExecContext(ctx, insertGlider, arg.Name, arg.UserID)
+	return err
+}
+
 const upsertUser = `-- name: UpsertUser :exec
 INSERT INTO users (google_id, email, NAME, picture_url)
 VALUES
