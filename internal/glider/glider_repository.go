@@ -3,8 +3,8 @@ package glider
 import (
 	"context"
 
+	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
-	"github.com/rs/zerolog/log"
 )
 
 type GliderRepository interface {

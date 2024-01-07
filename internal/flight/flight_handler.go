@@ -6,11 +6,11 @@ import (
 	"net/http"
 
 	"github.com/AurelienS/cigare/internal/auth"
+	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/template/flight"
 	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
-	"github.com/rs/zerolog/log"
 )
 
 type FlightHandler struct {

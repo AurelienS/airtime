@@ -3,13 +3,14 @@ package log
 import (
 	"os"
 
-	"github.com/rs/zerolog" // Global logger
+	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/pkgerrors"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-// SetupLogger initializes and returns a global logger
-func SetupLogger() zerolog.Logger {
+var logger zerolog.Logger
+
+func SetupLogger() {
 	zerolog.TimestampFieldName = "timestamp"
 	zerolog.LevelFieldName = "level"
 	zerolog.MessageFieldName = "message"
@@ -27,5 +28,17 @@ func SetupLogger() zerolog.Logger {
 	)
 
 	// Return the configured global logger
-	return zerolog.New(multi).With().Timestamp().Logger()
+	logger = zerolog.New(multi).With().Timestamp().Logger()
+}
+
+func Info() *zerolog.Event {
+	return logger.Info()
+}
+
+func Error() *zerolog.Event {
+	return logger.Error()
+}
+
+func Fatal() *zerolog.Event {
+	return logger.Fatal()
 }

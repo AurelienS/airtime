@@ -3,8 +3,8 @@ package flight
 import (
 	"context"
 
+	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
-	"github.com/rs/zerolog/log"
 )
 
 type FlightRepository interface {

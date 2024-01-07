@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 	"github.com/markbates/goth/gothic"
-	"github.com/rs/zerolog/log"
 )
 
 type AuthHandler struct {
