@@ -51,20 +51,24 @@ func (f *Flight) GenerateThermals(minRateOfClimb float64, maxDownwardTolerance i
 			continue
 		}
 
-		rateOfClimb := f.calculateRateOfClimb(i)
-		rateOfClimbHistory = util.Updaterateofclimbhistory(rateOfClimbHistory, rateOfClimb, climbRateIntegrationPeriod)
-		smoothedRateOfClimb := util.Average(rateOfClimbHistory)
+		smoothedRateOfClimb := f.calculateSmoothedRateOfClimb(i, climbRateIntegrationPeriod, rateOfClimbHistory)
 
-		if current != nil {
+		if current == nil {
+			current = f.maybeStartNewThermal(smoothedRateOfClimb, minRateOfClimb, climbRateIntegrationPeriod, point, i)
+		} else {
 			current.Update(point, smoothedRateOfClimb)
 			current = f.checkAndFinalizeThermal(current, maxDownwardTolerance, minThermalDuration, i)
-		} else {
-			current = f.maybeStartNewThermal(smoothedRateOfClimb, minRateOfClimb, climbRateIntegrationPeriod, point, i)
 		}
 	}
 
 	f.finalizeLastThermal(current, minThermalDuration)
 	f.Stats.Finalize(f)
+}
+
+func (f *Flight) calculateSmoothedRateOfClimb(i, period int, rateOfClimbHistory []float64) float64 {
+	rateOfClimb := f.calculateRateOfClimb(i)
+	rateOfClimbHistory = util.UpdateRateOfClimbHistory(rateOfClimbHistory, rateOfClimb, period)
+	return util.Average(rateOfClimbHistory)
 }
 
 func (f *Flight) calculateRateOfClimb(i int) float64 {

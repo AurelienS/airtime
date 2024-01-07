@@ -39,7 +39,7 @@ func Radtodeg(rad float64) float64 {
 	return rad * (180 / math.Pi)
 }
 
-func Updaterateofclimbhistory(history []float64, rateOfClimb float64, period int) []float64 {
+func UpdateRateOfClimbHistory(history []float64, rateOfClimb float64, period int) []float64 {
 	history = append(history, rateOfClimb)
 	if len(history) > period {
 		history = history[1:]
