@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"git.sr.ht/~sbinet/gg"
+	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/pkg/util"
 	"github.com/ezgliding/goigc/pkg/igc"
 	goigc "github.com/ezgliding/goigc/pkg/igc"
@@ -23,11 +24,10 @@ type Flight struct {
 	Stats    FlightStatistics
 }
 
-func ConvertToMyFlight(externalTrack goigc.Track) Flight {
-	return Flight{
-		Track:    externalTrack,
-		Thermals: []*Thermal{},
-		Stats:    FlightStatistics{},
+func ConvertToMyFlight(externalTrack goigc.Track) storage.Flight {
+	return storage.Flight{
+		Date:            externalTrack.Date,
+		TakeoffLocation: externalTrack.Points[0].Description,
 	}
 }
 

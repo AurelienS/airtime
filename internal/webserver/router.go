@@ -22,7 +22,7 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.GET("flights", r.FlightHandler.GetFlightsPage)
 	authGroup.GET("flights/all", r.FlightHandler.GetFlights)
 	authGroup.POST("flight", r.FlightHandler.Upload)
-	authGroup.GET("gliders/all", r.FlightHandler.GetGliders)
+	authGroup.GET("glidersCard", r.FlightHandler.GetGlidersCard)
 
 	authGroup.GET("logout", r.AuthHandler.GetLogout)
 

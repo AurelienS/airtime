@@ -61,7 +61,7 @@ func Flights() templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"flex-1 mx-6\"><div hx-get=\"/flights/all\" hx-trigger=\"load\"></div></div><div><div hx-get=\"/gliders/all\" hx-trigger=\"load\"></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"flex-1 mx-6\"><div hx-get=\"/flights/all\" hx-trigger=\"load\"></div></div><div><div hx-get=\"/glidersCard\" hx-trigger=\"load\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
