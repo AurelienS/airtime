@@ -32,11 +32,6 @@ func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 	return c.Redirect(http.StatusFound, "/flights")
 }
 
-func (h *FlightHandler) GetGlidersPage(c echo.Context) error {
-	log.Info().Msg("Rendering gliders page")
-	return util.Render(c, page.Gliders())
-}
-
 func (h *FlightHandler) GetFlightsPage(c echo.Context) error {
 	log.Info().Msg("Rendering flights page")
 	return util.Render(c, page.Flights())

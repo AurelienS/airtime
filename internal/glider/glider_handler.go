@@ -6,6 +6,7 @@ import (
 	"github.com/AurelienS/cigare/internal/auth"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/template/flight"
+	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog/log"
 )
@@ -20,11 +21,18 @@ func NewGliderHandler(flightService GliderService) *GliderHandler {
 	}
 }
 
-// ################################
-// ##
-// ## Data
-// ##
-// ################################
+/* **********************************
+ *            PAGES
+ ********************************** */
+
+func (h *GliderHandler) GetGlidersPage(c echo.Context) error {
+	log.Info().Msg("Rendering gliders page")
+	return util.Render(c, page.Gliders())
+}
+
+/* **********************************
+ *            DATA
+ ********************************** */
 
 func (h *GliderHandler) GetGlidersCard(c echo.Context) error {
 	user := auth.GetUserFromContext(c)
