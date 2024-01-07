@@ -8,13 +8,13 @@ import (
 type FlightStatistics struct {
 	TotalThermicTime  time.Duration
 	TotalFlightTime   time.Duration
-	MaxClimb          int
+	MaxClimb          int64
 	MaxClimbRate      float64
-	TotalClimb        int
+	TotalClimb        int64
 	AverageClimbRate  float64
 	NumberOfThermals  int
 	PercentageThermic float64
-	MaxAltitude       int
+	MaxAltitude       int64
 }
 
 func (s *FlightStatistics) AddThermal(t Thermal, minThermalDuration time.Duration) {

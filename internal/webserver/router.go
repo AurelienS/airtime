@@ -16,9 +16,13 @@ func (r *Router) Initialize(e *echo.Echo) {
 
 	authGroup := e.Group("/")
 	authGroup.Use(middleware.AuthMiddleware)
-	authGroup.GET("", r.FlightHandler.GetIndex)
-	authGroup.GET("gliders", r.FlightHandler.GetGliders)
-	authGroup.GET("flights", r.FlightHandler.GetFlights)
+	authGroup.GET("", r.FlightHandler.GetIndexPage)
+	authGroup.GET("gliders", r.FlightHandler.GetGlidersPage)
+	authGroup.GET("flights", r.FlightHandler.GetFlightsPage)
+	authGroup.GET("flights/all", r.FlightHandler.GetFlights)
+	authGroup.POST("flight", r.FlightHandler.Upload)
+	authGroup.GET("gliders/all", r.FlightHandler.GetGliders)
+
 	authGroup.GET("logout", r.AuthHandler.GetLogout)
 
 	e.GET("/auth/:provider/callback", r.AuthHandler.GetAuthCallback)

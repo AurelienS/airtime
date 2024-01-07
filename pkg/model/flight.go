@@ -7,6 +7,8 @@ import (
 
 	"git.sr.ht/~sbinet/gg"
 	"github.com/AurelienS/cigare/pkg/util"
+	"github.com/ezgliding/goigc/pkg/igc"
+	goigc "github.com/ezgliding/goigc/pkg/igc"
 	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
 	"gonum.org/v1/plot"
@@ -16,16 +18,17 @@ import (
 )
 
 type Flight struct {
-	Manufacturer   string
-	UniqueID       string
-	AdditionalData string
-	Date           time.Time
-	Site           string
-	Pilot          string
-	ID             string
-	Points         []Point
-	Thermals       []*Thermal
-	Stats          FlightStatistics
+	goigc.Track
+	Thermals []*Thermal
+	Stats    FlightStatistics
+}
+
+func ConvertToMyFlight(externalTrack goigc.Track) Flight {
+	return Flight{
+		Track:    externalTrack,
+		Thermals: []*Thermal{},
+		Stats:    FlightStatistics{},
+	}
 }
 
 func (f *Flight) Initialize() {
@@ -36,7 +39,6 @@ func (f *Flight) Initialize() {
 		allowedDownwardPoints      = 4                // Number of consecutive downward points allowed in a thermal
 	)
 
-	f.calculateBearings()
 	f.GenerateThermals(minClimbRate, allowedDownwardPoints, minThermalDuration, climbRateIntegrationPeriod)
 }
 
@@ -65,16 +67,6 @@ func (f *Flight) GenerateThermals(minRateOfClimb float64, maxDownwardTolerance i
 	f.Stats.Finalize(f)
 }
 
-func (f *Flight) calculateBearings() {
-	for i := 0; i < len(f.Points)-1; i++ {
-		f.Points[i].Bearing = util.Calculatebearing(f.Points[i].Lat, f.Points[i+1].Lat, f.Points[i].Lng, f.Points[i+1].Lng)
-	}
-
-	if len(f.Points) > 0 {
-		f.Points[len(f.Points)-1].Bearing = 0 // Assign a default value for the last point
-	}
-}
-
 func (f *Flight) calculateRateOfClimb(i int) float64 {
 	altitudeGain := f.Points[i].GNSSAltitude - f.Points[i-1].GNSSAltitude
 	timeElapsed := f.Points[i].Time.Sub(f.Points[i-1].Time).Seconds()
@@ -94,7 +86,7 @@ func (f *Flight) checkAndFinalizeThermal(current *Thermal, tolerance int, durati
 	return current
 }
 
-func (f *Flight) maybeStartNewThermal(smoothedRate float64, minRate float64, period int, point Point, index int) *Thermal {
+func (f *Flight) maybeStartNewThermal(smoothedRate float64, minRate float64, period int, point igc.Point, index int) *Thermal {
 	if smoothedRate >= minRate && len(f.Points) >= period {
 		return NewThermal(point.Time, point.GNSSAltitude, index)
 	}

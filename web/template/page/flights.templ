@@ -8,7 +8,7 @@ templ Flights() {
 		<div class="flex flex-col text-gray-300 ">
 			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">
 				<h1 class="text-xl font-light text-blue-300">Flights Dashboard</h1>
-				<button class="bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-3 rounded text-sm transition duration-150">Upload New Flight</button>
+				@flight.UploadFlightForm()
 			</div>
 			<div class="flex gap-4">
 				<div>
@@ -16,10 +16,10 @@ templ Flights() {
 					@flight.AnnualCard()
 				</div>
 				<div class="flex-1 mx-6">
-					@flight.FlightRecord("1")
+					<div hx-get="/flights/all" hx-trigger="load"></div>
 				</div>
 				<div>
-					@flight.GliderCard()
+					<div hx-get="/gliders/all" hx-trigger="load"></div>
 					@flight.SiteCard()
 				</div>
 			</div>

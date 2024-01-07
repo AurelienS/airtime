@@ -16,3 +16,36 @@ SET
   NAME = EXCLUDED.name,
   picture_url = EXCLUDED.picture_url,
   updated_at = NOW();
+
+-- name: GetFlights :many
+SELECT
+  *
+FROM flights
+WHERE
+  user_id = $1;
+
+-- name: GetGliders :many
+SELECT
+  *
+FROM gliders
+WHERE
+  user_id = $1;
+
+-- name: InsertFlight :exec
+INSERT INTO flights (
+    DATE,
+    takeoff_location,
+    igc_file_path,
+    user_id,
+    glider_id,
+    flight_statistics_id
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6
+  );

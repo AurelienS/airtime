@@ -15,6 +15,7 @@ type Flight struct {
 	TakeoffLocation    string
 	IgcFilePath        string
 	UserID             int32
+	GliderID           int32
 	FlightStatisticsID sql.NullInt32
 	CreatedAt          time.Time
 	UpdatedAt          time.Time
@@ -33,6 +34,14 @@ type FlightStatistic struct {
 	MaxAltitude       int32
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
+}
+
+type Glider struct {
+	ID        int32
+	Name      string
+	UserID    int32
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type User struct {

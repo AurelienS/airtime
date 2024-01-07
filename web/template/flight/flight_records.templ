@@ -1,0 +1,31 @@
+package flight
+
+import "fmt"
+import "github.com/AurelienS/cigare/internal/storage"
+
+func flightLink(id int32) templ.SafeURL {
+	return templ.SafeURL(fmt.Sprintf("/flight/%d", id))
+}
+
+templ FlightRecords(flights []storage.Flight) {
+	<div class="bg-gray-900 rounded-lg p-5 w-full mt-4 shadow-2xl border border-gray-800">
+		<h2 class="text-white text-xl font-semibold mb-4">Flight Records</h2>
+		if len(flights) < 1 {
+			<div>No flight yet</div>
+		} else {
+			<div class="overflow-x-auto">
+				<div class="grid grid-cols-2 gap-2 font-bold">
+					<!-- Headers -->
+					<div>Location</div>
+					<div>Date</div>
+				</div>
+				for _, flight := range flights {
+					<a href={ flightLink(flight.ID) } class="grid grid-cols-2 gap-2 hover:bg-gray-700 ">
+						<div>{ flight.TakeoffLocation }</div>
+						<div>{ flight.Date.Format("02/01 15h04") }</div>
+					</a>
+				}
+			</div>
+		}
+	</div>
+}

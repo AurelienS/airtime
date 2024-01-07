@@ -1,10 +1,16 @@
 package flight
 
 import "github.com/AurelienS/cigare/web/template/component"
+import "github.com/AurelienS/cigare/internal/storage"
 
-templ GliderCard() {
+templ GliderCard(gliders []storage.Glider) {
 	@component.CardInfo("Gliders", "text-blue-400") {
-		Epsilon 9 <span class="text-white">32h</span>
-		Phi beat <span class="text-white">22h</span>
+		if len(gliders) < 1 {
+			<div class="text-white">No glider</div>
+		} else {
+			for _, glider := range gliders {
+				{ glider.Name }
+			}
+		}
 	}
 }
