@@ -12,6 +12,7 @@ type Router struct {
 }
 
 func (r *Router) Initialize(e *echo.Echo) {
+	e.Use(middleware.LoggerMiddleware())
 	e.GET("/login", r.AuthHandler.GetLogin)
 
 	authGroup := e.Group("/")
