@@ -23,11 +23,10 @@ func NewFlightHandler(flightService FlightService) *FlightHandler {
 	}
 }
 
-// ################################
-// ##
-// ## Pages
-// ##
-// ################################
+/* **********************************
+ *            PAGES
+ ********************************** */
+
 func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 	log.Info().Msg("Redirecting to flights page")
 	return c.Redirect(http.StatusFound, "/flights")
@@ -43,11 +42,10 @@ func (h *FlightHandler) GetFlightsPage(c echo.Context) error {
 	return util.Render(c, page.Flights())
 }
 
-// ################################
-// ##
-// ## Data
-// ##
-// ################################
+/* **********************************
+ *            DATA
+ ********************************** */
+
 func (h *FlightHandler) GetFlights(c echo.Context) error {
 	user := auth.GetUserFromContext(c)
 	flights, err := h.FlightService.GetFlights(context.Background(), user)
@@ -58,11 +56,6 @@ func (h *FlightHandler) GetFlights(c echo.Context) error {
 	return util.Render(c, flight.FlightRecords(flights))
 }
 
-// ################################
-// ##
-// ## Data
-// ##
-// ################################
 func (h *FlightHandler) Upload(c echo.Context) error {
 	file, err := c.FormFile("igcfile")
 	if err != nil {
