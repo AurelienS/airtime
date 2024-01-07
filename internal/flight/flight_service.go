@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/AurelienS/cigare/internal/storage"
-	"github.com/AurelienS/cigare/pkg/model"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
@@ -17,7 +16,7 @@ func (s *FlightService) UploadFlight(ctx context.Context, byteContent []byte, us
 	if err != nil {
 		return err
 	}
-	flight := model.ConvertToMyFlight(track)
+	flight := ConvertToMyFlight(track)
 	flight.UserID = user.ID
 
 	return s.Repo.InsertFlight(ctx, flight, user)

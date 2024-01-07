@@ -1,4 +1,4 @@
-package model
+package flight
 
 import (
 	"image/color"
@@ -7,9 +7,7 @@ import (
 
 	"git.sr.ht/~sbinet/gg"
 	"github.com/AurelienS/cigare/internal/storage"
-	"github.com/AurelienS/cigare/pkg/util"
 	"github.com/ezgliding/goigc/pkg/igc"
-	goigc "github.com/ezgliding/goigc/pkg/igc"
 	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
 	"gonum.org/v1/plot"
@@ -19,12 +17,12 @@ import (
 )
 
 type Flight struct {
-	goigc.Track
+	igc.Track
 	Thermals []*Thermal
 	Stats    FlightStatistics
 }
 
-func ConvertToMyFlight(externalTrack goigc.Track) storage.Flight {
+func ConvertToMyFlight(externalTrack igc.Track) storage.Flight {
 	return storage.Flight{
 		Date:            externalTrack.Date,
 		TakeoffLocation: externalTrack.Points[0].Description,
@@ -67,8 +65,8 @@ func (f *Flight) GenerateThermals(minRateOfClimb float64, maxDownwardTolerance i
 
 func (f *Flight) calculateSmoothedRateOfClimb(i, period int, rateOfClimbHistory []float64) float64 {
 	rateOfClimb := f.calculateRateOfClimb(i)
-	rateOfClimbHistory = util.UpdateRateOfClimbHistory(rateOfClimbHistory, rateOfClimb, period)
-	return util.Average(rateOfClimbHistory)
+	rateOfClimbHistory = UpdateRateOfClimbHistory(rateOfClimbHistory, rateOfClimb, period)
+	return Average(rateOfClimbHistory)
 }
 
 func (f *Flight) calculateRateOfClimb(i int) float64 {
@@ -163,7 +161,7 @@ func (f Flight) DrawElevation() {
 	p.Add(line)
 	p.Y.Min = 0
 
-	p.X.Tick.Marker = util.HourTicker{StartTime: startTime}
+	p.X.Tick.Marker = HourTicker{StartTime: startTime}
 
 	if err := p.Save(600, 200, "elevationChart.png"); err != nil {
 		log.Fatalf("Could not save elevationChart: %v", err)
