@@ -54,3 +54,8 @@ VALUES
 INSERT INTO gliders(NAME, user_id)
 VALUES
   ($1, $2);
+
+-- name: UpdateDefaultGlider :exec
+UPDATE users
+SET default_glider_id = $1
+WHERE id = $2;

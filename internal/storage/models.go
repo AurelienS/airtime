@@ -45,11 +45,12 @@ type Glider struct {
 }
 
 type User struct {
-	ID         int32
-	GoogleID   string
-	Email      string
-	Name       string
-	PictureUrl string
-	CreatedAt  time.Time
-	UpdatedAt  time.Time
+	ID              int32
+	GoogleID        string
+	Email           string
+	Name            string
+	PictureUrl      string
+	DefaultGliderID sql.NullInt32
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
 }

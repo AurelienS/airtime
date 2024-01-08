@@ -14,7 +14,7 @@ func Initialize(isProd bool) *webserver.Server {
 	store := configureSessionStore(isProd)
 	queries := initializeDatabase()
 
-	server := webserver.NewServer(queries, store)
+	server := webserver.NewServer(*queries, store)
 	return server
 }
 

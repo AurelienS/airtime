@@ -16,22 +16,12 @@ type AuthHandler struct {
 	Queries storage.Queries
 }
 
-func NewAuthHandler(queries *storage.Queries) *AuthHandler {
-	return &AuthHandler{Queries: *queries}
+func NewAuthHandler(queries storage.Queries) AuthHandler {
+	return AuthHandler{Queries: queries}
 }
 
 func (h *AuthHandler) GetLogout(c echo.Context) error {
-	session, err := getSession(c)
-	if err != nil {
-		log.Error().Err(err).Msg("Failed to get session during logout")
-		return util.HandleError(c, err)
-	}
-
-	session.Values["user"] = nil
-	if err := saveSession(c, session); err != nil {
-		log.Error().Err(err).Msg("Failed to save session during logout")
-		return util.HandleError(c, err)
-	}
+	RemoveUserFromSession(c)
 
 	gothic.Logout(c.Response(), c.Request())
 	log.Info().Msg("User logged out successfully")
@@ -43,12 +33,6 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to complete user authentication with Google")
 		return util.Render(c, page.Error())
-	}
-
-	session, err := getSession(c)
-	if err != nil {
-		log.Error().Err(err).Msg("Failed to get session during auth callback")
-		return util.HandleError(c, err)
 	}
 
 	googleUserId := googleUser.UserID
@@ -71,24 +55,16 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		return util.HandleError(c, err)
 	}
 
-	session.Values["user"] = user
-	if err := saveSession(c, session); err != nil {
-		log.Error().Err(err).Msg("Failed to save session after getting auth callback")
-		return util.HandleError(c, err)
-	}
+	SaveUserInSession(c, user)
 
 	log.Info().Str("user", user.Email).Msg("User authenticated and session updated successfully")
 	return c.Redirect(http.StatusFound, "/")
 }
 
-type contextKey string
-
-const providerKey contextKey = "provider"
-
 func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
 	provider := c.Param("provider")
 	log.Info().Str("provider", provider).Msg("Initiating authentication with provider")
-	expectedReq := c.Request().WithContext(context.WithValue(context.Background(), providerKey, provider))
+	expectedReq := c.Request().WithContext(context.WithValue(context.Background(), "provider", provider))
 
 	gothic.BeginAuthHandler(c.Response(), expectedReq)
 

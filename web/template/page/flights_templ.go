@@ -10,11 +10,11 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/AurelienS/cigare/web/template/flight"
 import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/internal/storage"
+import "github.com/AurelienS/cigare/web/template/flight"
 
-func Flights(flights []storage.Flight, gliders []storage.Glider) templ.Component {
+func Flights(flights []storage.Flight, gliders []flight.GliderView) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

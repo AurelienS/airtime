@@ -91,7 +91,7 @@ func (q *Queries) GetGliders(ctx context.Context, userID int32) ([]Glider, error
 
 const getUserWithGoogleId = `-- name: GetUserWithGoogleId :one
 SELECT
-  id, google_id, email, name, picture_url, created_at, updated_at
+  id, google_id, email, name, picture_url, default_glider_id, created_at, updated_at
 FROM users
 WHERE
   google_id = $1
@@ -107,6 +107,7 @@ func (q *Queries) GetUserWithGoogleId(ctx context.Context, googleID string) (Use
 		&i.Email,
 		&i.Name,
 		&i.PictureUrl,
+		&i.DefaultGliderID,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -167,6 +168,22 @@ type InsertGliderParams struct {
 
 func (q *Queries) InsertGlider(ctx context.Context, arg InsertGliderParams) error {
 	_, err := q.db.ExecContext(ctx, insertGlider, arg.Name, arg.UserID)
+	return err
+}
+
+const updateDefaultGlider = `-- name: UpdateDefaultGlider :exec
+UPDATE users
+SET default_glider_id = $1
+WHERE id = $2
+`
+
+type UpdateDefaultGliderParams struct {
+	DefaultGliderID sql.NullInt32
+	ID              int32
+}
+
+func (q *Queries) UpdateDefaultGlider(ctx context.Context, arg UpdateDefaultGliderParams) error {
+	_, err := q.db.ExecContext(ctx, updateDefaultGlider, arg.DefaultGliderID, arg.ID)
 	return err
 }
 

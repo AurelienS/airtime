@@ -16,8 +16,8 @@ type SQLFlightRepository struct {
 	Queries storage.Queries
 }
 
-func NewSQLFlightRepository(queries storage.Queries) *SQLFlightRepository {
-	return &SQLFlightRepository{
+func NewSQLFlightRepository(queries storage.Queries) SQLFlightRepository {
+	return SQLFlightRepository{
 		Queries: queries,
 	}
 }

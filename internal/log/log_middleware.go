@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
+	"github.com/rs/zerolog"
 )
 
 // LoggerMiddleware returns a middleware that logs HTTP requests.
@@ -13,9 +14,14 @@ func LoggerMiddleware() echo.MiddlewareFunc {
 			start := time.Now()
 			err := next(c) // Call the next handler.
 
-			// After the handler has finished, log the request details.
-			Info().
-				Str("method", c.Request().Method).
+			var logLevel *zerolog.Event
+			if err != nil {
+				logLevel = Warn()
+			} else {
+				logLevel = Info()
+			}
+
+			logLevel.Str("method", c.Request().Method).
 				Str("path", c.Request().URL.Path).
 				Int("status", c.Response().Status).
 				Dur("latency", time.Since(start)).

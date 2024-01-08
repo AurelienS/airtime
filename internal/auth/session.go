@@ -1,6 +1,10 @@
 package auth
 
 import (
+	"fmt"
+
+	"github.com/AurelienS/cigare/internal/log"
+	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
 	"github.com/markbates/goth"
@@ -31,6 +35,30 @@ func ConfigureGoth(store sessions.Store) {
 			"profile"),
 	)
 	gothic.Store = store
+}
+
+func SaveUserInSession(c echo.Context, user storage.User) {
+	session, err := getSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get session")
+	}
+	session.Values["user"] = user
+	if err := saveSession(c, session); err != nil {
+		log.Error().Err(err).Msg("Failed to save session")
+	}
+	fmt.Println("file: session.go ~ line 44 ~ USER SAVED IN SESS : ", user)
+}
+
+func RemoveUserFromSession(c echo.Context) {
+	session, err := getSession(c)
+	if err != nil {
+		log.Error().Err(err).Msg("Failed to get session")
+	}
+
+	session.Values["user"] = nil
+	if err := saveSession(c, session); err != nil {
+		log.Error().Err(err).Msg("Failed to save")
+	}
 }
 
 const sessionName = "session-name"

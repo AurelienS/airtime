@@ -39,6 +39,10 @@ func Error() *zerolog.Event {
 	return logger.Error()
 }
 
+func Warn() *zerolog.Event {
+	return logger.Warn()
+}
+
 func Fatal() *zerolog.Event {
 	return logger.Fatal()
 }

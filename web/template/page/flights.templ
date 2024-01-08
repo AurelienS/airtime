@@ -1,10 +1,10 @@
 package page
 
-import "github.com/AurelienS/cigare/web/template/flight"
 import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/internal/storage"
+import "github.com/AurelienS/cigare/web/template/flight"
 
-templ Flights(flights []storage.Flight, gliders []storage.Glider) {
+templ Flights(flights []storage.Flight, gliders []flight.GliderView) {
 	@layout.Base() {
 		<div class="flex flex-col text-gray-300 ">
 			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">

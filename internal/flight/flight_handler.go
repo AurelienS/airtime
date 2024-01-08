@@ -18,10 +18,10 @@ type FlightHandler struct {
 	GliderService glider.GliderService
 }
 
-func NewFlightHandler(flightService *FlightService, GliderService *glider.GliderService) *FlightHandler {
-	return &FlightHandler{
-		FlightService: *flightService,
-		GliderService: *GliderService,
+func NewFlightHandler(flightService FlightService, GliderService glider.GliderService) FlightHandler {
+	return FlightHandler{
+		FlightService: flightService,
+		GliderService: GliderService,
 	}
 }
 

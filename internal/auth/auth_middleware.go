@@ -50,8 +50,8 @@ func getUserFromSession(c echo.Context) (storage.User, error) {
 }
 
 func GetUserFromContext(c echo.Context) storage.User {
-	user, ok := c.Get(UserContextKey).(storage.User)
-	if !ok {
+	user, err := getUserFromSession(c)
+	if err != nil {
 		log.Fatal().Str("endpoint", c.Request().RequestURI).Msg("No user in context")
 		// log.Fatal terminates the program; consider if this is the desired behavior.
 		// In a real-world application, you might want to handle this more gracefully.

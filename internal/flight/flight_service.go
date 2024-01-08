@@ -11,8 +11,8 @@ type FlightService struct {
 	Repo FlightRepository
 }
 
-func NewFlightService(repository FlightRepository) *FlightService {
-	return &FlightService{
+func NewFlightService(repository FlightRepository) FlightService {
+	return FlightService{
 		Repo: repository,
 	}
 }
