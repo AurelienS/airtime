@@ -23,7 +23,7 @@ func UploadFlightForm() templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form id=\"uploadForm\" hx-post=\"/flight\" enctype=\"multipart/form-data\" hx-swap=\"none\" hx-trigger=\"fileSelected\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> <button type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<form id=\"uploadForm\" hx-post=\"/flight\" enctype=\"multipart/form-data\" hx-target=\"#flightPage\" hx-select=\"#flightPage\" hx-trigger=\"fileSelected\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> <button type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

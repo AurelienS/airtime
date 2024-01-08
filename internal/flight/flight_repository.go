@@ -23,11 +23,12 @@ func NewSQLFlightRepository(queries storage.Queries) SQLFlightRepository {
 }
 
 func (repo SQLFlightRepository) InsertFlight(ctx context.Context, flight storage.Flight, user storage.User) error {
+
 	params := storage.InsertFlightParams{
 		Date:            flight.Date,
 		TakeoffLocation: flight.TakeoffLocation,
 		UserID:          user.ID,
-		GliderID:        1,         // Assuming GliderID is 1, this should be dynamically set based on your application's logic
+		GliderID:        user.DefaultGliderID.Int32,
 		IgcFilePath:     "not yet", // Placeholder path, replace with actual storage path as needed
 	}
 	err := repo.Queries.InsertFlight(context.Background(), params)

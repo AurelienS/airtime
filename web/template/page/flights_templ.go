@@ -13,6 +13,11 @@ import "bytes"
 import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/internal/storage"
 import "github.com/AurelienS/cigare/web/template/flight"
+import "strconv"
+
+func getFlightCOunt(flights []storage.Flight) string {
+	return strconv.Itoa(len(flights))
+}
 
 func Flights(flights []storage.Flight, gliders []flight.GliderView) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -33,7 +38,7 @@ func Flights(flights []storage.Flight, gliders []flight.GliderView) templ.Compon
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col text-gray-300 \"><div class=\"flex justify-between items-center mb-6 p-4 bg-gray-900\"><h1 class=\"text-xl font-light text-blue-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col text-gray-300\" id=\"flightPage\"><div class=\"flex justify-between items-center mb-6 p-4 bg-gray-900\"><h1 class=\"text-xl font-light text-blue-300\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -54,7 +59,7 @@ func Flights(flights []storage.Flight, gliders []flight.GliderView) templ.Compon
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = flight.FlightCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = flight.FlightCard(getFlightCOunt(flights)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

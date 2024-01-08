@@ -2,23 +2,23 @@ package flight
 
 import "github.com/AurelienS/cigare/web/template/component"
 
-templ FlightCard() {
-	@component.CardInfo("Flight stats (placeholder)", "text-green-400") {
+templ FlightCard(flightCount string) {
+	@component.CardInfo("Flight stats", "text-green-400") {
 		<div class="flex items-center gap-1">
 			<span class="material-icons-outlined mr-2 ">flight_takeoff</span>Flights 
 		</div>
-		<span class="text-white">170</span>
+		<span class="text-white">{ flightCount }</span>
 		<div class="flex items-center gap-1">
 			<span class="material-icons-outlined mr-2">access_time</span>Hours 
 		</div>
-		<span class="text-white">76h</span>
+		<span class="text-white"></span>
 		<div class="flex items-center gap-1">
 			<span class="material-icons-outlined mr-2">straighten</span>Total kms 
 		</div>
-		<span class="text-white">2095</span>
+		<span class="text-white"></span>
 		<div class="flex items-center gap-1">
 			<span class="material-icons-outlined mr-2">timer</span>Avg Time 
 		</div>
-		<span class="text-white">27h</span>
+		<span class="text-white"></span>
 	}
 }

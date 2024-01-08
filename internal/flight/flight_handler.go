@@ -3,7 +3,6 @@ package flight
 import (
 	"context"
 	"io"
-	"net/http"
 
 	"github.com/AurelienS/cigare/internal/auth"
 	"github.com/AurelienS/cigare/internal/glider"
@@ -69,7 +68,6 @@ func (h *FlightHandler) PostFlight(c echo.Context) error {
 	}
 
 	log.Info().Str("user", user.Email).Str("filename", file.Filename).Msg("File parsed and flight record created successfully")
-	return c.JSON(http.StatusOK, map[string]string{
-		"message": "File parsed successfully",
-	})
+
+	return h.GetIndexPage(c)
 }

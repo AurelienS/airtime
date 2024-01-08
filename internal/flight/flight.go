@@ -2,10 +2,10 @@ package flight
 
 import (
 	"image/color"
-	"log"
 	"time"
 
 	"git.sr.ht/~sbinet/gg"
+	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/ezgliding/goigc/pkg/igc"
 	"github.com/golang/geo/s1"
@@ -23,9 +23,26 @@ type Flight struct {
 }
 
 func ConvertToMyFlight(externalTrack igc.Track) storage.Flight {
+
+	loc, err := time.LoadLocation("Europe/Paris")
+	if err != nil {
+		log.Warn().Msg("Error loading location Europe/Paris for")
+	}
+
+	combinedDateTime := time.Date(
+		externalTrack.Date.Year(),
+		externalTrack.Date.Month(),
+		externalTrack.Date.Day(),
+		externalTrack.Points[0].Time.Hour(),
+		externalTrack.Points[0].Time.Minute(),
+		externalTrack.Points[0].Time.Second(),
+		externalTrack.Points[0].Time.Nanosecond(),
+		loc,
+	)
+
 	return storage.Flight{
-		Date:            externalTrack.Date,
-		TakeoffLocation: externalTrack.Points[0].Description,
+		Date:            combinedDateTime.Local(),
+		TakeoffLocation: externalTrack.Site,
 	}
 }
 
@@ -154,7 +171,7 @@ func (f Flight) DrawElevation() {
 
 	line, err := plotter.NewLine(pts)
 	if err != nil {
-		log.Fatalf("Could not create line: %v", err)
+		log.Error().Msgf("Could not create line: %v", err)
 	}
 	line.Color = color.RGBA{B: 255, A: 255}
 
@@ -164,6 +181,6 @@ func (f Flight) DrawElevation() {
 	p.X.Tick.Marker = HourTicker{StartTime: startTime}
 
 	if err := p.Save(600, 200, "elevationChart.png"); err != nil {
-		log.Fatalf("Could not save elevationChart: %v", err)
+		log.Error().Msgf("Could not save elevationChart: %v", err)
 	}
 }
