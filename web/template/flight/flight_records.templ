@@ -22,7 +22,7 @@ templ FlightRecords(flights []storage.Flight) {
 				for _, flight := range flights {
 					<a href={ flightLink(flight.ID) } class="grid grid-cols-2 gap-2 hover:bg-gray-700 ">
 						<div>{ flight.TakeoffLocation }</div>
-						<div>{ flight.Date.Format("02/01 15h04") }</div>
+						<div>{ flight.Date.Time.Format("02/01 15h04") }</div>
 					</a>
 				}
 			</div>

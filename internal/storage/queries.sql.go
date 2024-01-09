@@ -7,8 +7,9 @@ package storage
 
 import (
 	"context"
-	"database/sql"
-	"time"
+
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const getFlights = `-- name: GetFlights :many
@@ -20,7 +21,7 @@ WHERE
 `
 
 func (q *Queries) GetFlights(ctx context.Context, userID int32) ([]Flight, error) {
-	rows, err := q.db.QueryContext(ctx, getFlights, userID)
+	rows, err := q.db.Query(ctx, getFlights, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -43,9 +44,6 @@ func (q *Queries) GetFlights(ctx context.Context, userID int32) ([]Flight, error
 		}
 		items = append(items, i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -61,7 +59,7 @@ WHERE
 `
 
 func (q *Queries) GetGliders(ctx context.Context, userID int32) ([]Glider, error) {
-	rows, err := q.db.QueryContext(ctx, getGliders, userID)
+	rows, err := q.db.Query(ctx, getGliders, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -80,9 +78,6 @@ func (q *Queries) GetGliders(ctx context.Context, userID int32) ([]Glider, error
 		}
 		items = append(items, i)
 	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
@@ -99,7 +94,7 @@ LIMIT 1
 `
 
 func (q *Queries) GetUserWithGoogleId(ctx context.Context, googleID string) (User, error) {
-	row := q.db.QueryRowContext(ctx, getUserWithGoogleId, googleID)
+	row := q.db.QueryRow(ctx, getUserWithGoogleId, googleID)
 	var i User
 	err := row.Scan(
 		&i.ID,
@@ -114,7 +109,7 @@ func (q *Queries) GetUserWithGoogleId(ctx context.Context, googleID string) (Use
 	return i, err
 }
 
-const insertFlight = `-- name: InsertFlight :exec
+const insertFlight = `-- name: InsertFlight :execresult
 INSERT INTO flights (
     DATE,
     takeoff_location,
@@ -131,20 +126,20 @@ VALUES
     $4,
     $5,
     $6
-  )
+  ) RETURNING id
 `
 
 type InsertFlightParams struct {
-	Date               time.Time
+	Date               pgtype.Timestamptz
 	TakeoffLocation    string
 	IgcFilePath        string
 	UserID             int32
 	GliderID           int32
-	FlightStatisticsID sql.NullInt32
+	FlightStatisticsID int32
 }
 
-func (q *Queries) InsertFlight(ctx context.Context, arg InsertFlightParams) error {
-	_, err := q.db.ExecContext(ctx, insertFlight,
+func (q *Queries) InsertFlight(ctx context.Context, arg InsertFlightParams) (pgconn.CommandTag, error) {
+	return q.db.Exec(ctx, insertFlight,
 		arg.Date,
 		arg.TakeoffLocation,
 		arg.IgcFilePath,
@@ -152,7 +147,61 @@ func (q *Queries) InsertFlight(ctx context.Context, arg InsertFlightParams) erro
 		arg.GliderID,
 		arg.FlightStatisticsID,
 	)
-	return err
+}
+
+const insertFlightStats = `-- name: InsertFlightStats :one
+INSERT INTO flight_statistics (
+    total_thermic_time,
+    total_flight_time,
+    max_climb,
+    max_climb_rate,
+    total_climb,
+    average_climb_rate,
+    number_of_thermals,
+    percentage_thermic,
+    max_altitude
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6,
+    $7,
+    $8,
+    $9
+  ) RETURNING id
+`
+
+type InsertFlightStatsParams struct {
+	TotalThermicTime  pgtype.Interval
+	TotalFlightTime   pgtype.Interval
+	MaxClimb          int32
+	MaxClimbRate      float64
+	TotalClimb        int32
+	AverageClimbRate  float64
+	NumberOfThermals  int32
+	PercentageThermic float64
+	MaxAltitude       int32
+}
+
+func (q *Queries) InsertFlightStats(ctx context.Context, arg InsertFlightStatsParams) (int32, error) {
+	row := q.db.QueryRow(ctx, insertFlightStats,
+		arg.TotalThermicTime,
+		arg.TotalFlightTime,
+		arg.MaxClimb,
+		arg.MaxClimbRate,
+		arg.TotalClimb,
+		arg.AverageClimbRate,
+		arg.NumberOfThermals,
+		arg.PercentageThermic,
+		arg.MaxAltitude,
+	)
+	var id int32
+	err := row.Scan(&id)
+	return id, err
 }
 
 const insertGlider = `-- name: InsertGlider :exec
@@ -167,23 +216,26 @@ type InsertGliderParams struct {
 }
 
 func (q *Queries) InsertGlider(ctx context.Context, arg InsertGliderParams) error {
-	_, err := q.db.ExecContext(ctx, insertGlider, arg.Name, arg.UserID)
+	_, err := q.db.Exec(ctx, insertGlider, arg.Name, arg.UserID)
 	return err
 }
 
 const updateDefaultGlider = `-- name: UpdateDefaultGlider :exec
-UPDATE users
-SET default_glider_id = $1
-WHERE id = $2
+UPDATE
+  users
+SET
+  default_glider_id = $1
+WHERE
+  id = $2
 `
 
 type UpdateDefaultGliderParams struct {
-	DefaultGliderID sql.NullInt32
+	DefaultGliderID pgtype.Int4
 	ID              int32
 }
 
 func (q *Queries) UpdateDefaultGlider(ctx context.Context, arg UpdateDefaultGliderParams) error {
-	_, err := q.db.ExecContext(ctx, updateDefaultGlider, arg.DefaultGliderID, arg.ID)
+	_, err := q.db.Exec(ctx, updateDefaultGlider, arg.DefaultGliderID, arg.ID)
 	return err
 }
 
@@ -207,7 +259,7 @@ type UpsertUserParams struct {
 }
 
 func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) error {
-	_, err := q.db.ExecContext(ctx, upsertUser,
+	_, err := q.db.Exec(ctx, upsertUser,
 		arg.GoogleID,
 		arg.Email,
 		arg.Name,

@@ -5,26 +5,25 @@
 package storage
 
 import (
-	"database/sql"
-	"time"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Flight struct {
 	ID                 int32
-	Date               time.Time
+	Date               pgtype.Timestamptz
 	TakeoffLocation    string
 	IgcFilePath        string
 	UserID             int32
 	GliderID           int32
-	FlightStatisticsID sql.NullInt32
-	CreatedAt          time.Time
-	UpdatedAt          time.Time
+	FlightStatisticsID int32
+	CreatedAt          pgtype.Timestamptz
+	UpdatedAt          pgtype.Timestamptz
 }
 
 type FlightStatistic struct {
 	ID                int32
-	TotalThermicTime  int64
-	TotalFlightTime   int64
+	TotalThermicTime  pgtype.Interval
+	TotalFlightTime   pgtype.Interval
 	MaxClimb          int32
 	MaxClimbRate      float64
 	TotalClimb        int32
@@ -32,16 +31,16 @@ type FlightStatistic struct {
 	NumberOfThermals  int32
 	PercentageThermic float64
 	MaxAltitude       int32
-	CreatedAt         time.Time
-	UpdatedAt         time.Time
+	CreatedAt         pgtype.Timestamptz
+	UpdatedAt         pgtype.Timestamptz
 }
 
 type Glider struct {
 	ID        int32
 	Name      string
 	UserID    int32
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt pgtype.Timestamptz
+	UpdatedAt pgtype.Timestamptz
 }
 
 type User struct {
@@ -50,7 +49,7 @@ type User struct {
 	Email           string
 	Name            string
 	PictureUrl      string
-	DefaultGliderID sql.NullInt32
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	DefaultGliderID pgtype.Int4
+	CreatedAt       pgtype.Timestamptz
+	UpdatedAt       pgtype.Timestamptz
 }

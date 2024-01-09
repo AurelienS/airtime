@@ -31,7 +31,7 @@ FROM gliders
 WHERE
   user_id = $1;
 
--- name: InsertFlight :exec
+-- name: InsertFlight :execresult
 INSERT INTO flights (
     DATE,
     takeoff_location,
@@ -48,7 +48,7 @@ VALUES
     $4,
     $5,
     $6
-  );
+  ) RETURNING id;
 
 -- name: InsertGlider :exec
 INSERT INTO gliders(NAME, user_id)
@@ -56,6 +56,34 @@ VALUES
   ($1, $2);
 
 -- name: UpdateDefaultGlider :exec
-UPDATE users
-SET default_glider_id = $1
-WHERE id = $2;
+UPDATE
+  users
+SET
+  default_glider_id = $1
+WHERE
+  id = $2;
+
+-- name: InsertFlightStats :one
+INSERT INTO flight_statistics (
+    total_thermic_time,
+    total_flight_time,
+    max_climb,
+    max_climb_rate,
+    total_climb,
+    average_climb_rate,
+    number_of_thermals,
+    percentage_thermic,
+    max_altitude
+  )
+VALUES
+  (
+    $1,
+    $2,
+    $3,
+    $4,
+    $5,
+    $6,
+    $7,
+    $8,
+    $9
+  ) RETURNING id;

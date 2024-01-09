@@ -57,7 +57,7 @@ CREATE TABLE flights (
   igc_file_path TEXT NOT NULL,
   user_id INTEGER NOT NULL,
   glider_id INTEGER NOT NULL,
-  flight_statistics_id INTEGER NULL,
+  flight_statistics_id INTEGER NOT NULL,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
   FOREIGN KEY (user_id) REFERENCES users(id),

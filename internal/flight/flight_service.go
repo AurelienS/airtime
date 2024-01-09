@@ -3,31 +3,37 @@ package flight
 import (
 	"context"
 
+	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
 type FlightService struct {
-	Repo FlightRepository
+	flightRepo FlightRepository
 }
 
-func NewFlightService(repository FlightRepository) FlightService {
+func NewFlightService(
+	flightRepo FlightRepository,
+
+) FlightService {
 	return FlightService{
-		Repo: repository,
+		flightRepo: flightRepo,
 	}
 }
 
-func (s *FlightService) UploadFlight(ctx context.Context, byteContent []byte, user storage.User) error {
+func (s *FlightService) AddFlight(ctx context.Context, byteContent []byte, user storage.User) error {
 	track, err := igc.Parse(string(byteContent))
 	if err != nil {
 		return err
 	}
-	flight := ConvertToMyFlight(track)
-	flight.UserID = user.ID
 
-	return s.Repo.InsertFlight(ctx, flight, user)
+	flight := TrackToFlight(track, user)
+	stats := flightstats.NewFlightStatistics(track.Points)
+	err = s.flightRepo.InsertFlight(ctx, flight, stats, user)
+
+	return err
 }
 
 func (s *FlightService) GetFlights(ctx context.Context, user storage.User) ([]storage.Flight, error) {
-	return s.Repo.GetFlights(context.Background(), user)
+	return s.flightRepo.GetFlights(context.Background(), user)
 }

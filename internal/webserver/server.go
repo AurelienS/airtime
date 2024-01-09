@@ -6,6 +6,7 @@ import (
 	"github.com/AurelienS/cigare/internal/glider"
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/user"
+	"github.com/jackc/pgx/v5"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
@@ -17,14 +18,16 @@ type Server struct {
 	Store   sessions.Store
 }
 
-func NewServer(queries storage.Queries, store sessions.Store) *Server {
+func NewServer(queries storage.Queries, db *pgx.Conn, store sessions.Store) *Server {
 	e := echo.New()
+
+	transactionManager := storage.NewTransactionManager(db)
 
 	gliderRepo := glider.NewSQLGliderRepository(queries)
 	gliderService := glider.NewGliderService(gliderRepo)
 	gliderHandler := glider.NewGliderHandler(gliderService)
 
-	flightRepo := flight.NewSQLFlightRepository(queries)
+	flightRepo := flight.NewFlightRepository(queries, transactionManager)
 	flightService := flight.NewFlightService(flightRepo)
 	flightHandler := flight.NewFlightHandler(flightService, gliderService)
 

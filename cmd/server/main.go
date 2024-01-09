@@ -10,10 +10,15 @@ const isProd = false // Set to true when serving over https
 func main() {
 
 	log.SetupLogger()
-	server := app.Initialize(isProd)
-	if server == nil {
+	server, err := app.Initialize(isProd)
+	if err != nil {
+		log.Fatal().Msg("Cannot initialize server")
 		return
 	}
 
-	server.Logger.Fatal(server.Start(":3000"))
+	err = server.Start(":3000")
+	if err != nil {
+		log.Fatal().Msg("Cannot start server")
+		return
+	}
 }

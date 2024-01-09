@@ -2,20 +2,24 @@ package app
 
 import (
 	"encoding/gob"
-	"log"
 
 	"github.com/AurelienS/cigare/internal/auth"
+	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/webserver"
 	"github.com/gorilla/sessions"
+	"github.com/jackc/pgx/v5"
 )
 
-func Initialize(isProd bool) *webserver.Server {
+func Initialize(isProd bool) (*webserver.Server, error) {
 	store := configureSessionStore(isProd)
-	queries := initializeDatabase()
+	queries, db, err := initializeDatabase()
+	if err != nil {
+		return nil, err
+	}
 
-	server := webserver.NewServer(*queries, store)
-	return server
+	server := webserver.NewServer(*queries, db, store)
+	return server, nil
 }
 
 func configureSessionStore(isProd bool) sessions.Store {
@@ -25,11 +29,12 @@ func configureSessionStore(isProd bool) sessions.Store {
 	return store
 }
 
-func initializeDatabase() *storage.Queries {
-	queries, err := storage.Open()
+func initializeDatabase() (*storage.Queries, *pgx.Conn, error) {
+	db, err := storage.Open()
 	if err != nil {
-		log.Fatal("Cannot open db")
-		return nil
+		log.Fatal().Msg("Cannot open db")
+		return nil, nil, err
 	}
-	return queries
+	queries := storage.New(db)
+	return queries, db, nil
 }

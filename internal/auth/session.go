@@ -1,8 +1,6 @@
 package auth
 
 import (
-	"fmt"
-
 	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/gorilla/sessions"
@@ -46,7 +44,6 @@ func SaveUserInSession(c echo.Context, user storage.User) {
 	if err := saveSession(c, session); err != nil {
 		log.Error().Err(err).Msg("Failed to save session")
 	}
-	fmt.Println("file: session.go ~ line 44 ~ USER SAVED IN SESS : ", user)
 }
 
 func RemoveUserFromSession(c echo.Context) {

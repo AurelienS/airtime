@@ -1,4 +1,4 @@
-package flight
+package flightstats
 
 import (
 	"time"

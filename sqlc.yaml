@@ -7,4 +7,5 @@ sql:
       go:
         package: storage
         out: "internal/storage"
+        sql_package: "pgx/v5"
         

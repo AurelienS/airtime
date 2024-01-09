@@ -61,7 +61,7 @@ func (h *FlightHandler) PostFlight(c echo.Context) error {
 
 	user := auth.GetUserFromContext(c)
 
-	err = h.FlightService.UploadFlight(c.Request().Context(), byteContent, user)
+	err = h.FlightService.AddFlight(c.Request().Context(), byteContent, user)
 	if err != nil {
 		log.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
 		return util.HandleError(c, err)

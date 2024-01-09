@@ -2,9 +2,9 @@ package user
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type UserRepository struct {
@@ -19,7 +19,7 @@ func NewUserRepository(queries storage.Queries) UserRepository {
 
 func (r *UserRepository) UpdateDefaultGlider(ctx context.Context, defaultGliderId int32, userId int32) error {
 	arg := storage.UpdateDefaultGliderParams{
-		DefaultGliderID: sql.NullInt32{Int32: defaultGliderId, Valid: true},
+		DefaultGliderID: pgtype.Int4{Int32: defaultGliderId, Valid: true},
 		ID:              userId,
 	}
 
