@@ -3,3 +3,4 @@ build-errors.log
 *.tif
 logs/
 *.zip
+dev.env
