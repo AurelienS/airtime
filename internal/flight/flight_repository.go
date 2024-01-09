@@ -2,11 +2,10 @@ package flight
 
 import (
 	"context"
-	"fmt"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
-	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/util"
 )
 
 type FlightRepository struct {
@@ -52,13 +51,12 @@ func (r FlightRepository) InsertFlight(
 func (r FlightRepository) GetFlights(ctx context.Context, user storage.User) ([]storage.Flight, error) {
 	flights, err := r.queries.GetFlights(ctx, user.ID)
 	if err != nil {
-		log.Error().Err(err).Str("user", user.Email).Msg("Failed to get flights")
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get flights")
 	}
 	return flights, err
 }
 
 func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flightstats.FlightStatistics) (int32, error) {
-	fmt.Println("file: flight_repository.go ~ line 60 ~ flightStat : ", flightStat.NumberOfThermals)
 	param := storage.InsertFlightStatsParams{
 		TotalThermicTime:  storage.DurationToPGInterval(flightStat.TotalThermicTime),
 		TotalFlightTime:   storage.DurationToPGInterval(flightStat.TotalFlightTime),
@@ -70,7 +68,6 @@ func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flig
 		PercentageThermic: flightStat.PercentageThermic,
 		MaxAltitude:       int32(flightStat.MaxAltitude),
 	}
-	fmt.Println("file: flight_repository.go ~ line 63 ~ param : ", param.NumberOfThermals)
 	id, err := f.queries.InsertFlightStats(ctx, param)
 	if err != nil {
 		return 0, err

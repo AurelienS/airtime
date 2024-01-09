@@ -239,7 +239,7 @@ func (q *Queries) UpdateDefaultGlider(ctx context.Context, arg UpdateDefaultGlid
 	return err
 }
 
-const upsertUser = `-- name: UpsertUser :exec
+const upsertUser = `-- name: UpsertUser :one
 INSERT INTO users (google_id, email, NAME, picture_url)
 VALUES
   ($1, $2, $3, $4) ON CONFLICT (google_id) DO
@@ -248,7 +248,7 @@ SET
   email = EXCLUDED.email,
   NAME = EXCLUDED.name,
   picture_url = EXCLUDED.picture_url,
-  updated_at = NOW()
+  updated_at = NOW() RETURNING id, google_id, email, name, picture_url, default_glider_id, created_at, updated_at
 `
 
 type UpsertUserParams struct {
@@ -258,12 +258,23 @@ type UpsertUserParams struct {
 	PictureUrl string
 }
 
-func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) error {
-	_, err := q.db.Exec(ctx, upsertUser,
+func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (User, error) {
+	row := q.db.QueryRow(ctx, upsertUser,
 		arg.GoogleID,
 		arg.Email,
 		arg.Name,
 		arg.PictureUrl,
 	)
-	return err
+	var i User
+	err := row.Scan(
+		&i.ID,
+		&i.GoogleID,
+		&i.Email,
+		&i.Name,
+		&i.PictureUrl,
+		&i.DefaultGliderID,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

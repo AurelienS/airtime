@@ -1,30 +1,27 @@
-package webserver
+package web
 
 import (
-	"github.com/AurelienS/cigare/internal/auth"
-	"github.com/AurelienS/cigare/internal/flight"
-	"github.com/AurelienS/cigare/internal/glider"
-	"github.com/AurelienS/cigare/internal/log"
-	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/web/handler"
+	"github.com/AurelienS/cigare/web/middleware"
 	"github.com/labstack/echo/v4"
 )
 
 type Router struct {
-	AuthHandler   auth.AuthHandler
-	FlightHandler flight.FlightHandler
-	GliderHandler glider.GliderHandler
-	UserHandler   user.UserHandler
+	AuthHandler   handler.AuthHandler
+	FlightHandler handler.FlightHandler
+	GliderHandler handler.GliderHandler
+	UserHandler   handler.UserHandler
 }
 
 func (r *Router) Initialize(e *echo.Echo) {
-	e.Use(log.LoggerMiddleware())
+	e.Use(middleware.LoggerMiddleware())
 
 	e.GET("/login", r.AuthHandler.GetLogin)
 	e.GET("/auth/:provider/callback", r.AuthHandler.GetAuthCallback)
 	e.GET("/auth/:provider", r.AuthHandler.GetAuthProvider)
 
 	authGroup := e.Group("/")
-	authGroup.Use(auth.AuthMiddleware)
+	authGroup.Use(middleware.AuthMiddleware)
 
 	authGroup.GET("", r.FlightHandler.GetIndexPage)
 	authGroup.GET("logout", r.AuthHandler.GetLogout)

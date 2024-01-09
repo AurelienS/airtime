@@ -3,7 +3,7 @@ package storage
 import (
 	"context"
 
-	"github.com/AurelienS/cigare/internal/log"
+	"github.com/AurelienS/cigare/internal/util"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -27,13 +27,13 @@ func (tm *TransactionManager) ExecuteTransaction(ctx context.Context, txFunc fun
 			panic(p)
 		} else if err != nil {
 			if rbErr := tx.Rollback(ctx); rbErr != nil {
-				log.Error().Msgf("rollback error: %v", rbErr)
+				util.Error().Msgf("rollback error: %v", rbErr)
 			}
 		}
 	}()
 
 	if err = txFunc(); err != nil {
-		log.Error().Msgf("transaction error: %v", err)
+		util.Error().Msgf("transaction error: %v", err)
 		return err
 	}
 

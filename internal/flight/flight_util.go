@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"git.sr.ht/~sbinet/gg"
-	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
 	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
@@ -21,7 +21,7 @@ func TrackToFlight(externalTrack igc.Track, user storage.User) storage.Flight {
 
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
-		log.Warn().Msg("Error loading location Europe/Paris for")
+		util.Warn().Msg("Error loading location Europe/Paris for")
 	}
 
 	combinedDateTime := time.Date(
@@ -99,7 +99,7 @@ func DrawElevation(track igc.Track) {
 
 	line, err := plotter.NewLine(pts)
 	if err != nil {
-		log.Error().Msgf("Could not create line: %v", err)
+		util.Error().Msgf("Could not create line: %v", err)
 	}
 	line.Color = color.RGBA{B: 255, A: 255}
 
@@ -109,7 +109,7 @@ func DrawElevation(track igc.Track) {
 	p.X.Tick.Marker = HourTicker{StartTime: startTime}
 
 	if err := p.Save(600, 200, "elevationChart.png"); err != nil {
-		log.Error().Msgf("Could not save elevationChart: %v", err)
+		util.Error().Msgf("Could not save elevationChart: %v", err)
 	}
 }
 

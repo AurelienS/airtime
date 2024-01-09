@@ -1,11 +1,11 @@
-package webserver
+package web
 
 import (
-	"github.com/AurelienS/cigare/internal/auth"
 	"github.com/AurelienS/cigare/internal/flight"
 	"github.com/AurelienS/cigare/internal/glider"
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/web/handler"
 	"github.com/jackc/pgx/v5"
 
 	"github.com/gorilla/sessions"
@@ -24,18 +24,17 @@ func NewServer(queries storage.Queries, db *pgx.Conn, store sessions.Store) *Ser
 	transactionManager := storage.NewTransactionManager(db)
 
 	gliderRepo := glider.NewSQLGliderRepository(queries)
-	gliderService := glider.NewGliderService(gliderRepo)
-	gliderHandler := glider.NewGliderHandler(gliderService)
-
 	flightRepo := flight.NewFlightRepository(queries, transactionManager)
-	flightService := flight.NewFlightService(flightRepo)
-	flightHandler := flight.NewFlightHandler(flightService, gliderService)
-
 	userRepo := user.NewUserRepository(queries)
-	userService := user.NewUserService(userRepo)
-	userHandler := user.NewUserHandler(userService, gliderService)
 
-	authHandler := auth.NewAuthHandler(queries)
+	gliderService := glider.NewGliderService(gliderRepo)
+	flightService := flight.NewFlightService(flightRepo)
+	userService := user.NewUserService(userRepo)
+
+	gliderHandler := handler.NewGliderHandler(gliderService)
+	flightHandler := handler.NewFlightHandler(flightService, gliderService)
+	userHandler := handler.NewUserHandler(userService, gliderService)
+	authHandler := handler.NewAuthHandler(userService)
 
 	router := Router{
 		AuthHandler:   authHandler,

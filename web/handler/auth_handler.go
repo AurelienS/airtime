@@ -1,0 +1,69 @@
+package handler
+
+import (
+	"context"
+	"net/http"
+
+	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/cigare/web/session"
+	"github.com/AurelienS/cigare/web/template/page"
+	"github.com/labstack/echo/v4"
+	"github.com/markbates/goth/gothic"
+)
+
+type AuthHandler struct {
+	userService user.UserService
+}
+
+func NewAuthHandler(userService user.UserService) AuthHandler {
+	return AuthHandler{userService: userService}
+}
+
+func (h *AuthHandler) GetLogout(c echo.Context) error {
+	session.RemoveUserFromSession(c)
+
+	gothic.Logout(c.Response(), c.Request())
+
+	return c.Redirect(http.StatusFound, "/")
+}
+
+func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
+	googleUser, err := gothic.CompleteUserAuth(c.Response(), c.Request())
+	if err != nil {
+		util.Error().Err(err).Msg("Failed to complete user authentication with Google")
+		return Render(c, page.Error())
+	}
+
+	user := storage.User{
+		GoogleID:   googleUser.UserID,
+		Email:      googleUser.Email,
+		Name:       googleUser.Name,
+		PictureUrl: googleUser.AvatarURL,
+	}
+	user, err = h.userService.UpsertUser(context.Background(), user)
+	if err != nil {
+		return HandleError(c, err)
+	}
+
+	session.SaveUserInSession(c, &user)
+
+	util.Info().Str("user", user.Email).Msg("User authenticated and session updated successfully")
+	return c.Redirect(http.StatusFound, "/")
+}
+
+func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
+	provider := c.Param("provider")
+	util.Info().Str("provider", provider).Msg("Initiating authentication with provider")
+	expectedReq := c.Request().WithContext(context.WithValue(context.Background(), "provider", provider))
+
+	gothic.BeginAuthHandler(c.Response(), expectedReq)
+
+	return nil
+}
+
+func (h *AuthHandler) GetLogin(c echo.Context) error {
+	util.Info().Msg("Rendering login page")
+	return Render(c, page.Login())
+}

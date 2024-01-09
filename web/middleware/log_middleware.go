@@ -1,8 +1,9 @@
-package log
+package middleware
 
 import (
 	"time"
 
+	"github.com/AurelienS/cigare/internal/util"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 )
@@ -16,9 +17,9 @@ func LoggerMiddleware() echo.MiddlewareFunc {
 
 			var logLevel *zerolog.Event
 			if err != nil {
-				logLevel = Warn()
+				logLevel = util.Warn()
 			} else {
-				logLevel = Info()
+				logLevel = util.Info()
 			}
 
 			logLevel.Str("method", c.Request().Method).

@@ -3,8 +3,8 @@ package glider
 import (
 	"context"
 
-	"github.com/AurelienS/cigare/internal/log"
 	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/util"
 )
 
 type GliderRepository interface {
@@ -25,7 +25,7 @@ func NewSQLGliderRepository(queries storage.Queries) SQLGliderRepository {
 func (repo SQLGliderRepository) GetGliders(ctx context.Context, user storage.User) ([]storage.Glider, error) {
 	gliders, err := repo.Queries.GetGliders(context.Background(), user.ID)
 	if err != nil {
-		log.Error().Err(err).Str("user", user.Email).Msg("Failed to get gliders")
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get gliders")
 	}
 	return gliders, err
 }
@@ -37,7 +37,7 @@ func (repo SQLGliderRepository) AddGlider(ctx context.Context, gliderName string
 	}
 	err := repo.Queries.InsertGlider(context.Background(), arg)
 	if err != nil {
-		log.Error().Err(err).Str("user", user.Email).Msg("Failed to get gliders")
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get gliders")
 	}
 	return err
 }
