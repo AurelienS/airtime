@@ -47,7 +47,10 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		return HandleError(c, err)
 	}
 
-	session.SaveUserInSession(c, &user)
+	err = session.SaveUserInSession(c, &user)
+	if err != nil {
+		return HandleError(c, err)
+	}
 
 	util.Info().Str("user", user.Email).Msg("User authenticated and session updated successfully")
 	return c.Redirect(http.StatusFound, "/")
