@@ -34,8 +34,8 @@ func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 	if err != nil {
 		HandleError(c, err)
 	}
-	viewData := TransformDashboardToView(data, user)
 
+	viewData := TransformDashboardToView(data, user)
 	return Render(c, page.Flights(viewData))
 }
 

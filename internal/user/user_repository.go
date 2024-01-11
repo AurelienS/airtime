@@ -27,14 +27,14 @@ func ConvertUserDBToUser(userDB storage.User) User {
 	user.Name = userDB.Name
 	user.PictureUrl = userDB.PictureUrl
 
-	if userDB.DefaultGliderID.Valid == true {
+	if userDB.DefaultGliderID.Valid {
 		user.DefaultGliderID = int(userDB.DefaultGliderID.Int32)
 	}
 
-	if userDB.CreatedAt.Valid == true {
+	if userDB.CreatedAt.Valid {
 		user.CreatedAt = userDB.CreatedAt.Time
 	}
-	if userDB.UpdatedAt.Valid == true {
+	if userDB.UpdatedAt.Valid {
 		user.UpdatedAt = userDB.UpdatedAt.Time
 	}
 
@@ -43,28 +43,15 @@ func ConvertUserDBToUser(userDB storage.User) User {
 
 func (r *UserRepository) UpsertUser(ctx context.Context, user User) (User, error) {
 	param := storage.UpsertUserParams{
-		GoogleID:   user.GoogleID,
-		Email:      user.Email,
-		Name:       user.Name,
-		PictureUrl: user.PictureUrl,
+		GoogleID:        user.GoogleID,
+		Email:           user.Email,
+		Name:            user.Name,
+		PictureUrl:      user.PictureUrl,
+		DefaultGliderID: pgtype.Int4{Int32: int32(user.DefaultGliderID), Valid: user.DefaultGliderID > 0},
 	}
 	updatedUser, err := r.queries.UpsertUser(ctx, param)
 	if err != nil {
 		util.Error().Msgf("Failed to upsert user %v", param)
 	}
 	return ConvertUserDBToUser(updatedUser), err
-}
-
-func (r *UserRepository) UpdateDefaultGlider(ctx context.Context, defaultGliderId int, userId int) error {
-	arg := storage.UpdateDefaultGliderParams{
-		DefaultGliderID: pgtype.Int4{Int32: int32(defaultGliderId), Valid: true},
-		ID:              int32(userId),
-	}
-
-	err := r.queries.UpdateDefaultGlider(ctx, arg)
-	if err != nil {
-		util.Error().Msgf("Failed to update default glider %v", arg)
-	}
-
-	return err
 }

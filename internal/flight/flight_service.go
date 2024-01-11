@@ -40,15 +40,6 @@ func (s *FlightService) AddFlight(ctx context.Context, byteContent []byte, user 
 	return err
 }
 
-func (s FlightService) GetTotalFlightTime(ctx context.Context, userId int) (time.Duration, error) {
-	totalTime, err := s.flightRepo.GetTotalFlightTime(ctx, userId)
-	if err != nil {
-		return 0, err
-	}
-
-	return totalTime, nil
-}
-
 type DashboardData struct {
 	Flights         []Flight
 	Gliders         []glider.Glider
@@ -65,12 +56,6 @@ func (s FlightService) GetDashboardData(ctx context.Context, user user.User) (Da
 	}
 
 	gliders, err := s.gliderService.GetGliders(ctx, user)
-	// view = append(view, flight.GliderView{
-	// 	Name:         glider.Name,
-	// 	LinkToUpdate: linkToUpdate,
-	// 	IsSelected:   isSelected,
-	// 	ID:           id,
-	// })
 	if err != nil {
 		return data, err
 	}

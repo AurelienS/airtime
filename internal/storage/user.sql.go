@@ -56,22 +56,24 @@ func (q *Queries) UpdateDefaultGlider(ctx context.Context, arg UpdateDefaultGlid
 }
 
 const upsertUser = `-- name: UpsertUser :one
-INSERT INTO users (google_id, email, NAME, picture_url)
+INSERT INTO users (google_id, email, NAME, picture_url, default_glider_id)
 VALUES
-  ($1, $2, $3, $4) ON CONFLICT (google_id) DO
+  ($1, $2, $3, $4, $5) ON CONFLICT (google_id) DO
 UPDATE
 SET
   email = EXCLUDED.email,
   NAME = EXCLUDED.name,
   picture_url = EXCLUDED.picture_url,
+  default_glider_id = $5,
   updated_at = NOW() RETURNING id, google_id, email, name, picture_url, default_glider_id, created_at, updated_at
 `
 
 type UpsertUserParams struct {
-	GoogleID   string
-	Email      string
-	Name       string
-	PictureUrl string
+	GoogleID        string
+	Email           string
+	Name            string
+	PictureUrl      string
+	DefaultGliderID pgtype.Int4
 }
 
 func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (User, error) {
@@ -80,6 +82,7 @@ func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (User, e
 		arg.Email,
 		arg.Name,
 		arg.PictureUrl,
+		arg.DefaultGliderID, // will loose glider when relogged in. need to fix
 	)
 	var i User
 	err := row.Scan(

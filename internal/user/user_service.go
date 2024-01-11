@@ -15,7 +15,9 @@ func NewUserService(repo UserRepository) UserService {
 }
 
 func (r *UserService) UpdateDefaultGlider(ctx context.Context, defaultGliderId int, user User) error {
-	return r.repo.UpdateDefaultGlider(ctx, defaultGliderId, user.ID)
+	user.DefaultGliderID = defaultGliderId
+	_, err := r.repo.UpsertUser(ctx, user)
+	return err
 }
 
 func (r UserService) UpsertUser(ctx context.Context, user User) (User, error) {
