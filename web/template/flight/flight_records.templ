@@ -18,6 +18,7 @@ templ FlightRecords(flights []storage.Flight) {
 					<!-- Headers -->
 					<div>Location</div>
 					<div>Date</div>
+					<div>Duration</div>
 				</div>
 				for _, flight := range flights {
 					<a href={ flightLink(flight.ID) } class="grid grid-cols-2 gap-2 hover:bg-gray-700 ">

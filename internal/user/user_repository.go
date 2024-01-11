@@ -25,19 +25,12 @@ func (r *UserRepository) UpsertUser(ctx context.Context, user storage.User) (sto
 		Name:       user.Name,
 		PictureUrl: user.PictureUrl,
 	}
-	updatedUser, err := r.queries.UpsertUser(context.Background(), param)
+	updatedUser, err := r.queries.UpsertUser(ctx, param)
 	if err != nil {
 		util.Error().Msgf("Failed to upsert user %v", param)
 	}
 	return updatedUser, err
 }
-
-// user := storage.User{
-// 	GoogleID:   googleUser.UserID,
-// 	Email:      googleUser.Email,
-// 	Name:       googleUser.Name,
-// 	PictureUrl: googleUser.AvatarURL,
-// }
 
 func (r *UserRepository) UpdateDefaultGlider(ctx context.Context, defaultGliderId int32, userId int32) error {
 	arg := storage.UpdateDefaultGliderParams{
@@ -45,7 +38,7 @@ func (r *UserRepository) UpdateDefaultGlider(ctx context.Context, defaultGliderI
 		ID:              userId,
 	}
 
-	err := r.queries.UpdateDefaultGlider(context.Background(), arg)
+	err := r.queries.UpdateDefaultGlider(ctx, arg)
 	if err != nil {
 		util.Error().Msgf("Failed to update default glider %v", arg)
 	}

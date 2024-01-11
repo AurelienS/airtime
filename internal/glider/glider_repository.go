@@ -23,7 +23,7 @@ func NewSQLGliderRepository(queries storage.Queries) SQLGliderRepository {
 }
 
 func (repo SQLGliderRepository) GetGliders(ctx context.Context, user storage.User) ([]storage.Glider, error) {
-	gliders, err := repo.Queries.GetGliders(context.Background(), user.ID)
+	gliders, err := repo.Queries.GetGliders(ctx, user.ID)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get gliders")
 	}
@@ -35,7 +35,7 @@ func (repo SQLGliderRepository) AddGlider(ctx context.Context, gliderName string
 		Name:   gliderName,
 		UserID: user.ID,
 	}
-	err := repo.Queries.InsertGlider(context.Background(), arg)
+	err := repo.Queries.InsertGlider(ctx, arg)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get gliders")
 	}

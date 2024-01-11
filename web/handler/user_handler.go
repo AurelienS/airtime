@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"context"
 	"errors"
 
 	"github.com/AurelienS/cigare/internal/glider"
@@ -26,7 +25,7 @@ func (h *UserHandler) UpdateDefaultGlider(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 	defaultGliderId := c.QueryParam("defaultGliderId")
 
-	err := h.userService.UpdateDefaultGlider(context.Background(), defaultGliderId, user)
+	err := h.userService.UpdateDefaultGlider(c.Request().Context(), defaultGliderId, user)
 	if err != nil {
 		return HandleError(c, err)
 	}

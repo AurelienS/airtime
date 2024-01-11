@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"context"
+	"fmt"
 	"io"
 
 	"github.com/AurelienS/cigare/internal/flight"
@@ -26,17 +26,22 @@ func NewFlightHandler(flightService flight.FlightService, GliderService glider.G
 
 func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	flights, err := h.FlightService.GetFlights(context.Background(), user)
+	context := c.Request().Context()
+	flights, err := h.FlightService.GetFlights(context, user)
 	if err != nil {
 		return HandleError(c, err)
 	}
 
-	gliders, err := h.GliderService.GetGliders(context.Background(), user)
+	gliders, err := h.GliderService.GetGliders(context, user)
 	if err != nil {
 		return HandleError(c, err)
 	}
 
-	return Render(c, page.Flights(flights, gliders))
+	totalFlightTime, err := h.FlightService.GetTotalFlightTime(context, int(user.ID))
+	fmt.Println("file: flight_handler.go ~ line 41 ~ err : ", err)
+	fmt.Println("file: flight_handler.go ~ line 40 ~ totalFlightTime : ", totalFlightTime)
+
+	return Render(c, page.Flights(flights, gliders, totalFlightTime))
 }
 
 func (h *FlightHandler) PostFlight(c echo.Context) error {

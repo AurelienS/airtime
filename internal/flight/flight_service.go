@@ -2,6 +2,7 @@ package flight
 
 import (
 	"context"
+	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
 	"github.com/AurelienS/cigare/internal/storage"
@@ -35,5 +36,14 @@ func (s *FlightService) AddFlight(ctx context.Context, byteContent []byte, user 
 }
 
 func (s *FlightService) GetFlights(ctx context.Context, user storage.User) ([]storage.Flight, error) {
-	return s.flightRepo.GetFlights(context.Background(), user)
+	return s.flightRepo.GetFlights(ctx, user)
+}
+
+func (s FlightService) GetTotalFlightTime(ctx context.Context, userId int) (time.Duration, error) {
+	totalTime, err := s.flightRepo.GetTotalFlightTime(ctx, userId)
+	if err != nil {
+		return 0, err
+	}
+
+	return totalTime, nil
 }

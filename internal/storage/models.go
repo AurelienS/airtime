@@ -6,6 +6,7 @@ package storage
 
 import (
 	"github.com/jackc/pgx/v5/pgtype"
+	"time"
 )
 
 type Flight struct {
@@ -22,8 +23,8 @@ type Flight struct {
 
 type FlightStatistic struct {
 	ID                int32
-	TotalThermicTime  pgtype.Interval
-	TotalFlightTime   pgtype.Interval
+	TotalThermicTime  time.Duration
+	TotalFlightTime   time.Duration
 	MaxClimb          int32
 	MaxClimbRate      float64
 	TotalClimb        int32

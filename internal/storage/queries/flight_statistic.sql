@@ -22,3 +22,11 @@ VALUES
     $8,
     $9
   ) RETURNING id;
+
+
+-- interval cast because it was seen as a bigint ?
+-- name: GetTotalFlightTime :one
+SELECT sum(total_flight_time)::text
+FROM   flights fl
+JOIN   flight_statistics fls ON fls.id = fl.flight_statistics_id
+where fl.user_id = $1;

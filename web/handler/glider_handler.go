@@ -1,8 +1,6 @@
 package handler
 
 import (
-	"context"
-
 	"github.com/AurelienS/cigare/internal/glider"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
@@ -24,7 +22,7 @@ func (h *GliderHandler) PostGlider(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 	gliderName := c.FormValue("gliderName")
 
-	err := h.GliderService.AddGlider(context.Background(), gliderName, user)
+	err := h.GliderService.AddGlider(c.Request().Context(), gliderName, user)
 	if err != nil {
 		return HandleError(c, err)
 	}
@@ -34,7 +32,7 @@ func (h *GliderHandler) PostGlider(c echo.Context) error {
 
 func (h *GliderHandler) GetGlidersCard(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	gliders, err := h.GliderService.GetGliders(context.Background(), user)
+	gliders, err := h.GliderService.GetGliders(c.Request().Context(), user)
 	if err != nil {
 		return HandleError(c, err)
 	}

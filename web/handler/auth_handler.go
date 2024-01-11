@@ -42,7 +42,7 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		Name:       googleUser.Name,
 		PictureUrl: googleUser.AvatarURL,
 	}
-	user, err = h.userService.UpsertUser(context.Background(), user)
+	user, err = h.userService.UpsertUser(c.Request().Context(), user)
 	if err != nil {
 		return HandleError(c, err)
 	}
@@ -59,7 +59,7 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
 	provider := c.Param("provider")
 	util.Info().Str("provider", provider).Msg("Initiating authentication with provider")
-	expectedReq := c.Request().WithContext(context.WithValue(context.Background(), "provider", provider))
+	expectedReq := c.Request().WithContext(context.WithValue(c.Request().Context(), "provider", provider))
 
 	gothic.BeginAuthHandler(c.Response(), expectedReq)
 

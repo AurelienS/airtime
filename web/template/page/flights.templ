@@ -4,12 +4,13 @@ import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/internal/storage"
 import "github.com/AurelienS/cigare/web/template/flight"
 import "strconv"
+import "time"
 
 func getFlightCOunt(flights []storage.Flight) string {
 	return strconv.Itoa(len(flights))
 }
 
-templ Flights(flights []storage.Flight, gliders []flight.GliderView) {
+templ Flights(flights []storage.Flight, gliders []flight.GliderView, totalFlightTime time.Duration) {
 	@layout.Base() {
 		<div class="flex flex-col text-gray-300" id="flightPage">
 			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">
@@ -18,7 +19,7 @@ templ Flights(flights []storage.Flight, gliders []flight.GliderView) {
 			</div>
 			<div class="flex gap-4">
 				<div>
-					@flight.FlightCard(getFlightCOunt(flights))
+					@flight.FlightCard(getFlightCOunt(flights), totalFlightTime)
 					@flight.AnnualCard()
 				</div>
 				@flight.FlightRecords(flights)

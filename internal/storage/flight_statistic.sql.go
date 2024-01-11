@@ -7,9 +7,26 @@ package storage
 
 import (
 	"context"
+	"fmt"
 
-	"github.com/jackc/pgx/v5/pgtype"
+	"time"
 )
+
+const getTotalFlightTime = `-- name: GetTotalFlightTime :one
+SELECT sum(total_flight_time)::text
+FROM   flights fl
+JOIN   flight_statistics fls ON fls.id = fl.flight_statistics_id
+where fl.user_id = $1
+`
+
+// interval cast because it was seen as a bigint ?
+func (q *Queries) GetTotalFlightTime(ctx context.Context, userID int32) (string, error) {
+	row := q.db.QueryRow(ctx, getTotalFlightTime, userID)
+	var column_1 string
+	err := row.Scan(&column_1)
+  fmt.Println("file: flight_statistic.sql.go ~ line 28 ~ column_1 : ", column_1)
+	return column_1, err
+}
 
 const insertFlightStats = `-- name: InsertFlightStats :one
 INSERT INTO flight_statistics (
@@ -38,8 +55,8 @@ VALUES
 `
 
 type InsertFlightStatsParams struct {
-	TotalThermicTime  pgtype.Interval
-	TotalFlightTime   pgtype.Interval
+	TotalThermicTime  time.Duration
+	TotalFlightTime   time.Duration
 	MaxClimb          int32
 	MaxClimbRate      float64
 	TotalClimb        int32

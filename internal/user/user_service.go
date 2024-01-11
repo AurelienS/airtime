@@ -23,7 +23,7 @@ func (r *UserService) UpdateDefaultGlider(ctx context.Context, defaultGliderId s
 		return err
 	}
 
-	return r.repo.UpdateDefaultGlider(context.Background(), int32(gliderId), user.ID)
+	return r.repo.UpdateDefaultGlider(ctx, int32(gliderId), user.ID)
 }
 
 func (r UserService) UpsertUser(ctx context.Context, user storage.User) (storage.User, error) {

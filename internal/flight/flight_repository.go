@@ -2,6 +2,9 @@ package flight
 
 import (
 	"context"
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
@@ -69,8 +72,8 @@ func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flig
 	util.Info().Msg("Inserting flight statistics")
 
 	param := storage.InsertFlightStatsParams{
-		TotalThermicTime:  storage.DurationToPGInterval(flightStat.TotalThermicTime),
-		TotalFlightTime:   storage.DurationToPGInterval(flightStat.TotalFlightTime),
+		TotalThermicTime:  flightStat.TotalThermicTime,
+		TotalFlightTime:   flightStat.TotalFlightTime,
 		MaxClimb:          int32(flightStat.MaxClimb),
 		MaxClimbRate:      flightStat.MaxClimbRate,
 		TotalClimb:        int32(flightStat.TotalClimb),
@@ -96,6 +99,34 @@ func (f FlightRepository) GetTotalFlightTime(ctx context.Context, userId int) (t
 		util.Error().Err(err).Int("user_id", userId).Msg("Failed to get total flight time")
 		return 0, err
 	}
+	duration, err := parseHHMMSSDuration(flightTimeMicroseconds)
+	if err != nil {
+		util.Error().Err(err).Msg("Failed to parse sum(interval)::text")
+		return 0, err
+	}
+	return duration, nil
+}
 
-	return time.Duration(flightTimeMicroseconds) * time.Microsecond, nil
+func parseHHMMSSDuration(durationStr string) (time.Duration, error) {
+	parts := strings.Split(durationStr, ":")
+	if len(parts) != 3 {
+		return 0, fmt.Errorf("invalid duration format")
+	}
+
+	hours, err := strconv.Atoi(parts[0])
+	if err != nil {
+		return 0, fmt.Errorf("invalid hours: %w", err)
+	}
+
+	minutes, err := strconv.Atoi(parts[1])
+	if err != nil {
+		return 0, fmt.Errorf("invalid minutes: %w", err)
+	}
+
+	seconds, err := strconv.Atoi(parts[2])
+	if err != nil {
+		return 0, fmt.Errorf("invalid seconds: %w", err)
+	}
+
+	return time.Duration(hours)*time.Hour + time.Duration(minutes)*time.Minute + time.Duration(seconds)*time.Second, nil
 }
