@@ -4,6 +4,7 @@ go 1.21.5
 
 require (
 	git.sr.ht/~sbinet/gg v0.5.0
+	github.com/Pallinder/go-randomdata v1.2.0
 	github.com/a-h/templ v0.2.513
 	github.com/ezgliding/goigc v0.4.0
 	github.com/flopp/go-staticmaps v0.0.0-20220221183018-c226716bec53
@@ -20,7 +21,6 @@ require (
 require (
 	cloud.google.com/go/compute v1.20.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
-	github.com/Pallinder/go-randomdata v1.2.0 // indirect
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
 	github.com/campoy/embedmd v1.0.0 // indirect
 	github.com/flopp/go-coordsparser v0.0.0-20201115094714-8baaeb7062d5 // indirect
