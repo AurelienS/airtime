@@ -6,18 +6,17 @@ import (
 	"time"
 
 	"git.sr.ht/~sbinet/gg"
-	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
+	sm "github.com/flopp/go-staticmaps"
 	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
-
-	sm "github.com/flopp/go-staticmaps"
 )
 
-func TrackToFlight(externalTrack igc.Track, user storage.User) storage.Flight {
+func TrackToFlight(externalTrack igc.Track, user user.User) Flight {
 
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
@@ -35,15 +34,13 @@ func TrackToFlight(externalTrack igc.Track, user storage.User) storage.Flight {
 		loc,
 	)
 
-	flight := storage.Flight{
-		Date:            storage.TimeToPgxTimestamptz(combinedDateTime),
+	flight := Flight{
+		Date:            combinedDateTime,
 		TakeoffLocation: externalTrack.Site,
 	}
 
 	flight.UserID = user.ID
-	if user.DefaultGliderID.Valid {
-		flight.GliderID = user.DefaultGliderID.Int32
-	}
+	flight.GliderID = user.DefaultGliderID
 
 	return flight
 }

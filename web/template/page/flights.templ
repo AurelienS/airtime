@@ -1,31 +1,30 @@
 package page
 
 import "github.com/AurelienS/cigare/web/template/layout"
-import "github.com/AurelienS/cigare/internal/storage"
-import "github.com/AurelienS/cigare/web/template/flight"
+import "github.com/AurelienS/cigare/internal/flight"
+import view "github.com/AurelienS/cigare/web/template/flight"
 import "strconv"
-import "time"
 
-func getFlightCOunt(flights []storage.Flight) string {
+func getFlightCOunt(flights []flight.Flight) string {
 	return strconv.Itoa(len(flights))
 }
 
-templ Flights(flights []storage.Flight, gliders []flight.GliderView, totalFlightTime time.Duration) {
+templ Flights(arg view.DashboardView) {
 	@layout.Base() {
 		<div class="flex flex-col text-gray-300" id="flightPage">
 			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">
 				<h1 class="text-xl font-light text-blue-300">Flights Dashboard</h1>
-				@flight.UploadFlightForm()
+				@view.UploadFlightForm()
 			</div>
 			<div class="flex gap-4">
 				<div>
-					@flight.FlightCard(getFlightCOunt(flights), totalFlightTime)
-					@flight.AnnualCard()
+					@view.FlightCard(arg.NumberOfFlight, arg.TotalFlightTime)
+					@view.AnnualCard()
 				</div>
-				@flight.FlightRecords(flights)
+				@view.FlightRecords(arg.Flights)
 				<div>
-					@flight.GliderCard(gliders)
-					@flight.SiteCard()
+					@view.GliderCard(arg.Gliders)
+					@view.SiteCard()
 				</div>
 			</div>
 		</div>

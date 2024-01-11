@@ -18,7 +18,30 @@ func NewUserRepository(queries storage.Queries) UserRepository {
 	}
 }
 
-func (r *UserRepository) UpsertUser(ctx context.Context, user storage.User) (storage.User, error) {
+func ConvertUserDBToUser(userDB storage.User) User {
+	var user User
+
+	user.ID = int(userDB.ID)
+	user.GoogleID = userDB.GoogleID
+	user.Email = userDB.Email
+	user.Name = userDB.Name
+	user.PictureUrl = userDB.PictureUrl
+
+	if userDB.DefaultGliderID.Valid == true {
+		user.DefaultGliderID = int(userDB.DefaultGliderID.Int32)
+	}
+
+	if userDB.CreatedAt.Valid == true {
+		user.CreatedAt = userDB.CreatedAt.Time
+	}
+	if userDB.UpdatedAt.Valid == true {
+		user.UpdatedAt = userDB.UpdatedAt.Time
+	}
+
+	return user
+}
+
+func (r *UserRepository) UpsertUser(ctx context.Context, user User) (User, error) {
 	param := storage.UpsertUserParams{
 		GoogleID:   user.GoogleID,
 		Email:      user.Email,
@@ -29,13 +52,13 @@ func (r *UserRepository) UpsertUser(ctx context.Context, user storage.User) (sto
 	if err != nil {
 		util.Error().Msgf("Failed to upsert user %v", param)
 	}
-	return updatedUser, err
+	return ConvertUserDBToUser(updatedUser), err
 }
 
-func (r *UserRepository) UpdateDefaultGlider(ctx context.Context, defaultGliderId int32, userId int32) error {
+func (r *UserRepository) UpdateDefaultGlider(ctx context.Context, defaultGliderId int, userId int) error {
 	arg := storage.UpdateDefaultGliderParams{
-		DefaultGliderID: pgtype.Int4{Int32: defaultGliderId, Valid: true},
-		ID:              userId,
+		DefaultGliderID: pgtype.Int4{Int32: int32(defaultGliderId), Valid: true},
+		ID:              int32(userId),
 	}
 
 	err := r.queries.UpdateDefaultGlider(ctx, arg)

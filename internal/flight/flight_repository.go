@@ -9,7 +9,9 @@ import (
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
 	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/internal/util"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type FlightRepository struct {
@@ -24,20 +26,65 @@ func NewFlightRepository(queries storage.Queries, tm storage.TransactionManager)
 	}
 }
 
+func ConvertFlightDBToFlight(flightDB storage.Flight) Flight {
+	var flight Flight
+
+	flight.ID = int(flightDB.ID)
+	if flightDB.Date.Valid {
+		flight.Date = flightDB.Date.Time
+	}
+	flight.TakeoffLocation = flightDB.TakeoffLocation
+	flight.IgcFilePath = flightDB.IgcFilePath
+	flight.UserID = int(flightDB.UserID)
+	flight.GliderID = int(flightDB.GliderID)
+	flight.FlightStatisticsID = int(flightDB.FlightStatisticsID)
+	if flightDB.CreatedAt.Valid {
+		flight.CreatedAt = flightDB.CreatedAt.Time
+	}
+	if flightDB.UpdatedAt.Valid {
+		flight.UpdatedAt = flightDB.UpdatedAt.Time
+	}
+
+	return flight
+}
+
+func ConvertFlightStatisticDBToFlightStatistic(statDB storage.FlightStatistic) flightstats.FlightStatistic {
+	var stat flightstats.FlightStatistic
+
+	stat.ID = int(statDB.ID)
+	stat.TotalThermicTime = statDB.TotalThermicTime
+	stat.TotalFlightTime = statDB.TotalFlightTime
+	stat.MaxClimb = int(statDB.MaxClimb)
+	stat.MaxClimbRate = statDB.MaxClimbRate
+	stat.TotalClimb = int(statDB.TotalClimb)
+	stat.AverageClimbRate = statDB.AverageClimbRate
+	stat.NumberOfThermals = int(statDB.NumberOfThermals)
+	stat.PercentageThermic = statDB.PercentageThermic
+	stat.MaxAltitude = int(statDB.MaxAltitude)
+	if statDB.CreatedAt.Valid {
+		stat.CreatedAt = statDB.CreatedAt.Time
+	}
+	if statDB.UpdatedAt.Valid {
+		stat.UpdatedAt = statDB.UpdatedAt.Time
+	}
+
+	return stat
+}
+
 func (r FlightRepository) InsertFlight(
 	ctx context.Context,
-	flight storage.Flight,
-	flightStats flightstats.FlightStatistics,
-	user storage.User,
+	flight Flight,
+	flightStats flightstats.FlightStatistic,
+	user user.User,
 
 ) error {
 	util.Info().Str("user", user.Email).Msg("Inserting flight")
 
 	insertFlightParams := storage.InsertFlightParams{
-		Date:            flight.Date,
+		Date:            pgtype.Timestamptz{Valid: true, Time: flight.Date},
 		TakeoffLocation: flight.TakeoffLocation,
-		UserID:          user.ID,
-		GliderID:        flight.GliderID,
+		UserID:          int32(user.ID),
+		GliderID:        int32(flight.GliderID),
 		IgcFilePath:     "not yet",
 	}
 
@@ -47,7 +94,7 @@ func (r FlightRepository) InsertFlight(
 			util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight statistics")
 			return err
 		}
-		insertFlightParams.FlightStatisticsID = flightStatId
+		insertFlightParams.FlightStatisticsID = int32(flightStatId)
 
 		_, err = r.queries.InsertFlight(ctx, insertFlightParams)
 		if err != nil {
@@ -58,17 +105,23 @@ func (r FlightRepository) InsertFlight(
 	return r.tm.ExecuteTransaction(ctx, transaction)
 }
 
-func (r FlightRepository) GetFlights(ctx context.Context, user storage.User) ([]storage.Flight, error) {
+func (r FlightRepository) GetFlights(ctx context.Context, user user.User) ([]Flight, error) {
 	util.Info().Str("user", user.Email).Msg("Getting flights")
 
-	flights, err := r.queries.GetFlights(ctx, user.ID)
+	flightsDB, err := r.queries.GetFlights(ctx, int32(user.ID))
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get flights")
 	}
+
+	var flights []Flight
+	for _, f := range flightsDB {
+		flights = append(flights, ConvertFlightDBToFlight(f))
+	}
+
 	return flights, err
 }
 
-func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flightstats.FlightStatistics) (int32, error) {
+func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flightstats.FlightStatistic) (int, error) {
 	util.Info().Msg("Inserting flight statistics")
 
 	param := storage.InsertFlightStatsParams{
@@ -88,7 +141,7 @@ func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flig
 		return 0, err
 	}
 
-	return id, nil
+	return int(id), nil
 }
 
 func (f FlightRepository) GetTotalFlightTime(ctx context.Context, userId int) (time.Duration, error) {

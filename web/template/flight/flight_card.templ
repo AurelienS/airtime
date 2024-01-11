@@ -1,10 +1,8 @@
 package flight
 
 import "github.com/AurelienS/cigare/web/template/component"
-import "time"
-import "fmt"
 
-templ FlightCard(flightCount string, totalFlightTime time.Duration) {
+templ FlightCard(flightCount string, totalFlightTime string) {
 	@component.CardInfo("Flight stats", "text-green-400") {
 		<div class="flex items-center gap-1">
 			<span class="material-icons-outlined mr-2 ">flight_takeoff</span>Flights 
@@ -13,7 +11,7 @@ templ FlightCard(flightCount string, totalFlightTime time.Duration) {
 		<div class="flex items-center gap-1">
 			<span class="material-icons-outlined mr-2">access_time</span>Hours 
 		</div>
-		<span class="text-white">{ fmt.Sprintf("%d", int(totalFlightTime.Hours()))  }</span>
+		<span class="text-white">{ totalFlightTime  }</span>
 		<div class="flex items-center gap-1">
 			<span class="material-icons-outlined mr-2">straighten</span>Total kms 
 		</div>

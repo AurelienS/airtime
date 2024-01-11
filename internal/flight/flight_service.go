@@ -5,24 +5,29 @@ import (
 	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
-	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/glider"
+	"github.com/AurelienS/cigare/internal/user"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
 type FlightService struct {
 	flightRepo FlightRepository
+
+	gliderService glider.GliderService
 }
 
 func NewFlightService(
 	flightRepo FlightRepository,
+	gliderService glider.GliderService,
 
 ) FlightService {
 	return FlightService{
-		flightRepo: flightRepo,
+		flightRepo:    flightRepo,
+		gliderService: gliderService,
 	}
 }
 
-func (s *FlightService) AddFlight(ctx context.Context, byteContent []byte, user storage.User) error {
+func (s *FlightService) AddFlight(ctx context.Context, byteContent []byte, user user.User) error {
 	track, err := igc.Parse(string(byteContent))
 	if err != nil {
 		return err
@@ -35,10 +40,6 @@ func (s *FlightService) AddFlight(ctx context.Context, byteContent []byte, user 
 	return err
 }
 
-func (s *FlightService) GetFlights(ctx context.Context, user storage.User) ([]storage.Flight, error) {
-	return s.flightRepo.GetFlights(ctx, user)
-}
-
 func (s FlightService) GetTotalFlightTime(ctx context.Context, userId int) (time.Duration, error) {
 	totalTime, err := s.flightRepo.GetTotalFlightTime(ctx, userId)
 	if err != nil {
@@ -46,4 +47,44 @@ func (s FlightService) GetTotalFlightTime(ctx context.Context, userId int) (time
 	}
 
 	return totalTime, nil
+}
+
+type DashboardData struct {
+	Flights         []Flight
+	Gliders         []glider.Glider
+	TotalFlightTime time.Duration
+	NumberOfFlight  int
+}
+
+func (s FlightService) GetDashboardData(ctx context.Context, user user.User) (DashboardData, error) {
+	var data DashboardData
+
+	flights, err := s.flightRepo.GetFlights(ctx, user)
+	if err != nil {
+		return data, err
+	}
+
+	gliders, err := s.gliderService.GetGliders(ctx, user)
+	// view = append(view, flight.GliderView{
+	// 	Name:         glider.Name,
+	// 	LinkToUpdate: linkToUpdate,
+	// 	IsSelected:   isSelected,
+	// 	ID:           id,
+	// })
+	if err != nil {
+		return data, err
+	}
+
+	totalFlightTime, err := s.flightRepo.GetTotalFlightTime(ctx, int(user.ID))
+	if err != nil {
+		return data, err
+	}
+
+	data = DashboardData{
+		Flights:         flights,
+		Gliders:         gliders,
+		TotalFlightTime: totalFlightTime,
+		NumberOfFlight:  len(flights),
+	}
+	return data, nil
 }

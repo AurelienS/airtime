@@ -1,8 +1,10 @@
 package handler
 
 import (
+	"fmt"
+
 	"github.com/AurelienS/cigare/internal/glider"
-	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/template/flight"
 	"github.com/labstack/echo/v4"
@@ -36,6 +38,29 @@ func (h *GliderHandler) GetGlidersCard(c echo.Context) error {
 	if err != nil {
 		return HandleError(c, err)
 	}
-	util.Info().Str("user", user.Email).Msg("Fetched gliders successfully")
-	return Render(c, flight.GliderCard(gliders))
+	viewData := TransformGlidersToView(gliders, user)
+	return Render(c, flight.GliderCard(viewData))
+}
+
+func TransformGlidersToView(gliders []glider.Glider, user user.User) []flight.GliderView {
+	var gv []flight.GliderView
+	for _, g := range gliders {
+		gv = append(gv, TransformGliderToView(g, user))
+	}
+	return gv
+}
+
+func TransformGliderToView(glider glider.Glider, user user.User) flight.GliderView {
+	isSelected := false
+	if glider.ID == user.DefaultGliderID {
+		isSelected = true
+	}
+	linkToUpdate := fmt.Sprintf("/user/%d?defaultGliderId=%d", user.ID, glider.ID)
+	id := int(glider.ID)
+	return flight.GliderView{
+		Name:         glider.Name,
+		LinkToUpdate: linkToUpdate,
+		IsSelected:   isSelected,
+		ID:           id,
+	}
 }

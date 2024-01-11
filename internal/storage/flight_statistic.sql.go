@@ -7,7 +7,6 @@ package storage
 
 import (
 	"context"
-	"fmt"
 
 	"time"
 )
@@ -24,7 +23,6 @@ func (q *Queries) GetTotalFlightTime(ctx context.Context, userID int32) (string,
 	row := q.db.QueryRow(ctx, getTotalFlightTime, userID)
 	var column_1 string
 	err := row.Scan(&column_1)
-  fmt.Println("file: flight_statistic.sql.go ~ line 28 ~ column_1 : ", column_1)
 	return column_1, err
 }
 

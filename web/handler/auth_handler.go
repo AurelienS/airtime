@@ -4,7 +4,6 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
@@ -36,7 +35,7 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		return Render(c, page.Error())
 	}
 
-	user := storage.User{
+	user := user.User{
 		GoogleID:   googleUser.UserID,
 		Email:      googleUser.Email,
 		Name:       googleUser.Name,
@@ -47,7 +46,7 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		return HandleError(c, err)
 	}
 
-	err = session.SaveUserInSession(c, &user)
+	err = session.SaveUserInSession(c, user)
 	if err != nil {
 		return HandleError(c, err)
 	}

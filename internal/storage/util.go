@@ -18,10 +18,3 @@ func DurationToPGInterval(duration time.Duration) pgtype.Interval {
 		Valid:        true,
 	}
 }
-
-func TimeToPgxTimestamptz(t time.Time) pgtype.Timestamptz {
-	return pgtype.Timestamptz{
-		Time:  t,
-		Valid: true,
-	}
-}

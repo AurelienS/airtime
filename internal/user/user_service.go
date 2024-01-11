@@ -2,9 +2,6 @@ package user
 
 import (
 	"context"
-	"strconv"
-
-	"github.com/AurelienS/cigare/internal/storage"
 )
 
 type UserService struct {
@@ -17,15 +14,10 @@ func NewUserService(repo UserRepository) UserService {
 	}
 }
 
-func (r *UserService) UpdateDefaultGlider(ctx context.Context, defaultGliderId string, user storage.User) error {
-	gliderId, err := strconv.Atoi(defaultGliderId)
-	if err != nil {
-		return err
-	}
-
-	return r.repo.UpdateDefaultGlider(ctx, int32(gliderId), user.ID)
+func (r *UserService) UpdateDefaultGlider(ctx context.Context, defaultGliderId int, user User) error {
+	return r.repo.UpdateDefaultGlider(ctx, defaultGliderId, user.ID)
 }
 
-func (r UserService) UpsertUser(ctx context.Context, user storage.User) (storage.User, error) {
+func (r UserService) UpsertUser(ctx context.Context, user User) (User, error) {
 	return r.repo.UpsertUser(ctx, user)
 }

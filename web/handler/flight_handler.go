@@ -3,11 +3,14 @@ package handler
 import (
 	"fmt"
 	"io"
+	"strconv"
 
 	"github.com/AurelienS/cigare/internal/flight"
 	"github.com/AurelienS/cigare/internal/glider"
+	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
+	flightView "github.com/AurelienS/cigare/web/template/flight"
 	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 )
@@ -26,22 +29,32 @@ func NewFlightHandler(flightService flight.FlightService, GliderService glider.G
 
 func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	context := c.Request().Context()
-	flights, err := h.FlightService.GetFlights(context, user)
+
+	data, err := h.FlightService.GetDashboardData(c.Request().Context(), user)
 	if err != nil {
-		return HandleError(c, err)
+		HandleError(c, err)
+	}
+	viewData := TransformDashboardToView(data, user)
+
+	return Render(c, page.Flights(viewData))
+}
+
+func TransformDashboardToView(data flight.DashboardData, user user.User) flightView.DashboardView {
+	var fv []flightView.FlightView
+	for _, f := range data.Flights {
+		fv = append(fv, flightView.FlightView{
+			TakeoffLocation: f.TakeoffLocation,
+			Date:            f.Date.Format("02/01 15h04"),
+		})
 	}
 
-	gliders, err := h.GliderService.GetGliders(context, user)
-	if err != nil {
-		return HandleError(c, err)
+	return flightView.DashboardView{
+		Flights:         fv,
+		Gliders:         TransformGlidersToView(data.Gliders, user),
+		NumberOfFlight:  strconv.Itoa(len(data.Flights)),
+		TotalFlightTime: fmt.Sprintf("%d", int(data.TotalFlightTime.Hours())),
 	}
 
-	totalFlightTime, err := h.FlightService.GetTotalFlightTime(context, int(user.ID))
-	fmt.Println("file: flight_handler.go ~ line 41 ~ err : ", err)
-	fmt.Println("file: flight_handler.go ~ line 40 ~ totalFlightTime : ", totalFlightTime)
-
-	return Render(c, page.Flights(flights, gliders, totalFlightTime))
 }
 
 func (h *FlightHandler) PostFlight(c echo.Context) error {

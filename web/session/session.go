@@ -4,7 +4,7 @@ import (
 	"encoding/gob"
 	"errors"
 
-	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
@@ -41,11 +41,11 @@ func ConfigureGoth(store sessions.Store) {
 func ConfigureSessionStore(isProd bool) sessions.Store {
 	store := NewStore(isProd)
 	ConfigureGoth(store)
-	gob.Register(storage.User{})
+	gob.Register(user.User{})
 	return store
 }
 
-func SaveUserInSession(c echo.Context, user *storage.User) error {
+func SaveUserInSession(c echo.Context, user user.User) error {
 	session, err := getSession(c)
 	if err != nil {
 		return err
@@ -55,27 +55,28 @@ func SaveUserInSession(c echo.Context, user *storage.User) error {
 }
 
 func RemoveUserFromSession(c echo.Context) error {
-	user := GetUserFromContext(c)
-	util.Info().Msgf("Removed %s from session", user.Email)
+	u := GetUserFromContext(c)
+	util.Info().Msgf("Removed %s from session", u.Email)
 
-	return SaveUserInSession(c, nil)
+	nilUser := user.User{}
+	return SaveUserInSession(c, nilUser)
 }
 
-func GetUserFromContext(c echo.Context) storage.User {
+func GetUserFromContext(c echo.Context) user.User {
 	session, err := getSession(c)
-	user, ok := session.Values["user"].(storage.User)
+	user, ok := session.Values["user"].(user.User)
 
 	if err != nil || !ok || user.Email == "" {
-		util.Fatal().Msg("Failed to get user from session")
+		util.Fatal().Msgf("Failed to get user from session %s", err)
 		panic("Failed to get user from session")
 	}
 
 	return user
 }
 
-func GetUserOrErrorFromContext(c echo.Context) (storage.User, error) {
+func GetUserOrErrorFromContext(c echo.Context) (user.User, error) {
 	session, err := getSession(c)
-	user, ok := session.Values["user"].(storage.User)
+	user, ok := session.Values["user"].(user.User)
 
 	if err != nil || !ok || user.Email == "" {
 		return user, errors.New("Nop")

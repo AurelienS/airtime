@@ -28,7 +28,7 @@ func NewServer(queries storage.Queries, db *pgx.Conn, store sessions.Store) *Ser
 	userRepo := user.NewUserRepository(queries)
 
 	gliderService := glider.NewGliderService(gliderRepo)
-	flightService := flight.NewFlightService(flightRepo)
+	flightService := flight.NewFlightService(flightRepo, gliderService)
 	userService := user.NewUserService(userRepo)
 
 	gliderHandler := handler.NewGliderHandler(gliderService)

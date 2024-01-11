@@ -2,15 +2,13 @@ package flightstats
 
 import (
 	"time"
-
-	"github.com/ezgliding/goigc/pkg/igc"
 )
 
 type Thermal struct {
 	Start             time.Time
 	End               time.Time
-	StartAltitude     int64
-	MaxAltitude       int64
+	StartAltitude     int
+	MaxAltitude       int
 	DownwardTolerance int
 	MaxClimbRate      float64
 	AverageClimbRate  float64
@@ -18,7 +16,7 @@ type Thermal struct {
 	EndIndex          int
 }
 
-func NewThermal(startTime time.Time, startAltitude int64, startIndex int) *Thermal {
+func NewThermal(startTime time.Time, startAltitude int, startIndex int) *Thermal {
 	return &Thermal{
 		Start:         startTime,
 		StartAltitude: startAltitude,
@@ -27,7 +25,7 @@ func NewThermal(startTime time.Time, startAltitude int64, startIndex int) *Therm
 	}
 }
 
-func (t *Thermal) Update(point igc.Point, integratedClimbRate float64) {
+func (t *Thermal) Update(point Point, integratedClimbRate float64) {
 	altitudeGain := point.GNSSAltitude - t.MaxAltitude
 	if altitudeGain < 0 {
 		t.DownwardTolerance++
@@ -54,6 +52,6 @@ func (t *Thermal) Duration() time.Duration {
 	return t.End.Sub(t.Start)
 }
 
-func (t *Thermal) Climb() int64 {
+func (t *Thermal) Climb() int {
 	return t.MaxAltitude - t.StartAltitude
 }

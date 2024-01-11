@@ -7,41 +7,56 @@ import (
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
-type FlightStatistics struct {
+type FlightStatistic struct {
+	ID                int
 	TotalThermicTime  time.Duration
 	TotalFlightTime   time.Duration
-	MaxClimb          int64
+	MaxClimb          int
 	MaxClimbRate      float64
-	TotalClimb        int64
+	TotalClimb        int
 	AverageClimbRate  float64
 	NumberOfThermals  int
 	PercentageThermic float64
-	MaxAltitude       int64
-
-	Thermals []*Thermal
-	points   []igc.Point
+	MaxAltitude       int
+	CreatedAt         time.Time
+	UpdatedAt         time.Time
+	Thermals          []*Thermal
+	Points            []Point
 }
 
-func NewFlightStatistics(points []igc.Point) FlightStatistics {
-	stat := FlightStatistics{
-		points: points,
+func NewFlightStatistics(Points []igc.Point) FlightStatistic {
+
+	var pts []Point
+	for _, p := range Points {
+		pts = append(pts, Point{
+			LatLng:           p.LatLng,
+			Time:             p.Time,
+			PressureAltitude: int(p.PressureAltitude),
+			GNSSAltitude:     int(p.GNSSAltitude),
+			NumSatellites:    p.NumSatellites,
+			Description:      p.Description,
+		})
+	}
+
+	stat := FlightStatistic{
+		Points: pts,
 	}
 	stat.Compute()
 	return stat
 }
 
-func (f *FlightStatistics) Compute() {
+func (f *FlightStatistic) Compute() {
 	const (
 		minClimbRate               = 0.2              // m/s, the threshold for considering it thermic activity
 		climbRateIntegrationPeriod = 10               // Number of seconds to smooth the climbRate
 		minThermalDuration         = 20 * time.Second // Minimum duration to consider a sustained climb as thermal
-		allowedDownwardPoints      = 4                // Number of consecutive downward points allowed in a thermal
+		allowedDownwardPoints      = 4                // Number of consecutive downward Points allowed in a thermal
 	)
 
 	var current *Thermal
 	var rateOfClimbHistory []float64
 
-	for i, point := range f.points {
+	for i, point := range f.Points {
 		if i == 0 {
 			continue
 		}
@@ -60,19 +75,19 @@ func (f *FlightStatistics) Compute() {
 	f.Finalize()
 }
 
-func (f *FlightStatistics) calculateSmoothedRateOfClimb(i, period int, rateOfClimbHistory []float64) float64 {
+func (f *FlightStatistic) calculateSmoothedRateOfClimb(i, period int, rateOfClimbHistory []float64) float64 {
 	rateOfClimb := f.calculateRateOfClimb(i)
 	rateOfClimbHistory = UpdateRateOfClimbHistory(rateOfClimbHistory, rateOfClimb, period)
 	return Average(rateOfClimbHistory)
 }
 
-func (f *FlightStatistics) calculateRateOfClimb(i int) float64 {
-	altitudeGain := f.points[i].GNSSAltitude - f.points[i-1].GNSSAltitude
-	timeElapsed := f.points[i].Time.Sub(f.points[i-1].Time).Seconds()
+func (f *FlightStatistic) calculateRateOfClimb(i int) float64 {
+	altitudeGain := f.Points[i].GNSSAltitude - f.Points[i-1].GNSSAltitude
+	timeElapsed := f.Points[i].Time.Sub(f.Points[i-1].Time).Seconds()
 	return float64(altitudeGain) / timeElapsed
 }
 
-func (f *FlightStatistics) checkAndFinalizeThermal(current *Thermal, tolerance int, duration time.Duration, index int) *Thermal {
+func (f *FlightStatistic) checkAndFinalizeThermal(current *Thermal, tolerance int, duration time.Duration, index int) *Thermal {
 	if current.ShouldEnd(tolerance) {
 		if current.Duration() >= duration {
 			current.EndIndex = index
@@ -85,22 +100,22 @@ func (f *FlightStatistics) checkAndFinalizeThermal(current *Thermal, tolerance i
 	return current
 }
 
-func (f *FlightStatistics) maybeStartNewThermal(smoothedRate float64, minRate float64, period int, point igc.Point, index int) *Thermal {
-	if smoothedRate >= minRate && len(f.points) >= period {
+func (f *FlightStatistic) maybeStartNewThermal(smoothedRate float64, minRate float64, period int, point Point, index int) *Thermal {
+	if smoothedRate >= minRate && len(f.Points) >= period {
 		return NewThermal(point.Time, point.GNSSAltitude, index)
 	}
 	return nil
 }
 
-func (f *FlightStatistics) finalizeLastThermal(current *Thermal, duration time.Duration) {
+func (f *FlightStatistic) finalizeLastThermal(current *Thermal, duration time.Duration) {
 	if current != nil && current.Duration() >= duration {
-		current.EndIndex = len(f.points) - 1
+		current.EndIndex = len(f.Points) - 1
 		f.Thermals = append(f.Thermals, current)
 		f.AddThermal(*current, duration)
 	}
 }
 
-func (s *FlightStatistics) AddThermal(t Thermal, minThermalDuration time.Duration) {
+func (s *FlightStatistic) AddThermal(t Thermal, minThermalDuration time.Duration) {
 	duration := t.Duration()
 	if duration < minThermalDuration || t.Climb() <= 0 {
 		return
@@ -123,9 +138,9 @@ func (s *FlightStatistics) AddThermal(t Thermal, minThermalDuration time.Duratio
 	s.AverageClimbRate += t.AverageClimbRate
 }
 
-func (s *FlightStatistics) Finalize() {
-	endTime := s.points[len(s.points)-1].Time
-	startTime := s.points[0].Time
+func (s *FlightStatistic) Finalize() {
+	endTime := s.Points[len(s.Points)-1].Time
+	startTime := s.Points[0].Time
 	s.TotalFlightTime = endTime.Sub(startTime)
 
 	if s.NumberOfThermals > 0 {
@@ -134,7 +149,7 @@ func (s *FlightStatistics) Finalize() {
 	s.PercentageThermic = float64(s.TotalThermicTime) / float64(s.TotalFlightTime) * 100
 }
 
-func (s FlightStatistics) PrettyPrint() {
+func (s FlightStatistic) PrettyPrint() {
 	fmt.Println("Thermal Statistics:")
 	fmt.Printf("Total Thermic Time: %v\n", s.TotalThermicTime)
 	fmt.Printf("Total Flight Time: %v\n", s.TotalFlightTime)

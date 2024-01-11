@@ -11,16 +11,15 @@ import "io"
 import "bytes"
 
 import "github.com/AurelienS/cigare/web/template/layout"
-import "github.com/AurelienS/cigare/internal/storage"
-import "github.com/AurelienS/cigare/web/template/flight"
+import "github.com/AurelienS/cigare/internal/flight"
+import view "github.com/AurelienS/cigare/web/template/flight"
 import "strconv"
-import "time"
 
-func getFlightCOunt(flights []storage.Flight) string {
+func getFlightCOunt(flights []flight.Flight) string {
 	return strconv.Itoa(len(flights))
 }
 
-func Flights(flights []storage.Flight, gliders []flight.GliderView, totalFlightTime time.Duration) templ.Component {
+func Flights(arg view.DashboardView) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -52,7 +51,7 @@ func Flights(flights []storage.Flight, gliders []flight.GliderView, totalFlightT
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = flight.UploadFlightForm().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = view.UploadFlightForm().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -60,11 +59,11 @@ func Flights(flights []storage.Flight, gliders []flight.GliderView, totalFlightT
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = flight.FlightCard(getFlightCOunt(flights), totalFlightTime).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = view.FlightCard(arg.NumberOfFlight, arg.TotalFlightTime).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = flight.AnnualCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = view.AnnualCard().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -72,7 +71,7 @@ func Flights(flights []storage.Flight, gliders []flight.GliderView, totalFlightT
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = flight.FlightRecords(flights).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = view.FlightRecords(arg.Flights).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -80,11 +79,11 @@ func Flights(flights []storage.Flight, gliders []flight.GliderView, totalFlightT
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = flight.GliderCard(gliders).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = view.GliderCard(arg.Gliders).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = flight.SiteCard().Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = view.SiteCard().Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

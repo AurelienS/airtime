@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"errors"
+	"strconv"
 
 	"github.com/AurelienS/cigare/internal/glider"
 	"github.com/AurelienS/cigare/internal/user"
@@ -25,22 +25,19 @@ func (h *UserHandler) UpdateDefaultGlider(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 	defaultGliderId := c.QueryParam("defaultGliderId")
 
-	err := h.userService.UpdateDefaultGlider(c.Request().Context(), defaultGliderId, user)
+	gliderId, err := strconv.Atoi(defaultGliderId)
+	if err != nil {
+		HandleError(c, err)
+	}
+
+	err = h.userService.UpdateDefaultGlider(c.Request().Context(), gliderId, user)
 	if err != nil {
 		return HandleError(c, err)
 	}
+	user.DefaultGliderID = gliderId
+	session.SaveUserInSession(c, user)
 
-	// //TODO
-	// user, err = h.userService.repo.queries.GetUserWithGoogleId(context.Background(), user.GoogleID)
-	// if err != nil {
-	// 	util.Error().Err(err).Msg("Failed to fetch user with Google ID")
-	// 	return HandleError(c, err)
-	// }
+	gliderHandler := NewGliderHandler(h.gliderService)
+	return gliderHandler.GetGlidersCard(c)
 
-	// session.SaveUserInSession(c, &user)
-
-	// gliderHandler := NewGliderHandler(h.gliderService)
-	// return gliderHandler.GetGlidersCard(c)
-
-	return errors.New("TODO")
 }
