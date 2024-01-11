@@ -14,7 +14,7 @@ func SetupLogger() {
 	zerolog.TimestampFieldName = "timestamp"
 	zerolog.LevelFieldName = "level"
 	zerolog.MessageFieldName = "message"
-	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack
+	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack //nolint:reassign
 
 	multi := zerolog.MultiLevelWriter(
 		zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "15:04:05"},

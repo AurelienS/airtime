@@ -16,11 +16,11 @@ import (
 )
 
 type FlightHandler struct {
-	FlightService flight.FlightService
-	GliderService glider.GliderService
+	FlightService flight.Service
+	GliderService glider.Service
 }
 
-func NewFlightHandler(flightService flight.FlightService, GliderService glider.GliderService) FlightHandler {
+func NewFlightHandler(flightService flight.Service, GliderService glider.Service) FlightHandler {
 	return FlightHandler{
 		FlightService: flightService,
 		GliderService: GliderService,

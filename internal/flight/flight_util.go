@@ -10,7 +10,6 @@ import (
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
 	sm "github.com/flopp/go-staticmaps"
-	"github.com/golang/geo/s1"
 	"github.com/golang/geo/s2"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
@@ -54,7 +53,7 @@ func Draw2DMap(withThermal bool, track igc.Track) {
 
 	var flightPath []s2.LatLng
 	for _, point := range track.Points {
-		flightPath = append(flightPath, s2.LatLng{Lat: s1.Angle(point.Lat), Lng: s1.Angle(point.Lng)})
+		flightPath = append(flightPath, s2.LatLng{Lat: point.Lat, Lng: point.Lng})
 	}
 
 	ctx.AddObject(sm.NewPath(flightPath, cruisingColor, 2))

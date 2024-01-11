@@ -13,10 +13,10 @@ import (
 )
 
 type AuthHandler struct {
-	userService user.UserService
+	userService user.Service
 }
 
-func NewAuthHandler(userService user.UserService) AuthHandler {
+func NewAuthHandler(userService user.Service) AuthHandler {
 	return AuthHandler{userService: userService}
 }
 
@@ -41,7 +41,7 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		GoogleID:   googleUser.UserID,
 		Email:      googleUser.Email,
 		Name:       googleUser.Name,
-		PictureUrl: googleUser.AvatarURL,
+		PictureURL: googleUser.AvatarURL,
 	}
 	user, err = h.userService.UpsertUser(c.Request().Context(), user)
 	if err != nil {

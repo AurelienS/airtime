@@ -23,13 +23,13 @@ func NewServer(queries storage.Queries, db *pgx.Conn, store sessions.Store) *Ser
 
 	transactionManager := storage.NewTransactionManager(db)
 
-	gliderRepo := glider.NewSQLGliderRepository(queries)
-	flightRepo := flight.NewFlightRepository(queries, transactionManager)
-	userRepo := user.NewUserRepository(queries)
+	gliderRepo := glider.NewRepository(queries)
+	flightRepo := flight.NewRepository(queries, transactionManager)
+	userRepo := user.NewRepository(queries)
 
-	gliderService := glider.NewGliderService(gliderRepo)
-	flightService := flight.NewFlightService(flightRepo, gliderService)
-	userService := user.NewUserService(userRepo)
+	gliderService := glider.NewService(gliderRepo)
+	flightService := flight.NewService(flightRepo, gliderService)
+	userService := user.NewService(userRepo)
 
 	gliderHandler := handler.NewGliderHandler(gliderService)
 	flightHandler := handler.NewFlightHandler(flightService, gliderService)

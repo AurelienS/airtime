@@ -8,12 +8,12 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type UserRepository struct {
+type Repository struct {
 	queries storage.Queries
 }
 
-func NewUserRepository(queries storage.Queries) UserRepository {
-	return UserRepository{
+func NewRepository(queries storage.Queries) Repository {
+	return Repository{
 		queries: queries,
 	}
 }
@@ -25,7 +25,7 @@ func ConvertUserDBToUser(userDB storage.User) User {
 	user.GoogleID = userDB.GoogleID
 	user.Email = userDB.Email
 	user.Name = userDB.Name
-	user.PictureUrl = userDB.PictureUrl
+	user.PictureURL = userDB.PictureUrl
 
 	if userDB.DefaultGliderID.Valid {
 		user.DefaultGliderID = int(userDB.DefaultGliderID.Int32)
@@ -41,12 +41,12 @@ func ConvertUserDBToUser(userDB storage.User) User {
 	return user
 }
 
-func (r *UserRepository) UpsertUser(ctx context.Context, user User) (User, error) {
+func (r *Repository) UpsertUser(ctx context.Context, user User) (User, error) {
 	param := storage.UpsertUserParams{
 		GoogleID:        user.GoogleID,
 		Email:           user.Email,
 		Name:            user.Name,
-		PictureUrl:      user.PictureUrl,
+		PictureUrl:      user.PictureURL,
 		DefaultGliderID: pgtype.Int4{Int32: int32(user.DefaultGliderID), Valid: user.DefaultGliderID > 0},
 	}
 	updatedUser, err := r.queries.UpsertUser(ctx, param)

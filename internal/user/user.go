@@ -7,7 +7,7 @@ type User struct {
 	GoogleID        string
 	Email           string
 	Name            string
-	PictureUrl      string
+	PictureURL      string
 	DefaultGliderID int
 	CreatedAt       time.Time
 	UpdatedAt       time.Time

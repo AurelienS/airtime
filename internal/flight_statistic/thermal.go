@@ -16,7 +16,7 @@ type Thermal struct {
 	EndIndex          int
 }
 
-func NewThermal(startTime time.Time, startAltitude int, startIndex int) *Thermal {
+func NewThermal(startTime time.Time, startAltitude, startIndex int) *Thermal {
 	return &Thermal{
 		Start:         startTime,
 		StartAltitude: startAltitude,

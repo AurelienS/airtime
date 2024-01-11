@@ -11,10 +11,10 @@ import (
 )
 
 type GliderHandler struct {
-	GliderService glider.GliderService
+	GliderService glider.Service
 }
 
-func NewGliderHandler(gliderService glider.GliderService) GliderHandler {
+func NewGliderHandler(gliderService glider.Service) GliderHandler {
 	return GliderHandler{
 		GliderService: gliderService,
 	}

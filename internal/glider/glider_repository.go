@@ -8,12 +8,12 @@ import (
 	"github.com/AurelienS/cigare/internal/util"
 )
 
-type GliderRepository struct {
+type Repository struct {
 	Queries storage.Queries
 }
 
-func NewSQLGliderRepository(queries storage.Queries) GliderRepository {
-	return GliderRepository{
+func NewRepository(queries storage.Queries) Repository {
+	return Repository{
 		Queries: queries,
 	}
 }
@@ -34,7 +34,7 @@ func ConvertGliderDBToGlider(gliderDB storage.Glider) Glider {
 	return glider
 }
 
-func (repo GliderRepository) GetGliders(ctx context.Context, user user.User) ([]Glider, error) {
+func (repo Repository) GetGliders(ctx context.Context, user user.User) ([]Glider, error) {
 	glidersDB, err := repo.Queries.GetGliders(ctx, int32(user.ID))
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get gliders")
@@ -53,7 +53,7 @@ func (repo GliderRepository) GetGliders(ctx context.Context, user user.User) ([]
 	return gliders, err
 }
 
-func (repo GliderRepository) AddGlider(ctx context.Context, gliderName string, user user.User) error {
+func (repo Repository) AddGlider(ctx context.Context, gliderName string, user user.User) error {
 	arg := storage.InsertGliderParams{
 		Name:   gliderName,
 		UserID: int32(user.ID),

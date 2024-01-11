@@ -14,13 +14,13 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
-type FlightRepository struct {
+type Repository struct {
 	queries storage.Queries
 	tm      storage.TransactionManager
 }
 
-func NewFlightRepository(queries storage.Queries, tm storage.TransactionManager) FlightRepository {
-	return FlightRepository{
+func NewRepository(queries storage.Queries, tm storage.TransactionManager) Repository {
+	return Repository{
 		queries: queries,
 		tm:      tm,
 	}
@@ -71,7 +71,7 @@ func ConvertFlightStatisticDBToFlightStatistic(statDB storage.FlightStatistic) f
 	return stat
 }
 
-func (r FlightRepository) InsertFlight(
+func (r Repository) InsertFlight(
 	ctx context.Context,
 	flight Flight,
 	flightStats flightstats.FlightStatistic,
@@ -89,12 +89,12 @@ func (r FlightRepository) InsertFlight(
 	}
 
 	transaction := func() error {
-		flightStatId, err := r.insertFlightStats(ctx, flightStats)
+		flightStatID, err := r.insertFlightStats(ctx, flightStats)
 		if err != nil {
 			util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight statistics")
 			return err
 		}
-		insertFlightParams.FlightStatisticsID = int32(flightStatId)
+		insertFlightParams.FlightStatisticsID = int32(flightStatID)
 
 		_, err = r.queries.InsertFlight(ctx, insertFlightParams)
 		if err != nil {
@@ -105,7 +105,7 @@ func (r FlightRepository) InsertFlight(
 	return r.tm.ExecuteTransaction(ctx, transaction)
 }
 
-func (r FlightRepository) GetFlights(ctx context.Context, user user.User) ([]Flight, error) {
+func (r Repository) GetFlights(ctx context.Context, user user.User) ([]Flight, error) {
 	util.Info().Str("user", user.Email).Msg("Getting flights")
 
 	flightsDB, err := r.queries.GetFlights(ctx, int32(user.ID))
@@ -121,7 +121,7 @@ func (r FlightRepository) GetFlights(ctx context.Context, user user.User) ([]Fli
 	return flights, err
 }
 
-func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flightstats.FlightStatistic) (int, error) {
+func (r Repository) insertFlightStats(ctx context.Context, flightStat flightstats.FlightStatistic) (int, error) {
 	util.Info().Msg("Inserting flight statistics")
 
 	param := storage.InsertFlightStatsParams{
@@ -135,7 +135,7 @@ func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flig
 		PercentageThermic: flightStat.PercentageThermic,
 		MaxAltitude:       int32(flightStat.MaxAltitude),
 	}
-	id, err := f.queries.InsertFlightStats(ctx, param)
+	id, err := r.queries.InsertFlightStats(ctx, param)
 	if err != nil {
 		util.Error().Err(err).Msg("Failed to insert flight statistics")
 		return 0, err
@@ -144,12 +144,12 @@ func (f FlightRepository) insertFlightStats(ctx context.Context, flightStat flig
 	return int(id), nil
 }
 
-func (f FlightRepository) GetTotalFlightTime(ctx context.Context, userId int) (time.Duration, error) {
-	util.Info().Int("user_id", userId).Msg("Getting total flight time")
+func (r Repository) GetTotalFlightTime(ctx context.Context, userID int) (time.Duration, error) {
+	util.Info().Int("user_id", userID).Msg("Getting total flight time")
 
-	flightTimeMicroseconds, err := f.queries.GetTotalFlightTime(ctx, int32(userId))
+	flightTimeMicroseconds, err := r.queries.GetTotalFlightTime(ctx, int32(userID))
 	if err != nil {
-		util.Error().Err(err).Int("user_id", userId).Msg("Failed to get total flight time")
+		util.Error().Err(err).Int("user_id", userID).Msg("Failed to get total flight time")
 		return 0, err
 	}
 	duration, err := parseHHMMSSDuration(flightTimeMicroseconds)

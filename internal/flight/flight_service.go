@@ -10,24 +10,22 @@ import (
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
-type FlightService struct {
-	flightRepo FlightRepository
-
-	gliderService glider.GliderService
+type Service struct {
+	flightRepo    Repository
+	gliderService glider.Service
 }
 
-func NewFlightService(
-	flightRepo FlightRepository,
-	gliderService glider.GliderService,
-
-) FlightService {
-	return FlightService{
+func NewService(
+	flightRepo Repository,
+	gliderService glider.Service,
+) Service {
+	return Service{
 		flightRepo:    flightRepo,
 		gliderService: gliderService,
 	}
 }
 
-func (s *FlightService) AddFlight(ctx context.Context, byteContent []byte, user user.User) error {
+func (s *Service) AddFlight(ctx context.Context, byteContent []byte, user user.User) error {
 	track, err := igc.Parse(string(byteContent))
 	if err != nil {
 		return err
@@ -47,7 +45,7 @@ type DashboardData struct {
 	NumberOfFlight  int
 }
 
-func (s FlightService) GetDashboardData(ctx context.Context, user user.User) (DashboardData, error) {
+func (s Service) GetDashboardData(ctx context.Context, user user.User) (DashboardData, error) {
 	var data DashboardData
 
 	flights, err := s.flightRepo.GetFlights(ctx, user)
@@ -60,7 +58,7 @@ func (s FlightService) GetDashboardData(ctx context.Context, user user.User) (Da
 		return data, err
 	}
 
-	totalFlightTime, err := s.flightRepo.GetTotalFlightTime(ctx, int(user.ID))
+	totalFlightTime, err := s.flightRepo.GetTotalFlightTime(ctx, user.ID)
 	if err != nil {
 		return data, err
 	}

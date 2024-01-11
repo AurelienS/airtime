@@ -23,8 +23,10 @@ func (tm *TransactionManager) ExecuteTransaction(ctx context.Context, txFunc fun
 
 	defer func() {
 		if p := recover(); p != nil {
-			tx.Rollback(ctx)
-			panic(p)
+			err = tx.Rollback(ctx)
+			if err != nil {
+				panic(p)
+			}
 		} else if err != nil {
 			if rbErr := tx.Rollback(ctx); rbErr != nil {
 				util.Error().Msgf("rollback error: %v", rbErr)
