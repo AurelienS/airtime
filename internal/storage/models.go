@@ -15,10 +15,7 @@ type Flight struct {
 	TakeoffLocation    string
 	IgcFilePath        string
 	UserID             int32
-	GliderID           int32
 	FlightStatisticsID int32
-	CreatedAt          pgtype.Timestamptz
-	UpdatedAt          pgtype.Timestamptz
 }
 
 type FlightStatistic struct {
@@ -32,25 +29,27 @@ type FlightStatistic struct {
 	NumberOfThermals  int32
 	PercentageThermic float64
 	MaxAltitude       int32
-	CreatedAt         pgtype.Timestamptz
-	UpdatedAt         pgtype.Timestamptz
 }
 
-type Glider struct {
+type Squad struct {
 	ID        int32
 	Name      string
-	UserID    int32
 	CreatedAt pgtype.Timestamptz
-	UpdatedAt pgtype.Timestamptz
+}
+
+type SquadMember struct {
+	ID       int32
+	SquadID  int32
+	UserID   int32
+	Admin    pgtype.Bool
+	JoinedAt pgtype.Timestamptz
 }
 
 type User struct {
-	ID              int32
-	GoogleID        string
-	Email           string
-	Name            string
-	PictureUrl      string
-	DefaultGliderID pgtype.Int4
-	CreatedAt       pgtype.Timestamptz
-	UpdatedAt       pgtype.Timestamptz
+	ID         int32
+	GoogleID   string
+	Email      string
+	Name       string
+	PictureUrl string
+	CreatedAt  pgtype.Timestamptz
 }

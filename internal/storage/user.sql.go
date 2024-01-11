@@ -7,13 +7,11 @@ package storage
 
 import (
 	"context"
-
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const getUserWithGoogleId = `-- name: GetUserWithGoogleId :one
 SELECT
-  id, google_id, email, name, picture_url, default_glider_id, created_at, updated_at
+  id, google_id, email, name, picture_url, created_at
 FROM users
 WHERE
   google_id = $1
@@ -29,51 +27,33 @@ func (q *Queries) GetUserWithGoogleId(ctx context.Context, googleID string) (Use
 		&i.Email,
 		&i.Name,
 		&i.PictureUrl,
-		&i.DefaultGliderID,
 		&i.CreatedAt,
-		&i.UpdatedAt,
 	)
 	return i, err
 }
 
-const updateDefaultGlider = `-- name: UpdateDefaultGlider :exec
-UPDATE
-  users
-SET
-  default_glider_id = $1
-WHERE
-  id = $2
-`
-
-type UpdateDefaultGliderParams struct {
-	DefaultGliderID pgtype.Int4
-	ID              int32
-}
-
-func (q *Queries) UpdateDefaultGlider(ctx context.Context, arg UpdateDefaultGliderParams) error {
-	_, err := q.db.Exec(ctx, updateDefaultGlider, arg.DefaultGliderID, arg.ID)
-	return err
-}
-
 const upsertUser = `-- name: UpsertUser :one
-INSERT INTO users (google_id, email, NAME, picture_url, default_glider_id)
+INSERT INTO users (
+    google_id,
+    email,
+    NAME,
+    picture_url
+  )
 VALUES
-  ($1, $2, $3, $4, $5) ON CONFLICT (google_id) DO
+  ($1, $2, $3, $4) ON CONFLICT (google_id) DO
 UPDATE
 SET
   email = EXCLUDED.email,
   NAME = EXCLUDED.name,
   picture_url = EXCLUDED.picture_url,
-  default_glider_id = $5,
-  updated_at = NOW() RETURNING id, google_id, email, name, picture_url, default_glider_id, created_at, updated_at
+  updated_at = NOW() RETURNING id, google_id, email, name, picture_url, created_at
 `
 
 type UpsertUserParams struct {
-	GoogleID        string
-	Email           string
-	Name            string
-	PictureUrl      string
-	DefaultGliderID pgtype.Int4
+	GoogleID   string
+	Email      string
+	Name       string
+	PictureUrl string
 }
 
 func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (User, error) {
@@ -82,7 +62,6 @@ func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (User, e
 		arg.Email,
 		arg.Name,
 		arg.PictureUrl,
-		arg.DefaultGliderID, // will loose glider when relogged in. need to fix
 	)
 	var i User
 	err := row.Scan(
@@ -91,9 +70,7 @@ func (q *Queries) UpsertUser(ctx context.Context, arg UpsertUserParams) (User, e
 		&i.Email,
 		&i.Name,
 		&i.PictureUrl,
-		&i.DefaultGliderID,
 		&i.CreatedAt,
-		&i.UpdatedAt,
 	)
 	return i, err
 }

@@ -11,7 +11,6 @@ INSERT INTO flights (
     takeoff_location,
     igc_file_path,
     user_id,
-    glider_id,
     flight_statistics_id
   )
 VALUES
@@ -20,6 +19,5 @@ VALUES
     $2,
     $3,
     $4,
-    $5,
-    $6
+    $5
   ) RETURNING id;

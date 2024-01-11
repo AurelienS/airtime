@@ -36,14 +36,7 @@ func ConvertFlightDBToFlight(flightDB storage.Flight) Flight {
 	flight.TakeoffLocation = flightDB.TakeoffLocation
 	flight.IgcFilePath = flightDB.IgcFilePath
 	flight.UserID = int(flightDB.UserID)
-	flight.GliderID = int(flightDB.GliderID)
 	flight.FlightStatisticsID = int(flightDB.FlightStatisticsID)
-	if flightDB.CreatedAt.Valid {
-		flight.CreatedAt = flightDB.CreatedAt.Time
-	}
-	if flightDB.UpdatedAt.Valid {
-		flight.UpdatedAt = flightDB.UpdatedAt.Time
-	}
 
 	return flight
 }
@@ -61,12 +54,6 @@ func ConvertFlightStatisticDBToFlightStatistic(statDB storage.FlightStatistic) f
 	stat.NumberOfThermals = int(statDB.NumberOfThermals)
 	stat.PercentageThermic = statDB.PercentageThermic
 	stat.MaxAltitude = int(statDB.MaxAltitude)
-	if statDB.CreatedAt.Valid {
-		stat.CreatedAt = statDB.CreatedAt.Time
-	}
-	if statDB.UpdatedAt.Valid {
-		stat.UpdatedAt = statDB.UpdatedAt.Time
-	}
 
 	return stat
 }
@@ -83,7 +70,6 @@ func (r Repository) InsertFlight(
 		Date:            pgtype.Timestamptz{Valid: true, Time: flight.Date},
 		TakeoffLocation: flight.TakeoffLocation,
 		UserID:          int32(user.ID),
-		GliderID:        int32(flight.GliderID),
 		IgcFilePath:     "not yet",
 	}
 

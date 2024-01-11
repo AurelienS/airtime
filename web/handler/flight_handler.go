@@ -6,8 +6,6 @@ import (
 	"strconv"
 
 	"github.com/AurelienS/cigare/internal/flight"
-	"github.com/AurelienS/cigare/internal/glider"
-	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
 	flightView "github.com/AurelienS/cigare/web/template/flight"
@@ -17,13 +15,11 @@ import (
 
 type FlightHandler struct {
 	FlightService flight.Service
-	GliderService glider.Service
 }
 
-func NewFlightHandler(flightService flight.Service, gliderService glider.Service) FlightHandler {
+func NewFlightHandler(flightService flight.Service) FlightHandler {
 	return FlightHandler{
 		FlightService: flightService,
-		GliderService: gliderService,
 	}
 }
 
@@ -35,11 +31,11 @@ func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 		return err
 	}
 
-	viewData := TransformDashboardToView(data, user)
+	viewData := TransformDashboardToView(data)
 	return Render(c, page.Flights(viewData))
 }
 
-func TransformDashboardToView(data flight.DashboardData, user user.User) flightView.DashboardView {
+func TransformDashboardToView(data flight.DashboardData) flightView.DashboardView {
 	var fv []flightView.FlightView
 	for _, f := range data.Flights {
 		fv = append(fv, flightView.FlightView{
@@ -50,7 +46,6 @@ func TransformDashboardToView(data flight.DashboardData, user user.User) flightV
 
 	return flightView.DashboardView{
 		Flights:         fv,
-		Gliders:         TransformGlidersToView(data.Gliders, user),
 		NumberOfFlight:  strconv.Itoa(len(data.Flights)),
 		TotalFlightTime: fmt.Sprintf("%d", int(data.TotalFlightTime.Hours())),
 	}

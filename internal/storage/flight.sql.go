@@ -14,7 +14,7 @@ import (
 
 const getFlights = `-- name: GetFlights :many
 SELECT
-  id, date, takeoff_location, igc_file_path, user_id, glider_id, flight_statistics_id, created_at, updated_at
+  id, date, takeoff_location, igc_file_path, user_id, flight_statistics_id
 FROM flights
 WHERE
   user_id = $1
@@ -35,10 +35,7 @@ func (q *Queries) GetFlights(ctx context.Context, userID int32) ([]Flight, error
 			&i.TakeoffLocation,
 			&i.IgcFilePath,
 			&i.UserID,
-			&i.GliderID,
 			&i.FlightStatisticsID,
-			&i.CreatedAt,
-			&i.UpdatedAt,
 		); err != nil {
 			return nil, err
 		}
@@ -56,7 +53,6 @@ INSERT INTO flights (
     takeoff_location,
     igc_file_path,
     user_id,
-    glider_id,
     flight_statistics_id
   )
 VALUES
@@ -65,8 +61,7 @@ VALUES
     $2,
     $3,
     $4,
-    $5,
-    $6
+    $5
   ) RETURNING id
 `
 
@@ -75,7 +70,6 @@ type InsertFlightParams struct {
 	TakeoffLocation    string
 	IgcFilePath        string
 	UserID             int32
-	GliderID           int32
 	FlightStatisticsID int32
 }
 
@@ -85,7 +79,6 @@ func (q *Queries) InsertFlight(ctx context.Context, arg InsertFlightParams) (pgc
 		arg.TakeoffLocation,
 		arg.IgcFilePath,
 		arg.UserID,
-		arg.GliderID,
 		arg.FlightStatisticsID,
 	)
 }

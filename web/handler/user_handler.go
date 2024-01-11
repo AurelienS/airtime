@@ -1,45 +1,15 @@
 package handler
 
 import (
-	"strconv"
-
-	"github.com/AurelienS/cigare/internal/glider"
 	"github.com/AurelienS/cigare/internal/user"
-	"github.com/AurelienS/cigare/web/session"
-	"github.com/labstack/echo/v4"
 )
 
 type UserHandler struct {
-	userService   user.Service
-	gliderService glider.Service
+	userService user.Service
 }
 
-func NewUserHandler(userService user.Service, gliderService glider.Service) UserHandler {
+func NewUserHandler(userService user.Service) UserHandler {
 	return UserHandler{
-		userService:   userService,
-		gliderService: gliderService,
+		userService: userService,
 	}
-}
-
-func (h *UserHandler) UpdateDefaultGlider(c echo.Context) error {
-	user := session.GetUserFromContext(c)
-	defaultGliderID := c.QueryParam("defaultGliderId")
-
-	gliderID, err := strconv.Atoi(defaultGliderID)
-	if err != nil {
-		return err
-	}
-
-	err = h.userService.UpdateDefaultGlider(c.Request().Context(), gliderID, user)
-	if err != nil {
-		return err
-	}
-	user.DefaultGliderID = gliderID
-	err = session.SaveUserInSession(c, user)
-	if err != nil {
-		return err
-	}
-
-	gliderHandler := NewGliderHandler(h.gliderService)
-	return gliderHandler.GetGlidersCard(c)
 }

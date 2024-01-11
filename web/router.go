@@ -9,7 +9,6 @@ import (
 type Router struct {
 	AuthHandler   handler.AuthHandler
 	FlightHandler handler.FlightHandler
-	GliderHandler handler.GliderHandler
 	UserHandler   handler.UserHandler
 }
 
@@ -27,7 +26,4 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.GET("logout", r.AuthHandler.GetLogout)
 
 	authGroup.POST("flight", r.FlightHandler.PostFlight)
-	authGroup.POST("glider", r.GliderHandler.PostGlider)
-
-	authGroup.PUT("user/:userId", r.UserHandler.UpdateDefaultGlider)
 }

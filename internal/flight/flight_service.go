@@ -5,23 +5,19 @@ import (
 	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
-	"github.com/AurelienS/cigare/internal/glider"
 	"github.com/AurelienS/cigare/internal/user"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
 type Service struct {
-	flightRepo    Repository
-	gliderService glider.Service
+	flightRepo Repository
 }
 
 func NewService(
 	flightRepo Repository,
-	gliderService glider.Service,
 ) Service {
 	return Service{
-		flightRepo:    flightRepo,
-		gliderService: gliderService,
+		flightRepo: flightRepo,
 	}
 }
 
@@ -40,7 +36,6 @@ func (s *Service) AddFlight(ctx context.Context, byteContent []byte, user user.U
 
 type DashboardData struct {
 	Flights         []Flight
-	Gliders         []glider.Glider
 	TotalFlightTime time.Duration
 	NumberOfFlight  int
 }
@@ -53,11 +48,6 @@ func (s Service) GetDashboardData(ctx context.Context, user user.User) (Dashboar
 		return data, err
 	}
 
-	gliders, err := s.gliderService.GetGliders(ctx, user)
-	if err != nil {
-		return data, err
-	}
-
 	totalFlightTime, err := s.flightRepo.GetTotalFlightTime(ctx, user.ID)
 	if err != nil {
 		return data, err
@@ -65,7 +55,6 @@ func (s Service) GetDashboardData(ctx context.Context, user user.User) (Dashboar
 
 	data = DashboardData{
 		Flights:         flights,
-		Gliders:         gliders,
 		TotalFlightTime: totalFlightTime,
 		NumberOfFlight:  len(flights),
 	}
