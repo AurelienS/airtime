@@ -14,5 +14,8 @@ func Render(c echo.Context, component templ.Component) error {
 
 func HandleError(c echo.Context, err error) {
 	util.Error().Msgf("Error encountered: %s\n", err)
-	c.String(http.StatusInternalServerError, "Internal Server Error")
+	err = c.String(http.StatusInternalServerError, "Internal Server Error")
+	if err != nil {
+		util.Error().Msg("Cannot set status code 500 to response")
+	}
 }
