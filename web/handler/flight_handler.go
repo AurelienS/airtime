@@ -20,10 +20,10 @@ type FlightHandler struct {
 	GliderService glider.Service
 }
 
-func NewFlightHandler(flightService flight.Service, GliderService glider.Service) FlightHandler {
+func NewFlightHandler(flightService flight.Service, gliderService glider.Service) FlightHandler {
 	return FlightHandler{
 		FlightService: flightService,
-		GliderService: GliderService,
+		GliderService: gliderService,
 	}
 }
 
@@ -32,7 +32,7 @@ func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 
 	data, err := h.FlightService.GetDashboardData(c.Request().Context(), user)
 	if err != nil {
-		HandleError(c, err)
+		return HandleError(c, err)
 	}
 
 	viewData := TransformDashboardToView(data, user)
@@ -54,7 +54,6 @@ func TransformDashboardToView(data flight.DashboardData, user user.User) flightV
 		NumberOfFlight:  strconv.Itoa(len(data.Flights)),
 		TotalFlightTime: fmt.Sprintf("%d", int(data.TotalFlightTime.Hours())),
 	}
-
 }
 
 func (h *FlightHandler) PostFlight(c echo.Context) error {
@@ -85,7 +84,8 @@ func (h *FlightHandler) PostFlight(c echo.Context) error {
 		return HandleError(c, err)
 	}
 
-	util.Info().Str("user", user.Email).Str("filename", file.Filename).Msg("File parsed and flight record created successfully")
+	util.Info().Str("user", user.Email).Str("filename", file.Filename).
+		Msg("File parsed and flight record created successfully")
 
 	return h.GetIndexPage(c)
 }

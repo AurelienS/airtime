@@ -21,8 +21,14 @@ func NewAuthHandler(userService user.Service) AuthHandler {
 }
 
 func (h *AuthHandler) GetLogout(c echo.Context) error {
-	session.RemoveUserFromSession(c)
-	gothic.Logout(c.Response(), c.Request())
+	err := session.RemoveUserFromSession(c)
+	if err != nil {
+		return HandleError(c, err)
+	}
+	err = gothic.Logout(c.Response(), c.Request())
+	if err != nil {
+		return HandleError(c, err)
+	}
 	return c.Redirect(http.StatusFound, "/")
 }
 
@@ -60,8 +66,9 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
 	provider := c.Param("provider")
 	util.Info().Str("provider", provider).Msg("Initiating authentication with provider")
-	expectedReq := c.Request().WithContext(context.WithValue(c.Request().Context(), "provider", provider))
 
+	//nolint:revive,staticcheck
+	expectedReq := c.Request().WithContext(context.WithValue(c.Request().Context(), "provider", provider))
 	gothic.BeginAuthHandler(c.Response(), expectedReq)
 
 	return nil

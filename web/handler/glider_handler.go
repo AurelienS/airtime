@@ -56,11 +56,10 @@ func TransformGliderToView(glider glider.Glider, user user.User) flight.GliderVi
 		isSelected = true
 	}
 	linkToUpdate := fmt.Sprintf("/user/%d?defaultGliderId=%d", user.ID, glider.ID)
-	id := int(glider.ID)
 	return flight.GliderView{
 		Name:         glider.Name,
 		LinkToUpdate: linkToUpdate,
 		IsSelected:   isSelected,
-		ID:           id,
+		ID:           glider.ID,
 	}
 }

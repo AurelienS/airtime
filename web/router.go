@@ -30,5 +30,4 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.POST("glider", r.GliderHandler.PostGlider)
 
 	authGroup.PUT("user/:userId", r.UserHandler.UpdateDefaultGlider)
-
 }

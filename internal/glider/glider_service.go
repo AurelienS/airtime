@@ -18,7 +18,6 @@ func NewService(repository Repository) Service {
 
 func (g *Service) GetGliders(ctx context.Context, user user.User) ([]Glider, error) {
 	return g.repo.GetGliders(ctx, user)
-
 }
 
 func (g *Service) AddGlider(ctx context.Context, gliderName string, user user.User) error {

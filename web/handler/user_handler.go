@@ -23,21 +23,23 @@ func NewUserHandler(userService user.Service, gliderService glider.Service) User
 
 func (h *UserHandler) UpdateDefaultGlider(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	defaultGliderId := c.QueryParam("defaultGliderId")
+	defaultGliderID := c.QueryParam("defaultGliderId")
 
-	gliderId, err := strconv.Atoi(defaultGliderId)
-	if err != nil {
-		HandleError(c, err)
-	}
-
-	err = h.userService.UpdateDefaultGlider(c.Request().Context(), gliderId, user)
+	gliderID, err := strconv.Atoi(defaultGliderID)
 	if err != nil {
 		return HandleError(c, err)
 	}
-	user.DefaultGliderID = gliderId
-	session.SaveUserInSession(c, user)
+
+	err = h.userService.UpdateDefaultGlider(c.Request().Context(), gliderID, user)
+	if err != nil {
+		return HandleError(c, err)
+	}
+	user.DefaultGliderID = gliderID
+	err = session.SaveUserInSession(c, user)
+	if err != nil {
+		return HandleError(c, err)
+	}
 
 	gliderHandler := NewGliderHandler(h.gliderService)
 	return gliderHandler.GetGlidersCard(c)
-
 }

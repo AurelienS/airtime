@@ -8,7 +8,6 @@ import (
 const isProd = false // Set to true when serving over https
 
 func main() {
-
 	util.SetupLogger()
 	server, err := app.Initialize(isProd)
 	if err != nil {

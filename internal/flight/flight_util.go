@@ -16,7 +16,6 @@ import (
 )
 
 func TrackToFlight(externalTrack igc.Track, user user.User) Flight {
-
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
 		util.Warn().Msg("Error loading location Europe/Paris for")
@@ -45,9 +44,10 @@ func TrackToFlight(externalTrack igc.Track, user user.User) Flight {
 }
 
 var cruisingColor = color.Black
-var circlingColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
 
-func Draw2DMap(withThermal bool, track igc.Track) {
+// var circlingColor = color.RGBA{R: 255, G: 0, B: 0, A: 255}
+
+func Draw2DMap(track igc.Track) {
 	ctx := sm.NewContext()
 	ctx.SetSize(600, 600)
 
@@ -89,7 +89,7 @@ func DrawElevation(track igc.Track) {
 	pts := make(plotter.XYs, len(track.Points))
 	startTime := track.Points[0].Time
 	for i, point := range track.Points {
-		pts[i].X = float64(point.Time.Sub(startTime).Minutes())
+		pts[i].X = point.Time.Sub(startTime).Minutes()
 		pts[i].Y = float64(point.GNSSAltitude)
 	}
 

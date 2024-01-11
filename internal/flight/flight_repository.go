@@ -76,7 +76,6 @@ func (r Repository) InsertFlight(
 	flight Flight,
 	flightStats flightstats.FlightStatistic,
 	user user.User,
-
 ) error {
 	util.Info().Str("user", user.Email).Msg("Inserting flight")
 

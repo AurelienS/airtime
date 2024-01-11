@@ -7,6 +7,7 @@ type GliderView struct {
 	IsSelected   bool
 }
 
+//nolint:revive
 type FlightView struct {
 	TakeoffLocation string
 	Date            string
