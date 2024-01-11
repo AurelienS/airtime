@@ -23,11 +23,11 @@ func NewAuthHandler(userService user.Service) AuthHandler {
 func (h *AuthHandler) GetLogout(c echo.Context) error {
 	err := session.RemoveUserFromSession(c)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 	err = gothic.Logout(c.Response(), c.Request())
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 	return c.Redirect(http.StatusFound, "/")
 }
@@ -51,12 +51,12 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 	}
 	user, err = h.userService.UpsertUser(c.Request().Context(), user)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 
 	err = session.SaveUserInSession(c, user)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 
 	util.Info().Str("user", user.Email).Msg("User authenticated and session updated successfully")

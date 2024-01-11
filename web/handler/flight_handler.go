@@ -32,7 +32,7 @@ func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 
 	data, err := h.FlightService.GetDashboardData(c.Request().Context(), user)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 
 	viewData := TransformDashboardToView(data, user)
@@ -60,20 +60,20 @@ func (h *FlightHandler) PostFlight(c echo.Context) error {
 	file, err := c.FormFile("igcfile")
 	if err != nil {
 		util.Error().Err(err).Msg("Failed to get IGC file from form")
-		return HandleError(c, err)
+		return err
 	}
 
 	src, err := file.Open()
 	if err != nil {
 		util.Error().Err(err).Str("filename", file.Filename).Msg("Failed to open IGC file")
-		return HandleError(c, err)
+		return err
 	}
 	defer src.Close()
 
 	byteContent, err := io.ReadAll(src)
 	if err != nil {
 		util.Error().Err(err).Str("filename", file.Filename).Msg("Failed to read IGC file")
-		return HandleError(c, err)
+		return err
 	}
 
 	user := session.GetUserFromContext(c)
@@ -81,7 +81,7 @@ func (h *FlightHandler) PostFlight(c echo.Context) error {
 	err = h.FlightService.AddFlight(c.Request().Context(), byteContent, user)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
-		return HandleError(c, err)
+		return err
 	}
 
 	util.Info().Str("user", user.Email).Str("filename", file.Filename).

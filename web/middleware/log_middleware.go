@@ -1,9 +1,12 @@
 package middleware
 
 import (
+	"regexp"
+	"strconv"
 	"time"
 
 	"github.com/AurelienS/cigare/internal/util"
+	"github.com/Pallinder/go-randomdata"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"
 )
@@ -13,22 +16,52 @@ func LoggerMiddleware() echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
 			start := time.Now()
+			requestID := generateShortID()
+			util.Info().
+				Str("method", c.Request().Method).
+				Str("path", c.Request().URL.Path).
+				Msgf("Request %s", requestID)
+
 			err := next(c) // Call the next handler.
 
 			var logLevel *zerolog.Event
 			if err != nil {
-				logLevel = util.Warn()
+				logLevel = util.Error()
 			} else {
 				logLevel = util.Info()
 			}
 
-			logLevel.Str("method", c.Request().Method).
+			logLevel.
 				Str("path", c.Request().URL.Path).
-				Int("status", c.Response().Status).
+				Int("status", parseErrorCode(err)).
 				Dur("latency", time.Since(start)).
-				Msg("request handled")
+				Msgf("Response %s", requestID)
 
 			return err // Return any errors from the handler.
 		}
 	}
+}
+
+func parseErrorCode(err error) int {
+	if err == nil {
+		return 200
+	}
+	errStr := err.Error()
+	re := regexp.MustCompile(`code=(\d+)`)
+	matches := re.FindStringSubmatch(errStr)
+
+	if len(matches) < 2 {
+		return 500
+	}
+
+	code, err := strconv.Atoi(matches[1])
+	if err != nil {
+		return 500
+	}
+
+	return code
+}
+
+func generateShortID() string {
+	return randomdata.Noun()
 }

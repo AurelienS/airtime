@@ -27,17 +27,17 @@ func (h *UserHandler) UpdateDefaultGlider(c echo.Context) error {
 
 	gliderID, err := strconv.Atoi(defaultGliderID)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 
 	err = h.userService.UpdateDefaultGlider(c.Request().Context(), gliderID, user)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 	user.DefaultGliderID = gliderID
 	err = session.SaveUserInSession(c, user)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 
 	gliderHandler := NewGliderHandler(h.gliderService)

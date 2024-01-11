@@ -20,6 +20,7 @@ require (
 require (
 	cloud.google.com/go/compute v1.20.1 // indirect
 	cloud.google.com/go/compute/metadata v0.2.3 // indirect
+	github.com/Pallinder/go-randomdata v1.2.0 // indirect
 	github.com/ajstarks/svgo v0.0.0-20211024235047-1546f124cd8b // indirect
 	github.com/campoy/embedmd v1.0.0 // indirect
 	github.com/flopp/go-coordsparser v0.0.0-20201115094714-8baaeb7062d5 // indirect

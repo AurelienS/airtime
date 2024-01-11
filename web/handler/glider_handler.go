@@ -26,7 +26,7 @@ func (h *GliderHandler) PostGlider(c echo.Context) error {
 
 	err := h.GliderService.AddGlider(c.Request().Context(), gliderName, user)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 
 	return h.GetGlidersCard(c)
@@ -36,7 +36,7 @@ func (h *GliderHandler) GetGlidersCard(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 	gliders, err := h.GliderService.GetGliders(c.Request().Context(), user)
 	if err != nil {
-		return HandleError(c, err)
+		return err
 	}
 	viewData := TransformGlidersToView(gliders, user)
 	return Render(c, flight.GliderCard(viewData))

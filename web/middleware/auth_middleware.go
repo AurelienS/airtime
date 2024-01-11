@@ -15,7 +15,7 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		user, err := session.GetUserOrErrorFromContext(c)
 		if err != nil {
 			util.Warn().Msg("user not logged in. Will be redirected soon")
-			return c.Redirect(http.StatusFound, "/login")
+			return echo.NewHTTPError(http.StatusUnauthorized, "Please provide valid credentials")
 		}
 
 		c.Set(UserContextKey, user)
