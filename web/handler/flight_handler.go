@@ -52,6 +52,14 @@ func TransformDashboardToView(data flight.DashboardData) flightView.DashboardVie
 }
 
 func (h *FlightHandler) PostFlight(c echo.Context) error {
+	err := insertFlight(c, h.FlightService)
+	if err != nil {
+		return err
+	}
+	return h.GetIndexPage(c)
+}
+
+func insertFlight(c echo.Context, flightService flight.Service) error {
 	file, err := c.FormFile("igcfile")
 	if err != nil {
 		util.Error().Err(err).Msg("Failed to get IGC file from form")
@@ -73,7 +81,7 @@ func (h *FlightHandler) PostFlight(c echo.Context) error {
 
 	user := session.GetUserFromContext(c)
 
-	err = h.FlightService.AddFlight(c.Request().Context(), byteContent, user)
+	err = flightService.AddFlight(c.Request().Context(), byteContent, user)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
 		return err
@@ -82,5 +90,5 @@ func (h *FlightHandler) PostFlight(c echo.Context) error {
 	util.Info().Str("user", user.Email).Str("filename", file.Filename).
 		Msg("File parsed and flight record created successfully")
 
-	return h.GetIndexPage(c)
+	return nil
 }

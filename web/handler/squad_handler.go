@@ -34,3 +34,23 @@ func (h SquadHandler) PostSquad(c echo.Context) error {
 
 	return c.Redirect(http.StatusFound, "/")
 }
+
+// func (h SquadHandler) JoinSquad(c echo.Context) error {
+// 	squadName := c.FormValue("squad_id")
+// 	user := session.GetUserFromContext(c)
+
+// 	err := h.squadService.JoinSquad(c.Request().Context(), squadName, user)
+// 	if err != nil {
+// 		return err
+// 	}
+// }
+
+// func (h SquadHandler) LeaveSquad(c echo.Context) error {
+// 	squadName := c.FormValue("squad_id")
+// 	user := session.GetUserFromContext(c)
+
+// 	err := h.squadService.LeaveSquad(c.Request().Context(), squadName, user)
+// 	if err != nil {
+// 		return err
+// 	}
+// }

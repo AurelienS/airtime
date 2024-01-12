@@ -12,6 +12,7 @@ type Router struct {
 	UserHandler      handler.UserHandler
 	DashboardHandler handler.DashboardHandler
 	SquadHandler     handler.SquadHandler
+	IndexHandler     handler.IndexHandler
 }
 
 func (r *Router) Initialize(e *echo.Echo) {
@@ -24,7 +25,10 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup := e.Group("/")
 	authGroup.Use(middleware.AuthMiddleware)
 
-	authGroup.GET("", r.DashboardHandler.GetIndex)
+	authGroup.GET("", r.IndexHandler.Get)
+	authGroup.GET("dashboard", r.DashboardHandler.GetIndex)
+	authGroup.GET("logbook", r.FlightHandler.GetIndexPage)
+	authGroup.POST("dashboard/flight", r.DashboardHandler.PostFlight)
 	authGroup.GET("create-squad", r.SquadHandler.GetCreateSquad)
 	authGroup.POST("squad", r.SquadHandler.PostSquad)
 

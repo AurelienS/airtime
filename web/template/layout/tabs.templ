@@ -1,0 +1,24 @@
+package layout
+
+templ Tabs() {
+	<div id="tabContainer" class="flex border-b justify-center">
+		<button
+			class="tabButton inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 hover:text-blue-800 bg-white hover:bg-gray-100"
+			hx-get="/dashboard"
+			hx-target="#tabContent"
+			hx-swap="innerHTML"
+			hx-trigger="load, click"
+		>
+			Dashboard
+		</button>
+		<button
+			class="tabButton inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 hover:text-blue-800 bg-white hover:bg-gray-100"
+			hx-get="/logbook"
+			hx-target="#tabContent"
+			hx-swap="innerHTML"
+		>Logbook</button>
+	</div>
+	<div id="tabContent">
+		<!-- Tab content will be loaded here -->
+	</div>
+}

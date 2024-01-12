@@ -14,7 +14,7 @@ templ Flights(arg view.DashboardView) {
 		<div class="flex flex-col text-gray-300" id="flightPage">
 			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">
 				<h1 class="text-xl font-light text-blue-300">Flights Dashboard</h1>
-				@view.UploadFlightForm()
+				@view.UploadFlightForm("/flight", "uploadForm")
 			</div>
 			<div class="flex gap-4">
 				<div>

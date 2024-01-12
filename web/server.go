@@ -34,7 +34,7 @@ func NewServer(queries storage.Queries, db *pgx.Conn, store sessions.Store) *Ser
 	flightHandler := handler.NewFlightHandler(flightService)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService)
-	dashboardHandler := handler.NewDashboardHandler(userService, squadService)
+	dashboardHandler := handler.NewDashboardHandler(userService, squadService, flightService)
 	squadHandler := handler.NewSquadHandler(squadService)
 
 	router := Router{

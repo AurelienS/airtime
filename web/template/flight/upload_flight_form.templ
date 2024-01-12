@@ -1,21 +1,24 @@
 package flight
 
-templ UploadFlightForm() {
+import "github.com/AurelienS/cigare/web/template/component"
+
+templ UploadFlightForm(hxPost string, hxTarget string) {
+	<script>
+		function triggerUpload(input) {
+			console.log("file: upload_flight_form.templ ~ line 18 ~ triggerUpload ~ input : ")
+			var event = new CustomEvent('fileSelected', {bubbles: true});
+			input.dispatchEvent(event);
+		}
+	</script>
 	<form
 		id="uploadForm"
-		hx-post="/flight"
-		enctype="multipart/form-data"
-		hx-target="#flightPage"
+		hx-post={ hxPost }
 		hx-select="#flightPage"
+		enctype="multipart/form-data"
 		hx-trigger="fileSelected"
+		hx-target={ hxTarget }
 	>
 		<input id="igcfile" type="file" name="igcfile" accept=".igc" style="display:none;" onchange="triggerUpload(this)"/>
-		<button type="button" onclick="document.getElementById('igcfile').click();">Upload New Flight</button>
+		@component.ButtonIgc("Upload new flight")
 	</form>
-	<script>
-    function triggerUpload(input) {
-        var event = new CustomEvent('fileSelected', {bubbles: true});
-        input.dispatchEvent(event);
-    }
-</script>
 }
