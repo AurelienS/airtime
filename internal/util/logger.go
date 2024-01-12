@@ -46,3 +46,7 @@ func Warn() *zerolog.Event {
 func Fatal() *zerolog.Event {
 	return logger.Fatal()
 }
+
+func Debug() *zerolog.Event {
+	return logger.Debug()
+}

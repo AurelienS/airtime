@@ -27,6 +27,7 @@ func LoggerMiddleware() echo.MiddlewareFunc {
 			var logLevel *zerolog.Event
 			if err != nil {
 				logLevel = util.Error()
+				util.Debug().Msg(err.Error())
 			} else {
 				logLevel = util.Info()
 			}

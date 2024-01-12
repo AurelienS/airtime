@@ -27,7 +27,7 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var2 := `Paraglider App`
+		templ_7745c5c3_Var2 := `SoarSquad`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -55,58 +55,18 @@ func Base() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Var5 := `
-		.dark {
-			--tw-bg-opacity: 1;
-			background-color: rgba(17, 24, 39, var(--tw-bg-opacity));
-			--tw-text-opacity: 1;
-			color: rgba(229, 231, 235, var(--tw-text-opacity));
-		}
-
-		.font-roboto {
-			font-family: 'Roboto', sans-serif;
-		}
-	`
+				body {
+					font-family: 'Roboto', sans-serif;
+				}
+				* {
+					box-sizing: border-box;
+				}
+			`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><div class=\"\"></div><body class=\"dark:bg-gray-900 dark:text-gray-200 min-w-screen min-h-screen font-roboto font-light\"><nav id=\"header\" class=\"bg-gray-800 w-full z-10 top-0 shadow\"><div class=\"w-full container mx-auto flex flex-wrap items-center justify-between mt-0 py-2\"><div class=\"pl-4 flex items-center\"><a class=\"text-white no-underline hover:no-underline font-medium text-xl\" href=\"/\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var6 := `Paraglider App`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div><div class=\"block lg:hidden pr-4\"><button id=\"nav-toggle\" class=\" flex items-center p-1 text-blue-200 hover:text-gray-100\"></button></div><div class=\"w-full flex-grow lg:items-center lg:w-auto hidden lg:block mt-2 lg:mt-0 bg-gray-800 z-20\" id=\"nav-content\"><ul class=\"list-reset lg:flex justify-end flex-1 items-center\"><li class=\"mr-3\"><a class=\"inline-block text-gray-400 no-underline hover:text-gray-200 hover:text-underline py-2 px-4\" href=\"/flights\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var7 := `Flights`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></li><li class=\"mr-3\"><a class=\"inline-block text-gray-400 no-underline hover:text-gray-200 hover:text-underline py-2 px-4\" href=\"/gliders\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var8 := `Gliders`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></li></ul></div><a href=\"/logout\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var9 := `logout`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></nav><div class=\"mx-8\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"max-h-screen max-w-screen-2xl m-auto h-screen bg-gradient-to-r from-blue-400 to-purple-500\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -114,20 +74,7 @@ func Base() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><script>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var10 := `
-		document.getElementById('nav-toggle').onclick = function () {
-			document.getElementById("nav-content").classList.toggle("hidden");
-		}
-	`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

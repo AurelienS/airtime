@@ -36,11 +36,11 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 	googleUser, err := gothic.CompleteUserAuth(c.Response(), c.Request())
 	if err != nil {
 		util.Error().Err(err).Msg("Failed to complete user authentication with Google")
-		return Render(c, page.Error())
+		return err
 	}
 	if googleUser.Email == "" {
 		util.Error().Err(err).Msg("Failed to complete user authentication with Google (email is missing)")
-		return Render(c, page.Error())
+		return err
 	}
 
 	user := user.User{

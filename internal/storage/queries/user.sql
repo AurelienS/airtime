@@ -19,5 +19,4 @@ UPDATE
 SET
   email = EXCLUDED.email,
   NAME = EXCLUDED.name,
-  picture_url = EXCLUDED.picture_url,
-  updated_at = NOW() RETURNING *;
+  picture_url = EXCLUDED.picture_url RETURNING *;

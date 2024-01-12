@@ -45,8 +45,7 @@ UPDATE
 SET
   email = EXCLUDED.email,
   NAME = EXCLUDED.name,
-  picture_url = EXCLUDED.picture_url,
-  updated_at = NOW() RETURNING id, google_id, email, name, picture_url, created_at
+  picture_url = EXCLUDED.picture_url RETURNING id, google_id, email, name, picture_url, created_at
 `
 
 type UpsertUserParams struct {
