@@ -2,6 +2,7 @@ package squad
 
 import (
 	"context"
+	"time"
 
 	"github.com/AurelienS/cigare/internal/storage"
 	"github.com/AurelienS/cigare/internal/user"
@@ -60,34 +61,51 @@ func (r Repository) Squads(ctx context.Context, user user.User) ([]Squad, error)
 		return squads, err
 	}
 
-	squads = membersToSquads(squadAndMembers)
+	squads = assembleSquadsFromRows(squadAndMembers)
 	return squads, nil
 }
 
-func membersToSquads(squadAndMembers []storage.FindAllSquadForUserRow) []Squad {
-	membersBySquadID := make(map[int][]Member)
-	squadInfoByID := make(map[int]storage.FindAllSquadForUserRow)
-
-	for _, memberRow := range squadAndMembers {
-		squadID := int(memberRow.Squad.ID)
-		member := ConvertMemberDBToMember(memberRow.SquadMember)
-		membersBySquadID[squadID] = append(membersBySquadID[squadID], member)
-		if _, exists := squadInfoByID[squadID]; !exists {
-			squadInfoByID[squadID] = memberRow
-		}
+func GroupBy[K comparable, T any](slice []T, keySelector func(T) K) map[K][]T {
+	grouped := make(map[K][]T)
+	for _, item := range slice {
+		key := keySelector(item)
+		grouped[key] = append(grouped[key], item)
 	}
+	return grouped
+}
 
-	squads := make([]Squad, 0, len(membersBySquadID))
-	for squadID, members := range membersBySquadID {
-		squadInfo := squadInfoByID[squadID]
+func assembleSquadsFromRows(rows []storage.FindAllSquadForUserRow) []Squad {
+	squadsMap := GroupBy[int, storage.FindAllSquadForUserRow](
+		rows,
+		func(row storage.FindAllSquadForUserRow) int { return int(row.Squad.ID) },
+	)
+
+	var assembledSquads []Squad
+	for squadID, squadRows := range squadsMap {
+		var squadMembers []Member
+		var squadName string
+		var squadCreationTime time.Time
+
+		// Assuming that all rows for the same squad will have identical squad info fields
+		if len(squadRows) > 0 {
+			squadInfo := squadRows[0]
+			squadName = squadInfo.Squad.Name
+			squadCreationTime = squadInfo.Squad.CreatedAt.Time
+		}
+
+		for _, squadMemberRow := range squadRows {
+			member := ConvertMemberDBToMember(squadMemberRow.SquadMember)
+			squadMembers = append(squadMembers, member)
+		}
+
 		squad := Squad{
 			ID:        squadID,
-			Name:      squadInfo.Squad.Name,
-			Members:   members,
-			CreatedAt: squadInfo.Squad.CreatedAt.Time,
+			Name:      squadName,
+			Members:   squadMembers,
+			CreatedAt: squadCreationTime,
 		}
-		squads = append(squads, squad)
+		assembledSquads = append(assembledSquads, squad)
 	}
 
-	return squads
+	return assembledSquads
 }
