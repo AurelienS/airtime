@@ -19,22 +19,23 @@ func NewRepository(queries storage.Queries) Repository {
 	}
 }
 
-func ConvertSquadDBToSquad(squadDB storage.Squad) Squad {
-	return Squad{
-		ID:        int(squadDB.ID),
-		Name:      squadDB.Name,
-		CreatedAt: squadDB.CreatedAt.Time,
+func ConvertMemberDBToMember(memberDB storage.SquadMember) Member {
+	return Member{
+		ID:       int(memberDB.ID),
+		SquadID:  int(memberDB.SquadID),
+		UserID:   int(memberDB.UserID),
+		Admin:    memberDB.Admin.Bool,
+		JoinedAt: memberDB.JoinedAt.Time,
 	}
 }
 
-func (r Repository) InsertSquad(ctx context.Context, name string) (Squad, error) {
-	squadDB, err := r.queries.InsertSquad(ctx, name)
-	squad := ConvertSquadDBToSquad(squadDB)
+func (r Repository) InsertSquad(ctx context.Context, name string) (int, error) {
+	id, err := r.queries.InsertSquad(ctx, name)
 	if err != nil {
 		util.Error().Str("squadName", name).Msg("Failed to insert squad")
-		return squad, err
+		return 0, err
 	}
-	return squad, nil
+	return int(id), nil
 }
 
 func (r Repository) InsertSquadMember(ctx context.Context, squadID, userID int, admin bool) error {
@@ -53,14 +54,40 @@ func (r Repository) InsertSquadMember(ctx context.Context, squadID, userID int, 
 
 func (r Repository) Squads(ctx context.Context, user user.User) ([]Squad, error) {
 	var squads []Squad
-	squadsDB, err := r.queries.FindAllSquadForUser(ctx, int32(user.ID))
+	squadAndMembers, err := r.queries.FindAllSquadForUser(ctx, int32(user.ID))
 	if err != nil {
 		util.Error().Str("user", user.Email).Msg("Failed to find squads for user")
 		return squads, err
 	}
-	for _, squadDB := range squadsDB {
-		squads = append(squads, ConvertSquadDBToSquad(squadDB))
+
+	squads = membersToSquads(squadAndMembers)
+	return squads, nil
+}
+
+func membersToSquads(squadAndMembers []storage.FindAllSquadForUserRow) []Squad {
+	membersBySquadID := make(map[int][]Member)
+	squadInfoByID := make(map[int]storage.FindAllSquadForUserRow)
+
+	for _, memberRow := range squadAndMembers {
+		squadID := int(memberRow.Squad.ID)
+		member := ConvertMemberDBToMember(memberRow.SquadMember)
+		membersBySquadID[squadID] = append(membersBySquadID[squadID], member)
+		if _, exists := squadInfoByID[squadID]; !exists {
+			squadInfoByID[squadID] = memberRow
+		}
 	}
 
-	return squads, nil
+	squads := make([]Squad, 0, len(membersBySquadID))
+	for squadID, members := range membersBySquadID {
+		squadInfo := squadInfoByID[squadID]
+		squad := Squad{
+			ID:        squadID,
+			Name:      squadInfo.Squad.Name,
+			Members:   members,
+			CreatedAt: squadInfo.Squad.CreatedAt.Time,
+		}
+		squads = append(squads, squad)
+	}
+
+	return squads
 }

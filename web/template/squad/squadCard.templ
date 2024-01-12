@@ -1,0 +1,16 @@
+package squad
+
+import "github.com/AurelienS/cigare/web/template/component"
+import "github.com/AurelienS/cigare/internal/squad"
+
+import "strconv"
+
+func memberCount(squad squad.Squad) string {
+	return strconv.Itoa(len(squad.Members))
+}
+
+templ SquadCard(squad squad.Squad) {
+	@component.Card(squad.Name) {
+		<div>{ memberCount(squad) } volants</div>
+	}
+}

@@ -21,12 +21,12 @@ func NewService(squadRepo Repository, tm storage.TransactionManager) Service {
 
 func (s Service) CreateSquad(ctx context.Context, name string, user user.User) error {
 	transaction := func() error {
-		squad, err := s.squadRepo.InsertSquad(ctx, name)
+		squadID, err := s.squadRepo.InsertSquad(ctx, name)
 		if err != nil {
 			return err
 		}
 
-		err = s.squadRepo.InsertSquadMember(ctx, squad.ID, user.ID, true)
+		err = s.squadRepo.InsertSquadMember(ctx, squadID, user.ID, true)
 		if err != nil {
 			return err
 		}

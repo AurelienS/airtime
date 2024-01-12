@@ -8,6 +8,7 @@ type Squad struct {
 	ID        int
 	Name      string
 	CreatedAt time.Time
+	Members   []Member
 }
 
 type Member struct {

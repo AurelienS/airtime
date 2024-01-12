@@ -13,23 +13,38 @@ import (
 
 const findAllSquadForUser = `-- name: FindAllSquadForUser :many
 SELECT
-    s.id, s.name, s.created_at
+    s.id, s.name, s.created_at,
+    sm.id, sm.squad_id, sm.user_id, sm.admin, sm.joined_at
 FROM squads s
     JOIN squad_members sm ON s.id = sm.squad_id
 WHERE
     sm.user_id = $1
 `
 
-func (q *Queries) FindAllSquadForUser(ctx context.Context, userID int32) ([]Squad, error) {
+type FindAllSquadForUserRow struct {
+	Squad       Squad
+	SquadMember SquadMember
+}
+
+func (q *Queries) FindAllSquadForUser(ctx context.Context, userID int32) ([]FindAllSquadForUserRow, error) {
 	rows, err := q.db.Query(ctx, findAllSquadForUser, userID)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	var items []Squad
+	var items []FindAllSquadForUserRow
 	for rows.Next() {
-		var i Squad
-		if err := rows.Scan(&i.ID, &i.Name, &i.CreatedAt); err != nil {
+		var i FindAllSquadForUserRow
+		if err := rows.Scan(
+			&i.Squad.ID,
+			&i.Squad.Name,
+			&i.Squad.CreatedAt,
+			&i.SquadMember.ID,
+			&i.SquadMember.SquadID,
+			&i.SquadMember.UserID,
+			&i.SquadMember.Admin,
+			&i.SquadMember.JoinedAt,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
@@ -43,14 +58,14 @@ func (q *Queries) FindAllSquadForUser(ctx context.Context, userID int32) ([]Squa
 const insertSquad = `-- name: InsertSquad :one
 INSERT INTO squads (NAME)
 VALUES
-    ($1) RETURNING id, name, created_at
+    ($1) RETURNING id
 `
 
-func (q *Queries) InsertSquad(ctx context.Context, name string) (Squad, error) {
+func (q *Queries) InsertSquad(ctx context.Context, name string) (int32, error) {
 	row := q.db.QueryRow(ctx, insertSquad, name)
-	var i Squad
-	err := row.Scan(&i.ID, &i.Name, &i.CreatedAt)
-	return i, err
+	var id int32
+	err := row.Scan(&id)
+	return id, err
 }
 
 const insertSquadMember = `-- name: InsertSquadMember :exec

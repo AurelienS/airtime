@@ -1,7 +1,7 @@
 -- name: InsertSquad :one
 INSERT INTO squads (NAME)
 VALUES
-    ($1) RETURNING *;
+    ($1) RETURNING id;
 
 -- name: InsertSquadMember :exec
 INSERT INTO squad_members (squad_id, user_id, admin, joined_at)
@@ -10,7 +10,8 @@ VALUES
 
 -- name: FindAllSquadForUser :many
 SELECT
-    s.*
+    sqlc.embed(s),
+    sqlc.embed(sm)
 FROM squads s
     JOIN squad_members sm ON s.id = sm.squad_id
 WHERE
