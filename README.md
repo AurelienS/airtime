@@ -31,6 +31,6 @@ SoarSquad, c'est l'appli parapente qui s'amuse avec vos statistiques, sans aucun
 Pour les max/min => paie ta bière notif
 
 # Motivation
-- [ ] Exploration technique : Golang et HTMX (Adieu React ?)
-- [ ] Besoin personnel : Créer un logbook simple pour suivre ma progression en parapente.
-- [ ] Une dose d'humour : Intégration de statistiques décalées pour le plaisir.
+- Exploration technique : Golang et HTMX (Adieu React ?)
+- Besoin personnel : Créer un logbook simple pour suivre ma progression en parapente.
+- Une dose d'humour : Intégration de statistiques décalées pour le plaisir.
