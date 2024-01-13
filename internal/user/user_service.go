@@ -2,6 +2,8 @@ package user
 
 import (
 	"context"
+
+	"github.com/AurelienS/cigare/internal/model"
 )
 
 type Service struct {
@@ -14,12 +16,6 @@ func NewService(repo Repository) Service {
 	}
 }
 
-func (r *Service) UpdateDefaultGlider(ctx context.Context, defaultGliderID int, user User) error {
-	user.DefaultGliderID = defaultGliderID
-	_, err := r.repo.UpsertUser(ctx, user)
-	return err
-}
-
-func (r Service) UpsertUser(ctx context.Context, user User) (User, error) {
+func (r Service) UpsertUser(ctx context.Context, user model.User) (model.User, error) {
 	return r.repo.UpsertUser(ctx, user)
 }

@@ -4,7 +4,7 @@ import (
 	"encoding/gob"
 	"errors"
 
-	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
@@ -41,11 +41,11 @@ func ConfigureGoth(store sessions.Store) {
 func ConfigureSessionStore(isProd bool) sessions.Store {
 	store := NewStore(isProd)
 	ConfigureGoth(store)
-	gob.Register(user.User{})
+	gob.Register(model.User{})
 	return store
 }
 
-func SaveUserInSession(c echo.Context, user user.User) error {
+func SaveUserInSession(c echo.Context, user model.User) error {
 	session, err := getSession(c)
 	if err != nil {
 		return err
@@ -58,13 +58,13 @@ func RemoveUserFromSession(c echo.Context) error {
 	u := GetUserFromContext(c)
 	util.Info().Msgf("Removed %s from session", u.Email)
 
-	nilUser := user.User{}
+	nilUser := model.User{}
 	return SaveUserInSession(c, nilUser)
 }
 
-func GetUserFromContext(c echo.Context) user.User {
+func GetUserFromContext(c echo.Context) model.User {
 	session, err := getSession(c)
-	user, ok := session.Values["user"].(user.User)
+	user, ok := session.Values["user"].(model.User)
 
 	if err != nil || !ok || user.Email == "" {
 		util.Fatal().Msgf("Failed to get user from session %s", err)
@@ -74,9 +74,9 @@ func GetUserFromContext(c echo.Context) user.User {
 	return user
 }
 
-func GetUserOrErrorFromContext(c echo.Context) (user.User, error) {
+func GetUserOrErrorFromContext(c echo.Context) (model.User, error) {
 	session, err := getSession(c)
-	user, ok := session.Values["user"].(user.User)
+	user, ok := session.Values["user"].(model.User)
 
 	if err != nil || !ok || user.Email == "" {
 		return user, errors.New("Nop")

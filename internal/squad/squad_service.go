@@ -3,39 +3,32 @@ package squad
 import (
 	"context"
 
-	"github.com/AurelienS/cigare/internal/storage"
-	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/internal/model"
 )
 
 type Service struct {
 	squadRepo Repository
-	tm        storage.TransactionManager
 }
 
-func NewService(squadRepo Repository, tm storage.TransactionManager) Service {
+func NewService(squadRepo Repository) Service {
 	return Service{
 		squadRepo: squadRepo,
-		tm:        tm,
 	}
 }
 
-func (s Service) CreateSquad(ctx context.Context, name string, user user.User) error {
-	transaction := func() error {
-		squadID, err := s.squadRepo.InsertSquad(ctx, name)
-		if err != nil {
-			return err
-		}
-
-		err = s.squadRepo.InsertSquadMember(ctx, squadID, user.ID, true)
-		if err != nil {
-			return err
-		}
-		return nil
+func (s Service) CreateSquad(ctx context.Context, name string, user model.User) error {
+	squadID, err := s.squadRepo.InsertSquad(ctx, name)
+	if err != nil {
+		return err
 	}
 
-	return s.tm.ExecuteTransaction(ctx, transaction)
+	err = s.squadRepo.InsertSquadMember(ctx, squadID, user.ID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
-func (s Service) UserSquads(ctx context.Context, user user.User) ([]Squad, error) {
+func (s Service) UserSquads(ctx context.Context, user model.User) ([]model.Squad, error) {
 	return s.squadRepo.Squads(ctx, user)
 }

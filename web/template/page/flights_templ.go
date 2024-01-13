@@ -11,11 +11,11 @@ import "io"
 import "bytes"
 
 import "github.com/AurelienS/cigare/web/template/layout"
-import "github.com/AurelienS/cigare/internal/flight"
+import "github.com/AurelienS/cigare/internal/model"
 import view "github.com/AurelienS/cigare/web/template/flight"
 import "strconv"
 
-func getFlightCOunt(flights []flight.Flight) string {
+func getFlightCOunt(flights []model.Flight) string {
 	return strconv.Itoa(len(flights))
 }
 

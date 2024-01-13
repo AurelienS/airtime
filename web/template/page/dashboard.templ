@@ -2,13 +2,13 @@ package page
 
 import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/web/template/component"
-import "github.com/AurelienS/cigare/internal/squad"
 import "github.com/AurelienS/cigare/web/template/flight"
+import "github.com/AurelienS/cigare/internal/model"
 import squadView "github.com/AurelienS/cigare/web/template/squad"
 
 type DashboardView struct {
 	IsPartOfSquad bool
-	Squads        []squad.Squad
+	Squads        []model.Squad
 	NumberOfSquad string
 }
 

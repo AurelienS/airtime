@@ -6,7 +6,7 @@ serve:
 	@go run cmd/server/main.go
 
 gen: 
-	@sqlc generate
+	@go generate ./..
 	@templ generate
 
 watch:

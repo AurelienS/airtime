@@ -1,11 +1,14 @@
 package storage
 
 import (
-	"context"
+	"database/sql"
 	"fmt"
+	"log"
 
-	"github.com/AurelienS/cigare/internal/util"
-	"github.com/jackc/pgx/v5"
+	"entgo.io/ent/dialect"
+	entsql "entgo.io/ent/dialect/sql"
+	"github.com/AurelienS/cigare/internal/storage/ent"
+	_ "github.com/jackc/pgx/v5/stdlib"
 )
 
 const (
@@ -16,16 +19,20 @@ const (
 	dbname   = "cigare"
 )
 
-func Open() (*pgx.Conn, error) {
-	ctx := context.Background()
-
-	url := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
-
-	conn, err := pgx.Connect(ctx, url)
+func Open() *ent.Client {
+	databaseUrl := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		host,
+		port,
+		user,
+		password,
+		dbname,
+	)
+	db, err := sql.Open("pgx", databaseUrl)
 	if err != nil {
-		util.Error().Msgf("Failed to connect to postgres %s", err)
-		return nil, err
+		log.Fatal(err)
 	}
 
-	return conn, nil
+	// Create an ent.Driver from `db`.
+	drv := entsql.OpenDB(dialect.Postgres, db)
+	return ent.NewClient(ent.Driver(drv))
 }

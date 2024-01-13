@@ -5,7 +5,7 @@ import (
 	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
-	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/internal/model"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
@@ -21,7 +21,7 @@ func NewService(
 	}
 }
 
-func (s *Service) AddFlight(ctx context.Context, byteContent []byte, user user.User) error {
+func (s *Service) AddFlight(ctx context.Context, byteContent []byte, user model.User) error {
 	track, err := igc.Parse(string(byteContent))
 	if err != nil {
 		return err
@@ -35,12 +35,12 @@ func (s *Service) AddFlight(ctx context.Context, byteContent []byte, user user.U
 }
 
 type DashboardData struct {
-	Flights         []Flight
+	Flights         []model.Flight
 	TotalFlightTime time.Duration
 	NumberOfFlight  int
 }
 
-func (s Service) GetDashboardData(ctx context.Context, user user.User) (DashboardData, error) {
+func (s Service) GetDashboardData(ctx context.Context, user model.User) (DashboardData, error) {
 	var data DashboardData
 
 	flights, err := s.flightRepo.GetFlights(ctx, user)

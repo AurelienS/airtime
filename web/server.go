@@ -3,10 +3,9 @@ package web
 import (
 	"github.com/AurelienS/cigare/internal/flight"
 	"github.com/AurelienS/cigare/internal/squad"
-	"github.com/AurelienS/cigare/internal/storage"
+	"github.com/AurelienS/cigare/internal/storage/ent"
 	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/web/handler"
-	"github.com/jackc/pgx/v5"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"
@@ -14,22 +13,19 @@ import (
 
 type Server struct {
 	*echo.Echo
-	Queries *storage.Queries
-	Store   sessions.Store
+	Store sessions.Store
 }
 
-func NewServer(queries storage.Queries, db *pgx.Conn, store sessions.Store) *Server {
+func NewServer(client *ent.Client, store sessions.Store) *Server {
 	e := echo.New()
 
-	transactionManager := storage.NewTransactionManager(db)
-
-	flightRepo := flight.NewRepository(queries, transactionManager)
-	userRepo := user.NewRepository(queries)
-	squadRepo := squad.NewRepository(queries)
+	flightRepo := flight.NewRepository(client)
+	userRepo := user.NewRepository(client)
+	squadRepo := squad.NewRepository(client)
 
 	flightService := flight.NewService(flightRepo)
 	userService := user.NewService(userRepo)
-	squadService := squad.NewService(squadRepo, transactionManager)
+	squadService := squad.NewService(squadRepo)
 
 	flightHandler := handler.NewFlightHandler(flightService)
 	userHandler := handler.NewUserHandler(userService)
@@ -46,5 +42,5 @@ func NewServer(queries storage.Queries, db *pgx.Conn, store sessions.Store) *Ser
 	}
 	router.Initialize(e)
 
-	return &Server{Echo: e, Queries: &queries, Store: store}
+	return &Server{Echo: e, Store: store}
 }

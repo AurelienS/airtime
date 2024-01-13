@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
@@ -43,12 +44,14 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		return err
 	}
 
-	user := user.User{
+	user := model.User{
 		GoogleID:   googleUser.UserID,
 		Email:      googleUser.Email,
 		Name:       googleUser.Name,
 		PictureURL: googleUser.AvatarURL,
 	}
+
+	// aFIX INSERT  AND CASE WHERE ALREADY EXIST SHOULDNT BE ERROR BUT DB WILL THROW UNIQUE CONSTRAINT
 	user, err = h.userService.UpsertUser(c.Request().Context(), user)
 	if err != nil {
 		return err

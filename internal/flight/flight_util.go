@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"git.sr.ht/~sbinet/gg"
-	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
 	sm "github.com/flopp/go-staticmaps"
@@ -15,7 +15,7 @@ import (
 	"gonum.org/v1/plot/plotter"
 )
 
-func TrackToFlight(externalTrack igc.Track, user user.User) Flight {
+func TrackToFlight(externalTrack igc.Track, user model.User) model.Flight {
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
 		util.Warn().Msg("Error loading location Europe/Paris for")
@@ -32,13 +32,12 @@ func TrackToFlight(externalTrack igc.Track, user user.User) Flight {
 		loc,
 	)
 
-	flight := Flight{
+	flight := model.Flight{
 		Date:            combinedDateTime,
 		TakeoffLocation: externalTrack.Site,
 	}
 
-	flight.UserID = user.ID
-	flight.GliderID = user.DefaultGliderID
+	// flight.UserID = user.ID
 
 	return flight
 }

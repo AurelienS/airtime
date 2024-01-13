@@ -2,169 +2,111 @@ package flight
 
 import (
 	"context"
-	"fmt"
-	"strconv"
-	"strings"
 	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
-	"github.com/AurelienS/cigare/internal/storage"
-	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/internal/model"
+	"github.com/AurelienS/cigare/internal/storage/ent"
+	"github.com/AurelienS/cigare/internal/storage/ent/flight"
+	userDb "github.com/AurelienS/cigare/internal/storage/ent/user"
+
+	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	"github.com/AurelienS/cigare/internal/util"
-	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type Repository struct {
-	queries storage.Queries
-	tm      storage.TransactionManager
+	client *ent.Client
 }
 
-func NewRepository(queries storage.Queries, tm storage.TransactionManager) Repository {
+func NewRepository(client *ent.Client) Repository {
 	return Repository{
-		queries: queries,
-		tm:      tm,
+		client: client,
 	}
-}
-
-func ConvertFlightDBToFlight(flightDB storage.Flight) Flight {
-	var flight Flight
-
-	flight.ID = int(flightDB.ID)
-	if flightDB.Date.Valid {
-		flight.Date = flightDB.Date.Time
-	}
-	flight.TakeoffLocation = flightDB.TakeoffLocation
-	flight.IgcFilePath = flightDB.IgcFilePath
-	flight.UserID = int(flightDB.UserID)
-	flight.FlightStatisticsID = int(flightDB.FlightStatisticsID)
-
-	return flight
-}
-
-func ConvertFlightStatisticDBToFlightStatistic(statDB storage.FlightStatistic) flightstats.FlightStatistic {
-	var stat flightstats.FlightStatistic
-
-	stat.ID = int(statDB.ID)
-	stat.TotalThermicTime = statDB.TotalThermicTime
-	stat.TotalFlightTime = statDB.TotalFlightTime
-	stat.MaxClimb = int(statDB.MaxClimb)
-	stat.MaxClimbRate = statDB.MaxClimbRate
-	stat.TotalClimb = int(statDB.TotalClimb)
-	stat.AverageClimbRate = statDB.AverageClimbRate
-	stat.NumberOfThermals = int(statDB.NumberOfThermals)
-	stat.PercentageThermic = statDB.PercentageThermic
-	stat.MaxAltitude = int(statDB.MaxAltitude)
-
-	return stat
 }
 
 func (r Repository) InsertFlight(
 	ctx context.Context,
-	flight Flight,
+	flight model.Flight,
 	flightStats flightstats.FlightStatistic,
-	user user.User,
+	user model.User,
 ) error {
 	util.Info().Str("user", user.Email).Msg("Inserting flight")
 
-	insertFlightParams := storage.InsertFlightParams{
-		Date:            pgtype.Timestamptz{Valid: true, Time: flight.Date},
-		TakeoffLocation: flight.TakeoffLocation,
-		UserID:          int32(user.ID),
-		IgcFilePath:     "not yet",
-	}
-
-	transaction := func() error {
-		flightStatID, err := r.insertFlightStats(ctx, flightStats)
-		if err != nil {
-			util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight statistics")
-			return err
-		}
-		insertFlightParams.FlightStatisticsID = int32(flightStatID)
-
-		_, err = r.queries.InsertFlight(ctx, insertFlightParams)
-		if err != nil {
-			util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight")
-		}
+	tx, err := r.client.Tx(ctx)
+	if err != nil {
 		return err
 	}
-	return r.tm.ExecuteTransaction(ctx, transaction)
+
+	fs, err := tx.FlightStatistic.
+		Create().
+		SetTotalThermicTime(int(flightStats.TotalThermicTime.Seconds())).
+		SetTotalFlightTime(int(flightStats.TotalFlightTime.Seconds())).
+		SetMaxClimb(flightStats.MaxClimb).
+		SetMaxClimbRate(flightStats.MaxClimbRate).
+		SetTotalClimb(flightStats.TotalClimb).
+		SetAverageClimbRate(flightStats.AverageClimbRate).
+		SetNumberOfThermals(flightStats.NumberOfThermals).
+		SetPercentageThermic(flightStats.PercentageThermic).
+		SetMaxAltitude(flightStats.MaxAltitude).
+		Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = tx.Flight.
+		Create().
+		SetDate(flight.Date).
+		SetTakeoffLocation(flight.TakeoffLocation).
+		SetIgcFilePath("not yet").
+		SetPilotID(user.ID).
+		SetStatistic(fs).
+		Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
 }
 
-func (r Repository) GetFlights(ctx context.Context, user user.User) ([]Flight, error) {
-	util.Info().Str("user", user.Email).Msg("Getting flights")
+func (r *Repository) GetFlights(ctx context.Context, user model.User) ([]model.Flight, error) {
+	util.Info().Str("user", user.Email).Msg("Getting user flights")
 
-	flightsDB, err := r.queries.GetFlights(ctx, int32(user.ID))
+	// Fetch flights associated with the user
+	flightsDB, err := r.client.User.
+		Query().
+		Where(userDb.IDEQ(user.ID)).
+		QueryFlights().
+		WithStatistic().
+		All(ctx)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get flights")
+		return nil, err
 	}
 
-	var flights []Flight
+	var flights []model.Flight
 	for _, f := range flightsDB {
-		flights = append(flights, ConvertFlightDBToFlight(f))
+		flights = append(flights, model.DBToDomainFlight(f))
 	}
 
-	return flights, err
+	return flights, nil
 }
 
-func (r Repository) insertFlightStats(ctx context.Context, flightStat flightstats.FlightStatistic) (int, error) {
-	util.Info().Msg("Inserting flight statistics")
-
-	param := storage.InsertFlightStatsParams{
-		TotalThermicTime:  flightStat.TotalThermicTime,
-		TotalFlightTime:   flightStat.TotalFlightTime,
-		MaxClimb:          int32(flightStat.MaxClimb),
-		MaxClimbRate:      flightStat.MaxClimbRate,
-		TotalClimb:        int32(flightStat.TotalClimb),
-		AverageClimbRate:  flightStat.AverageClimbRate,
-		NumberOfThermals:  int32(flightStat.NumberOfThermals),
-		PercentageThermic: flightStat.PercentageThermic,
-		MaxAltitude:       int32(flightStat.MaxAltitude),
-	}
-	id, err := r.queries.InsertFlightStats(ctx, param)
-	if err != nil {
-		util.Error().Err(err).Msg("Failed to insert flight statistics")
-		return 0, err
-	}
-
-	return int(id), nil
-}
-
-func (r Repository) GetTotalFlightTime(ctx context.Context, userID int) (time.Duration, error) {
+func (r *Repository) GetTotalFlightTime(ctx context.Context, userID int) (time.Duration, error) {
 	util.Info().Int("user_id", userID).Msg("Getting total flight time")
 
-	flightTimeMicroseconds, err := r.queries.GetTotalFlightTime(ctx, int32(userID))
+	// Perform the sum aggregation on the total flight time
+	agg, err := r.client.FlightStatistic.
+		Query().
+		Where(flightstatistic.HasFlightWith(flight.HasPilotWith(userDb.IDEQ(userID)))).
+		Aggregate(ent.Sum(flightstatistic.FieldTotalFlightTime)).
+		Int(ctx)
 	if err != nil {
 		util.Error().Err(err).Int("user_id", userID).Msg("Failed to get total flight time")
 		return 0, err
 	}
-	duration, err := parseHHMMSSDuration(flightTimeMicroseconds)
-	if err != nil {
-		util.Error().Err(err).Msg("Failed to parse sum(interval)::text")
-		return 0, err
-	}
-	return duration, nil
-}
 
-func parseHHMMSSDuration(durationStr string) (time.Duration, error) {
-	parts := strings.Split(durationStr, ":")
-	if len(parts) != 3 {
-		return 0, fmt.Errorf("invalid duration format")
-	}
-
-	hours, err := strconv.Atoi(parts[0])
-	if err != nil {
-		return 0, fmt.Errorf("invalid hours: %w", err)
-	}
-
-	minutes, err := strconv.Atoi(parts[1])
-	if err != nil {
-		return 0, fmt.Errorf("invalid minutes: %w", err)
-	}
-
-	seconds, err := strconv.Atoi(parts[2])
-	if err != nil {
-		return 0, fmt.Errorf("invalid seconds: %w", err)
-	}
-
-	return time.Duration(hours)*time.Hour + time.Duration(minutes)*time.Minute + time.Duration(seconds)*time.Second, nil
+	totalFlightTime := time.Duration(agg) * time.Second
+	return totalFlightTime, nil
 }

@@ -11,15 +11,15 @@ import "io"
 import "bytes"
 
 import "github.com/AurelienS/cigare/web/template/component"
-import "github.com/AurelienS/cigare/internal/squad"
 
 import "strconv"
+import "github.com/AurelienS/cigare/internal/model"
 
-func memberCount(squad squad.Squad) string {
+func memberCount(squad model.Squad) string {
 	return strconv.Itoa(len(squad.Members))
 }
 
-func SquadCard(squad squad.Squad) templ.Component {
+func SquadCard(squad model.Squad) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -55,8 +55,22 @@ func SquadCard(squad squad.Squad) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var4 := `volants`
+			templ_7745c5c3_Var4 := `volants (`
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var5 string
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(squad.Members[0].GoogleID)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/template/squad/squadCard.templ`, Line: 13, Col: 66}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Var6 := `)`
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
