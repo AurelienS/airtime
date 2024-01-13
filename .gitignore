@@ -4,3 +4,4 @@ build-errors.log
 logs/
 *.zip
 dev.env
+node_modules/
