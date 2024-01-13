@@ -44,11 +44,3 @@ func (h DashboardHandler) GetIndex(c echo.Context) error {
 	}
 	return Render(c, page.Dashboard(viewbag))
 }
-
-func (h DashboardHandler) PostFlight(c echo.Context) error {
-	err := insertFlight(c, h.flightService)
-	if err != nil {
-		return err
-	}
-	return h.GetIndex(c)
-}

@@ -16,6 +16,7 @@ type FlightView struct {
 type DashboardView struct {
 	Gliders []GliderView
 	Flights []FlightView
+	Img     string
 
 	NumberOfFlight  string
 	TotalFlightTime string

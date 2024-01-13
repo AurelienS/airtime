@@ -14,9 +14,85 @@ import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/internal/model"
 import view "github.com/AurelienS/cigare/web/template/flight"
 import "strconv"
+import "github.com/AurelienS/cigare/web/template/component"
 
 func getFlightCOunt(flights []model.Flight) string {
 	return strconv.Itoa(len(flights))
+}
+
+var data = []component.StatView{
+	{
+		Title:       "Altitude",
+		Icon:        "🏔️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "min", Value: "112 m"},
+			{Title: "max", Value: "1552 m"},
+		},
+	},
+	{
+		Title:       "Variomètre",
+		Icon:        "📈",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "min", Value: "-16 m/s"},
+			{Title: "max", Value: "+6 m/s"},
+		},
+	},
+	{
+		Title:       "Vitesse",
+		Icon:        "🏎️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "max", Value: "70 km/h"},
+		},
+	},
+	{
+		Title:       "Durée de vol",
+		Icon:        "⏱️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "min", Value: "2'"},
+			{Title: "max", Value: "4h"},
+		},
+	},
+	{
+		Title:       "Durée de vol moyen",
+		Icon:        "⏱️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "", Value: "20min"},
+			{Title: "30j", Value: "40min"},
+			{Title: "365j", Value: "25min"},
+		},
+	},
+	{
+		Title:       "Nombre de vol",
+		Icon:        "⏱️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "", Value: "20"},
+			{Title: "30j", Value: "40"},
+			{Title: "365j", Value: "25"},
+		},
+	},
+	{
+		Title:       "Temps de vol",
+		Icon:        "⏱️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "", Value: "20h"},
+			{Title: "30j", Value: "40h"},
+			{Title: "365j", Value: "25h"},
+		},
+	},
 }
 
 func Flights(arg view.DashboardView) templ.Component {
@@ -38,16 +114,15 @@ func Flights(arg view.DashboardView) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-col text-gray-300\" id=\"flightPage\"><div class=\"flex justify-between items-center mb-6 p-4 bg-gray-900\"><h1 class=\"text-xl font-light text-blue-300\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"avatar\"><div class=\"w-24 mask mask-squircle\"><img src=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var3 := `Flights Dashboard`
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(arg.Img))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></div></div><div class=\"flex flex-col justify-between\" id=\"flightPage\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -55,17 +130,15 @@ func Flights(arg view.DashboardView) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"flex gap-4\"><div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-wrap gap-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = view.FlightCard(arg.NumberOfFlight, arg.TotalFlightTime).Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = view.AnnualCard().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
+			for _, d := range data {
+				templ_7745c5c3_Err = component.StatCard(d).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
@@ -75,19 +148,7 @@ func Flights(arg view.DashboardView) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div>")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = view.GliderCard(arg.Gliders).Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = view.SiteCard().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

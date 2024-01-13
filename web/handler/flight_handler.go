@@ -2,7 +2,6 @@ package handler
 
 import (
 	"fmt"
-	"io"
 	"strconv"
 
 	"github.com/AurelienS/cigare/internal/flight"
@@ -26,12 +25,13 @@ func NewFlightHandler(flightService flight.Service) FlightHandler {
 func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 
-	data, err := h.FlightService.GetDashboardData(c.Request().Context(), user)
-	if err != nil {
-		return err
-	}
+	// data, err := h.FlightService.GetDashboardData(c.Request().Context(), user)
+	// if err != nil {
+	// 	return err
+	// }
 
-	viewData := TransformDashboardToView(data)
+	var viewData flightView.DashboardView // := TransformDashboardToView(data)
+	viewData.Img = user.PictureURL
 	return Render(c, page.Flights(viewData))
 }
 
@@ -52,43 +52,19 @@ func TransformDashboardToView(data flight.DashboardData) flightView.DashboardVie
 }
 
 func (h *FlightHandler) PostFlight(c echo.Context) error {
-	err := insertFlight(c, h.FlightService)
-	if err != nil {
-		return err
-	}
-	return h.GetIndexPage(c)
-}
-
-func insertFlight(c echo.Context, flightService flight.Service) error {
 	file, err := c.FormFile("igcfile")
 	if err != nil {
 		util.Error().Err(err).Msg("Failed to get IGC file from form")
 		return err
 	}
 
-	src, err := file.Open()
-	if err != nil {
-		util.Error().Err(err).Str("filename", file.Filename).Msg("Failed to open IGC file")
-		return err
-	}
-	defer src.Close()
-
-	byteContent, err := io.ReadAll(src)
-	if err != nil {
-		util.Error().Err(err).Str("filename", file.Filename).Msg("Failed to read IGC file")
-		return err
-	}
-
 	user := session.GetUserFromContext(c)
 
-	err = flightService.AddFlight(c.Request().Context(), byteContent, user)
+	err = h.FlightService.ProcessAndAddFlight(c.Request().Context(), file, user)
 	if err != nil {
-		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed to process and insert flight")
 		return err
 	}
 
-	util.Info().Str("user", user.Email).Str("filename", file.Filename).
-		Msg("File parsed and flight record created successfully")
-
-	return nil
+	return h.GetIndexPage(c)
 }

@@ -47,11 +47,267 @@ func Dashboard(viewbag DashboardView) templ.Component {
 					templ_7745c5c3_Buffer = templ.GetBuffer()
 					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 				}
-				templ_7745c5c3_Err = flight.UploadFlightForm("/dashboard/flight", "body").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = flight.UploadFlightForm("/flight", "body").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" ")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"flex flex-wrap justify-start gap-2\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "La fusée ailée",
+					Description: "monte le plus rapidement",
+					Icon:        "🚀",
+					Categories: []component.StatCategory{
+						{
+							Title:      "100m",
+							Value:      "2'35",
+							Rank:       "1",
+							Percentile: "1",
+						},
+						{
+							Title:      "500m",
+							Value:      "5'23",
+							Rank:       "123",
+							Percentile: "13",
+						},
+						{
+							Title:      "1000m",
+							Value:      "7'23",
+							Rank:       "12",
+							Percentile: "60",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.StatCard(component.StatView{
+					Title:       "Navigateur des Gratte-ciels",
+					Description: "survole le plus de zones urbaines",
+					Icon:        "🏙️",
+					Categories: []component.StatCategory{
+						{
+							Title:      "zones",
+							Value:      "15",
+							Rank:       "2",
+							Percentile: "3",
+						},
+					},
+				}).Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

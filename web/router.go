@@ -28,7 +28,6 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.GET("", r.IndexHandler.Get)
 	authGroup.GET("dashboard", r.DashboardHandler.GetIndex)
 	authGroup.GET("logbook", r.FlightHandler.GetIndexPage)
-	authGroup.POST("dashboard/flight", r.DashboardHandler.PostFlight)
 	authGroup.GET("create-squad", r.SquadHandler.GetCreateSquad)
 	authGroup.POST("squad", r.SquadHandler.PostSquad)
 

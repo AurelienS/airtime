@@ -1,0 +1,41 @@
+package component
+
+type StatCategory struct {
+	Title      string
+	Value      string
+	Rank       string
+	Percentile string
+}
+
+type StatView struct {
+	Title       string
+	Description string
+	Icon        string
+	NoRank      bool
+	Categories  []StatCategory
+}
+
+templ StatCard(arg StatView) {
+	<div class="bg-white shadow-md rounded-lg p-4 text-center flex flex-col items-center max-w-xs">
+		<div class="text-xl font-bold mb-1">{ arg.Title }</div>
+		<div class="text-sm text-gray-600 mb-2">{ arg.Description }</div>
+		<div class="text-2xl mb-3">{ arg.Icon }</div>
+		<div class="flex text-center gap-4">
+			for _, cat := range arg.Categories {
+				@category(cat,arg.NoRank)
+			}
+		</div>
+	</div>
+}
+
+templ category(cat StatCategory, noRank bool) {
+	<div class="text-sm h-auto">
+		<div>
+			<span class="font-semibold text-gray-800">{ cat.Value }</span>
+			<span class="font-medium text-blue-600">{ cat.Title }</span>
+		</div>
+		if !noRank {
+			<div class="text-xs text-gray-500">#{ cat.Rank } ({ cat.Percentile }%)</div>
+		}
+	</div>
+}

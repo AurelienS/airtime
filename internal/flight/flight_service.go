@@ -2,10 +2,13 @@ package flight
 
 import (
 	"context"
+	"io"
+	"mime/multipart"
 	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
 	"github.com/AurelienS/cigare/internal/model"
+	"github.com/AurelienS/cigare/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
@@ -21,7 +24,20 @@ func NewService(
 	}
 }
 
-func (s *Service) AddFlight(ctx context.Context, byteContent []byte, user model.User) error {
+func (s *Service) ProcessAndAddFlight(ctx context.Context, file *multipart.FileHeader, user model.User) error {
+	src, err := file.Open()
+	if err != nil {
+		util.Error().Err(err).Str("filename", file.Filename).Msg("Failed to open IGC file")
+		return err
+	}
+	defer src.Close()
+
+	byteContent, err := io.ReadAll(src)
+	if err != nil {
+		util.Error().Err(err).Str("filename", file.Filename).Msg("Failed to read IGC file")
+		return err
+	}
+
 	track, err := igc.Parse(string(byteContent))
 	if err != nil {
 		return err
@@ -30,8 +46,15 @@ func (s *Service) AddFlight(ctx context.Context, byteContent []byte, user model.
 	flight := TrackToFlight(track, user)
 	stats := flightstats.NewFlightStatistics(track.Points)
 	err = s.flightRepo.InsertFlight(ctx, flight, stats, user)
+	if err != nil {
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
+		return err
+	}
 
-	return err
+	util.Info().Str("user", user.Email).Str("filename", file.Filename).
+		Msg("File processed and flight record created successfully")
+
+	return nil
 }
 
 type DashboardData struct {

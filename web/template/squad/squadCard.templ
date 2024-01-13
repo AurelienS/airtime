@@ -10,7 +10,7 @@ func memberCount(squad model.Squad) string {
 }
 
 templ SquadCard(squad model.Squad) {
-	@component.Card(squad.Name) {
-		<div>{ memberCount(squad) } volants ({ squad.Members[0].GoogleID })</div>
-	}
+	<div>{ memberCount(squad) } volants</div>
+	<div>17 tours a gauche et 23 tours a droite</div>
+	<div>{ memberCount(squad) } volants</div>
 }

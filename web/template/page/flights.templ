@@ -4,29 +4,102 @@ import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/internal/model"
 import view "github.com/AurelienS/cigare/web/template/flight"
 import "strconv"
+import "github.com/AurelienS/cigare/web/template/component"
 
 func getFlightCOunt(flights []model.Flight) string {
 	return strconv.Itoa(len(flights))
 }
 
+var data = []component.StatView{
+	{
+		Title:       "Altitude",
+		Icon:        "🏔️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "min", Value: "112 m"},
+			{Title: "max", Value: "1552 m"},
+		},
+	},
+	{
+		Title:       "Variomètre",
+		Icon:        "📈",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "min", Value: "-16 m/s"},
+			{Title: "max", Value: "+6 m/s"},
+		},
+	},
+	{
+		Title:       "Vitesse",
+		Icon:        "🏎️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "max", Value: "70 km/h"},
+		},
+	},
+	{
+		Title:       "Durée de vol",
+		Icon:        "⏱️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "min", Value: "2'"},
+			{Title: "max", Value: "4h"},
+		},
+	},
+	{
+		Title:       "Durée de vol moyen",
+		Icon:        "⏱️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "", Value: "20min"},
+			{Title: "30j", Value: "40min"},
+			{Title: "365j", Value: "25min"},
+		},
+	},
+	{
+		Title:       "Nombre de vol",
+		Icon:        "⏱️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "", Value: "20"},
+			{Title: "30j", Value: "40"},
+			{Title: "365j", Value: "25"},
+		},
+	},
+	{
+		Title:       "Temps de vol",
+		Icon:        "⏱️",
+		NoRank:      true,
+		Description: "",
+		Categories: []component.StatCategory{
+			{Title: "", Value: "20h"},
+			{Title: "30j", Value: "40h"},
+			{Title: "365j", Value: "25h"},
+		},
+	},
+}
+
 templ Flights(arg view.DashboardView) {
 	@layout.Base() {
-		<div class="flex flex-col text-gray-300" id="flightPage">
-			<div class="flex justify-between items-center mb-6 p-4 bg-gray-900">
-				<h1 class="text-xl font-light text-blue-300">Flights Dashboard</h1>
-				@view.UploadFlightForm("/flight", "uploadForm")
+		<div class="avatar">
+			<div class="w-24 mask mask-squircle">
+				<img src={arg.Img}/>
 			</div>
-			<div class="flex gap-4">
-				<div>
-					@view.FlightCard(arg.NumberOfFlight, arg.TotalFlightTime)
-					@view.AnnualCard()
-				</div>
-				@view.FlightRecords(arg.Flights)
-				<div>
-					@view.GliderCard(arg.Gliders)
-					@view.SiteCard()
-				</div>
+		</div>
+		<div class="flex flex-col justify-between" id="flightPage">
+			@view.UploadFlightForm("/flight", "uploadForm")
+			<div class="flex flex-wrap gap-4">
+				for _,d := range data {
+					@component.StatCard(d)
+				}
 			</div>
+			@view.FlightRecords(arg.Flights)
 		</div>
 	}
 }
