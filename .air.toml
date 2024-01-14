@@ -9,7 +9,6 @@ tmp_dir = "tmp"
   exclude_regex = ["^.*_templ\\.go$", "^ent/.*$"]
   include_dir = []
   include_ext = ["go", "tpl", "tmpl", "html", "templ", "node_modules"]
-  include_ext = ["go", "tpl", "tmpl", "html", "templ"]
   include_file = []
   kill_delay = "0s"
   send_interrupt = true

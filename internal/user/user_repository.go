@@ -35,18 +35,27 @@ func (r *Repository) InsertUser(ctx context.Context, user model.User) (model.Use
 	return model.DBToDomainUser(u), nil
 }
 
-func (r *Repository) UpdateUser(ctx context.Context, user model.User) (model.User, error) {
+func (r *Repository) UpdateUser(ctx context.Context, incomingUser model.User) (model.User, error) {
 	u, err := r.client.User.
-		UpdateOneID(user.ID).
-		SetEmail(user.Email).
-		SetName(user.Name).
-		SetPictureURL(user.PictureURL).
+		Query().
+		Where(user.GoogleIDEQ(incomingUser.GoogleID)).
+		Only(ctx)
+	if err != nil {
+		return incomingUser, err
+	}
+
+	// Then, update the user
+	u, err = r.client.User.
+		UpdateOneID(u.ID).
+		SetEmail(incomingUser.Email).
+		SetName(incomingUser.Name).
+		SetPictureURL(incomingUser.PictureURL).
 		Save(ctx)
 	if err != nil {
-		util.Error().Msgf("Failed to insert user %v", user)
-		return user, err
+		util.Error().Msgf("Failed to update user %v", incomingUser)
+		return incomingUser, err
 	}
-	util.Info().Str("user", user.Email).Msg("Inserted user")
+	util.Info().Str("user", u.Email).Msg("Updated user")
 	return model.DBToDomainUser(u), nil
 }
 

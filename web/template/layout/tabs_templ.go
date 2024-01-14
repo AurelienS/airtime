@@ -34,7 +34,7 @@ func Tabs(currentUser model.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"tabContainer\" class=\"flex border-b justify-center\"><button class=\"h-[918px]\" hx-get=\"/dashboard\" hx-target=\"#tabContent\" hx-swap=\"innerHTML\" hx-trigger=\"click\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"tabContainer\" class=\"flex border-b justify-center\"><button class=\"btn\" hx-get=\"/dashboard\" hx-target=\"#tabContent\" hx-swap=\"innerHTML\" hx-trigger=\"click\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -43,7 +43,7 @@ func Tabs(currentUser model.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button> <button class=\"tabButton inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-700 hover:text-blue-800 bg-white hover:bg-gray-100\" hx-get=\"/logbook\" hx-target=\"#tabContent\" hx-swap=\"innerHTML\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button> <button class=\"btn\" hx-get=\"/logbook\" hx-target=\"#tabContent\" hx-swap=\"innerHTML\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

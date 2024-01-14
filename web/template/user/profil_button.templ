@@ -4,6 +4,7 @@ import "github.com/AurelienS/cigare/internal/model"
 
 templ ProfilButton(user model.User) {
 	<div class="dropdown dropdown-end">
+		<p>{ user.Name }</p>
 		<div class="avatar">
 			<div class="w-24 mask mask-squircle">
 				<img src={ user.PictureURL }/>
