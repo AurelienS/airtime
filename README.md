@@ -34,3 +34,13 @@ Pour les max/min => paie ta bière notif
 - Exploration technique : Golang et HTMX (Adieu React ?)
 - Besoin personnel : Créer un logbook simple pour suivre ma progression en parapente.
 - Une dose d'humour : Intégration de statistiques décalées pour le plaisir.
+
+
+# Run the code
+```
+air
+```
+
+```
+make tailwind
+```

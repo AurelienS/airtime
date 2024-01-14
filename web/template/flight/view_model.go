@@ -1,5 +1,7 @@
 package flight
 
+import "github.com/AurelienS/cigare/internal/model"
+
 type GliderView struct {
 	ID           int
 	Name         string
@@ -14,10 +16,10 @@ type FlightView struct {
 }
 
 type DashboardView struct {
-	Gliders []GliderView
-	Flights []FlightView
-	Img     string
-
+	Gliders         []GliderView
+	Flights         []FlightView
+	Img             string
+	User            model.User
 	NumberOfFlight  string
 	TotalFlightTime string
 }

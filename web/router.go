@@ -18,6 +18,8 @@ type Router struct {
 func (r *Router) Initialize(e *echo.Echo) {
 	e.Use(middleware.LoggerMiddleware())
 
+	e.Static("/static", "web/static/")
+
 	e.GET("/login", r.AuthHandler.GetLogin)
 	e.GET("/auth/:provider/callback", r.AuthHandler.GetAuthCallback)
 	e.GET("/auth/:provider", r.AuthHandler.GetAuthProvider)

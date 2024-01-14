@@ -1,23 +1,23 @@
 package layout
 
+import "github.com/AurelienS/cigare/internal/model"
+
 css bodyCss() {
 	font-family: 'Roboto', sans-serif;
 }
 
-templ Base() {
+templ Base(currentUser model.User) {
 	<!DOCTYPE html>
 	<html lang="en" class="dark">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>SoarSquad</title>
-			<script src="static/htmx.min.js" crossorigin="anonymous"></script>
-			<link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet"/>
 			<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
-			<link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css"/>
-			<script src="https://cdn.tailwindcss.com"></script>
-			<script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuVetoL1lrYwg5t+9QdHe7NLX/SoJYkXDFfX37iInKRy5xLSi8nO7UC" crossorigin="anonymous"></script>
+			
+			templ.Link("stylesheet", "/static/style.css")
 			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap" rel="stylesheet"/>
+			<script src="/static/htmx.min.js"></script>
 			<style>
 				* {
 					box-sizing: border-box;
@@ -25,6 +25,7 @@ templ Base() {
 			</style>
 		</head>
 		<body class={ bodyCss(), "max-h-screen max-w-screen-2xl m-auto h-screen bg-gradient-to-r from-blue-400 to-purple-500" }>
+			@Tabs(currentUser)
 			{ children... }
 		</body>
 	</html>

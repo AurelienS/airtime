@@ -10,10 +10,11 @@ type DashboardView struct {
 	IsPartOfSquad bool
 	Squads        []model.Squad
 	NumberOfSquad string
+	user          model.User
 }
 
 templ Dashboard(viewbag DashboardView) {
-	@layout.Base() {
+	@layout.Base(viewbag.user) {
 		@component.PageContainer("dashboard") {
 			@flight.UploadFlightForm("/flight", "body")
 			<div class="flex flex-wrap justify-start gap-2">

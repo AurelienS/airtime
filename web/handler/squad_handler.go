@@ -20,7 +20,8 @@ func NewSquadHandler(squadService squad.Service) SquadHandler {
 }
 
 func (h SquadHandler) GetCreateSquad(c echo.Context) error {
-	return Render(c, page.CreateSquad())
+	user := session.GetUserFromContext(c)
+	return Render(c, page.CreateSquad(user))
 }
 
 func (h SquadHandler) PostSquad(c echo.Context) error {

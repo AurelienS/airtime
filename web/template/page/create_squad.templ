@@ -2,9 +2,10 @@ package page
 
 import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/web/template/component"
+import "github.com/AurelienS/cigare/internal/model"
 
-templ CreateSquad() {
-	@layout.Base() {
+templ CreateSquad(user model.User) {
+	@layout.Base(user) {
 		@component.PageContainer("dashboard") {
 			<form
 				action="/squad"

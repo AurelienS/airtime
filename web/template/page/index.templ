@@ -1,9 +1,9 @@
 package page
 
 import "github.com/AurelienS/cigare/web/template/layout"
+import "github.com/AurelienS/cigare/internal/model"
 
-templ Index() {
-	@layout.Base() {
-		@layout.Tabs()
+templ Index(user model.User) {
+	@layout.Base(user) {
 	}
 }

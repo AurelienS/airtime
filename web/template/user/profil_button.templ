@@ -1,0 +1,24 @@
+package user
+
+import "github.com/AurelienS/cigare/internal/model"
+
+templ ProfilButton(user model.User) {
+	<div class="dropdown dropdown-end">
+		<div class="avatar">
+			<div class="w-24 mask mask-squircle">
+				<img src={ user.PictureURL }/>
+			</div>
+		</div>
+		<ul tabindex="0" class="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+			<li>
+				<a href="/profile">Profile</a>
+			</li>
+			<li>
+				<a href="/settings">Settings</a>
+			</li>
+			<li>
+				<a href="/logout">Logout</a>
+			</li>
+		</ul>
+	</div>
+}
