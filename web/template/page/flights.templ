@@ -1,8 +1,6 @@
 package page
 
-import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/internal/model"
-import view "github.com/AurelienS/cigare/web/template/flight"
 import "strconv"
 import "github.com/AurelienS/cigare/web/template/component"
 
@@ -85,21 +83,10 @@ var data = []component.StatView{
 	},
 }
 
-templ Flights(arg view.DashboardView) {
-	@layout.Base(arg.User) {
-		<div class="avatar">
-			<div class="w-24 mask mask-squircle">
-				<img src={ arg.Img }/>
-			</div>
-		</div>
-		<div class="flex flex-col justify-between" id="flightPage">
-			@view.UploadFlightForm("/flight", "uploadForm")
-			<div class="flex flex-wrap gap-4">
-				for _,d := range data {
-					@component.StatCard(d)
-				}
-			</div>
-			@view.FlightRecords(arg.Flights)
-		</div>
-	}
+templ Flights() {
+	<div class="stats shadow" id="flightPage">
+		for _,d := range data {
+			@component.StatCard(d)
+		}
+	</div>
 }

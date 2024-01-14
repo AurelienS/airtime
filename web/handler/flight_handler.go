@@ -32,7 +32,7 @@ func (h *FlightHandler) GetIndexPage(c echo.Context) error {
 
 	var viewData flightView.DashboardView // := TransformDashboardToView(data)
 	viewData.Img = user.PictureURL
-	return Render(c, page.Flights(viewData))
+	return Render(c, page.Flights())
 }
 
 func TransformDashboardToView(data flight.DashboardData) flightView.DashboardView {

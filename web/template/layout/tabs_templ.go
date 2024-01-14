@@ -10,7 +10,6 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/AurelienS/cigare/web/template/user"
 import "github.com/AurelienS/cigare/internal/model"
 
 func Tabs(currentUser model.User) templ.Component {
@@ -26,15 +25,7 @@ func Tabs(currentUser model.User) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = user.ProfilButton(currentUser).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"tabContainer\" class=\"flex border-b justify-center\"><button class=\"btn\" hx-get=\"/dashboard\" hx-target=\"#tabContent\" hx-swap=\"innerHTML\" hx-trigger=\"click\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div><div id=\"tabContainer\" class=\"flex border-b justify-center\"><button class=\"btn\" hx-get=\"/dashboard\" hx-target=\"#tabContent\" hx-swap=\"innerHTML\" hx-trigger=\"click\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

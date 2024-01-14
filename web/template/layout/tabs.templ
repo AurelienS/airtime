@@ -1,11 +1,9 @@
 package layout
 
-import "github.com/AurelienS/cigare/web/template/user"
 import "github.com/AurelienS/cigare/internal/model"
 
 templ Tabs(currentUser model.User) {
 	<div>
-		@user.ProfilButton(currentUser)
 		<div id="tabContainer" class="flex border-b justify-center">
 			<button
 				class="btn"

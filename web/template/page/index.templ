@@ -5,5 +5,6 @@ import "github.com/AurelienS/cigare/internal/model"
 
 templ Index(user model.User) {
 	@layout.Base(user) {
+		@Flights()
 	}
 }
