@@ -12,7 +12,6 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/web/template/component"
-import "github.com/AurelienS/cigare/web/template/flight"
 import "github.com/AurelienS/cigare/internal/model"
 import squadView "github.com/AurelienS/cigare/web/template/squad"
 
@@ -48,11 +47,7 @@ func Dashboard(viewbag DashboardView) templ.Component {
 					templ_7745c5c3_Buffer = templ.GetBuffer()
 					defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 				}
-				templ_7745c5c3_Err = flight.UploadFlightForm("/flight", "body").Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"flex flex-wrap justify-start gap-2\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex flex-wrap justify-start gap-2\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

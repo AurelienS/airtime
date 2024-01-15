@@ -2,7 +2,6 @@ package page
 
 import "github.com/AurelienS/cigare/web/template/layout"
 import "github.com/AurelienS/cigare/web/template/component"
-import "github.com/AurelienS/cigare/web/template/flight"
 import "github.com/AurelienS/cigare/internal/model"
 import squadView "github.com/AurelienS/cigare/web/template/squad"
 
@@ -16,7 +15,6 @@ type DashboardView struct {
 templ Dashboard(viewbag DashboardView) {
 	@layout.Base(viewbag.user) {
 		@component.PageContainer("dashboard") {
-			@flight.UploadFlightForm("/flight", "body")
 			<div class="flex flex-wrap justify-start gap-2">
 				@component.StatCard(component.StatView{
 					Title: "La fusée ailée",

@@ -1,4 +1,4 @@
-package flight
+package logbook
 
 import (
 	"context"

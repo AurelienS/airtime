@@ -2,6 +2,7 @@ package layout
 
 import "github.com/AurelienS/cigare/internal/model"
 import "github.com/AurelienS/cigare/web/template/user"
+import "github.com/AurelienS/cigare/web/template/flight"
 
 css bodyCss() {
 	font-family: 'Roboto', sans-serif;
@@ -26,7 +27,9 @@ templ Base(currentUser model.User) {
 		</head>
 		<body class="flex flex-col h-full min-h-screen">
 			<div class="navbar bg-base-100 mb-8 top-0 sticky">
-				<div class="navbar-start"></div>
+				<div class="navbar-start">
+					@flight.UploadFlightForm()
+				</div>
 				<div class="navbar-center">
 					<a class="btn btn-ghost text-xl">SoarSquad</a>
 				</div>
@@ -34,7 +37,7 @@ templ Base(currentUser model.User) {
 					@user.ProfilButton(currentUser)
 				</div>
 			</div>
-			<div class="container mx-auto flex flex-col justify-center">
+			<div id="content" class="container mx-auto flex flex-col justify-center">
 				{ children... }
 			</div>
 			<footer class="footer footer-center p-4 bg-base-300 text-base-content absolute bottom-0">

@@ -8,7 +8,7 @@ import (
 
 type Router struct {
 	AuthHandler      handler.AuthHandler
-	FlightHandler    handler.FlightHandler
+	LogbookHandler   handler.LogbookHandler
 	UserHandler      handler.UserHandler
 	DashboardHandler handler.DashboardHandler
 	SquadHandler     handler.SquadHandler
@@ -26,14 +26,14 @@ func (r *Router) Initialize(e *echo.Echo) {
 
 	authGroup := e.Group("/")
 	authGroup.Use(middleware.AuthMiddleware)
-
 	authGroup.GET("", r.IndexHandler.Get)
 	authGroup.GET("dashboard", r.DashboardHandler.GetIndex)
-	authGroup.GET("logbook", r.FlightHandler.GetIndexPage)
+
+	authGroup.GET("logbook", r.LogbookHandler.GetPage)
+	authGroup.POST("logbook/flight", r.LogbookHandler.PostFlight)
+
 	authGroup.GET("create-squad", r.SquadHandler.GetCreateSquad)
 	authGroup.POST("squad", r.SquadHandler.PostSquad)
 
 	authGroup.GET("logout", r.AuthHandler.GetLogout)
-
-	authGroup.POST("flight", r.FlightHandler.PostFlight)
 }

@@ -10,9 +10,7 @@ import "context"
 import "io"
 import "bytes"
 
-import "github.com/AurelienS/cigare/web/template/component"
-
-func UploadFlightForm(hxPost string, hxTarget string) templ.Component {
+func UploadFlightForm() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -31,7 +29,6 @@ func UploadFlightForm(hxPost string, hxTarget string) templ.Component {
 		}
 		templ_7745c5c3_Var2 := `
 		function triggerUpload(input) {
-			console.log("file: upload_flight_form.templ ~ line 18 ~ triggerUpload ~ input : ")
 			var event = new CustomEvent('fileSelected', {bubbles: true});
 			input.dispatchEvent(event);
 		}
@@ -40,31 +37,16 @@ func UploadFlightForm(hxPost string, hxTarget string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"outerHTML\" hx-target=\"#flightPage\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> <button class=\"btn\" type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(hxPost))
+		templ_7745c5c3_Var3 := `Upload new flight`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-select=\"#flightPage\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-target=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(hxTarget))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc\" style=\"display:none;\" onchange=\"triggerUpload(this)\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = component.ButtonIgc("Upload new flight").Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

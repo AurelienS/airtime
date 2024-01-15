@@ -1,7 +1,7 @@
 package web
 
 import (
-	"github.com/AurelienS/cigare/internal/flight"
+	"github.com/AurelienS/cigare/internal/logbook"
 	"github.com/AurelienS/cigare/internal/squad"
 	"github.com/AurelienS/cigare/internal/storage/ent"
 	"github.com/AurelienS/cigare/internal/user"
@@ -19,15 +19,15 @@ type Server struct {
 func NewServer(client *ent.Client, store sessions.Store) *Server {
 	e := echo.New()
 
-	flightRepo := flight.NewRepository(client)
+	flightRepo := logbook.NewRepository(client)
 	userRepo := user.NewRepository(client)
 	squadRepo := squad.NewRepository(client)
 
-	flightService := flight.NewService(flightRepo)
+	flightService := logbook.NewService(flightRepo)
 	userService := user.NewService(userRepo)
 	squadService := squad.NewService(squadRepo)
 
-	flightHandler := handler.NewFlightHandler(flightService)
+	flightHandler := handler.NewLogbookHandler(flightService)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService)
 	dashboardHandler := handler.NewDashboardHandler(userService, squadService, flightService)
@@ -36,7 +36,7 @@ func NewServer(client *ent.Client, store sessions.Store) *Server {
 	router := Router{
 		AuthHandler:      authHandler,
 		DashboardHandler: dashboardHandler,
-		FlightHandler:    flightHandler,
+		LogbookHandler:   flightHandler,
 		UserHandler:      userHandler,
 		SquadHandler:     squadHandler,
 	}

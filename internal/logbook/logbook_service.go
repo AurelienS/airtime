@@ -1,4 +1,4 @@
-package flight
+package logbook
 
 import (
 	"context"
@@ -13,14 +13,14 @@ import (
 )
 
 type Service struct {
-	flightRepo Repository
+	logbookRepo Repository
 }
 
 func NewService(
-	flightRepo Repository,
+	logbookRepo Repository,
 ) Service {
 	return Service{
-		flightRepo: flightRepo,
+		logbookRepo: logbookRepo,
 	}
 }
 
@@ -45,7 +45,7 @@ func (s *Service) ProcessAndAddFlight(ctx context.Context, file *multipart.FileH
 
 	flight := TrackToFlight(track, user)
 	stats := flightstats.NewFlightStatistics(track.Points)
-	err = s.flightRepo.InsertFlight(ctx, flight, stats, user)
+	err = s.logbookRepo.InsertFlight(ctx, flight, stats, user)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
 		return err
@@ -66,12 +66,12 @@ type DashboardData struct {
 func (s Service) GetDashboardData(ctx context.Context, user model.User) (DashboardData, error) {
 	var data DashboardData
 
-	flights, err := s.flightRepo.GetFlights(ctx, user)
+	flights, err := s.logbookRepo.GetFlights(ctx, user)
 	if err != nil {
 		return data, err
 	}
 
-	totalFlightTime, err := s.flightRepo.GetTotalFlightTime(ctx, user.ID)
+	totalFlightTime, err := s.logbookRepo.GetTotalFlightTime(ctx, user.ID)
 	if err != nil {
 		return data, err
 	}

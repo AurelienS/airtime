@@ -3,7 +3,7 @@ package handler
 import (
 	"strconv"
 
-	"github.com/AurelienS/cigare/internal/flight"
+	"github.com/AurelienS/cigare/internal/logbook"
 	"github.com/AurelienS/cigare/internal/squad"
 	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/web/session"
@@ -12,19 +12,19 @@ import (
 )
 
 type DashboardHandler struct {
-	userService   user.Service
-	squadService  squad.Service
-	flightService flight.Service
+	userService    user.Service
+	squadService   squad.Service
+	logbookService logbook.Service
 }
 
 func NewDashboardHandler(userService user.Service,
 	squadService squad.Service,
-	flightService flight.Service,
+	logbookService logbook.Service,
 ) DashboardHandler {
 	return DashboardHandler{
-		userService:   userService,
-		squadService:  squadService,
-		flightService: flightService,
+		userService:    userService,
+		squadService:   squadService,
+		logbookService: logbookService,
 	}
 }
 

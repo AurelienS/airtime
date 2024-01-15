@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/AurelienS/cigare/internal/flight"
+	"github.com/AurelienS/cigare/internal/logbook"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
 	flightView "github.com/AurelienS/cigare/web/template/flight"
@@ -12,30 +12,25 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type FlightHandler struct {
-	FlightService flight.Service
+type LogbookHandler struct {
+	LogbookService logbook.Service
 }
 
-func NewFlightHandler(flightService flight.Service) FlightHandler {
-	return FlightHandler{
-		FlightService: flightService,
+func NewLogbookHandler(logbookService logbook.Service) LogbookHandler {
+	return LogbookHandler{
+		LogbookService: logbookService,
 	}
 }
 
-func (h *FlightHandler) GetIndexPage(c echo.Context) error {
+func (h *LogbookHandler) GetPage(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-
-	// data, err := h.FlightService.GetDashboardData(c.Request().Context(), user)
-	// if err != nil {
-	// 	return err
-	// }
 
 	var viewData flightView.DashboardView // := TransformDashboardToView(data)
 	viewData.Img = user.PictureURL
 	return Render(c, page.Flights())
 }
 
-func TransformDashboardToView(data flight.DashboardData) flightView.DashboardView {
+func TransformDashboardToView(data logbook.DashboardData) flightView.DashboardView {
 	var fv []flightView.FlightView
 	for _, f := range data.Flights {
 		fv = append(fv, flightView.FlightView{
@@ -51,7 +46,8 @@ func TransformDashboardToView(data flight.DashboardData) flightView.DashboardVie
 	}
 }
 
-func (h *FlightHandler) PostFlight(c echo.Context) error {
+func (h *LogbookHandler) PostFlight(c echo.Context) error {
+	fmt.Println("file: logbook_handler.go ~ line 55 ~ func ~ PostFlight : ")
 	file, err := c.FormFile("igcfile")
 	if err != nil {
 		util.Error().Err(err).Msg("Failed to get IGC file from form")
@@ -60,11 +56,11 @@ func (h *FlightHandler) PostFlight(c echo.Context) error {
 
 	user := session.GetUserFromContext(c)
 
-	err = h.FlightService.ProcessAndAddFlight(c.Request().Context(), file, user)
+	err = h.LogbookService.ProcessAndAddFlight(c.Request().Context(), file, user)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to process and insert flight")
 		return err
 	}
 
-	return h.GetIndexPage(c)
+	return h.GetPage(c)
 }
