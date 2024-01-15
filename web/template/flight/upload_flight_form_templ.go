@@ -37,7 +37,7 @@ func UploadFlightForm() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"outerHTML\" hx-target=\"#flightPage\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> <button class=\"btn\" type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"outerHTML\" hx-target=\"#flightPage\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> <button class=\"btn btn-outline btn-secondary\" type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -5,11 +5,11 @@ templ FlightRecords(flights []FlightView) {
 		if len(flights) < 1 {
 			<div>No flight yet</div>
 		} else {
-			<div class="overflow-x-auto">
-				<table class="table">
+			<div class="overflow-x-auto h-96">
+				<table class="table table-pin-rows">
 					<!-- head -->
 					<thead>
-						<tr>
+						<tr class="text-lg">
 							<th>Date</th>
 							<th>Lieu</th>
 							<th>Durée</th>

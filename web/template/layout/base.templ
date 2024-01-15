@@ -6,7 +6,7 @@ import "github.com/AurelienS/cigare/web/template/flight"
 
 templ Base(currentUser model.User) {
 	<!DOCTYPE html>
-	<html lang="en" data-theme="dracula">
+	<html lang="en" data-theme="dim">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -27,7 +27,7 @@ templ Base(currentUser model.User) {
 					@flight.UploadFlightForm()
 				</div>
 				<div class="navbar-center">
-					<a class="btn btn-ghost text-3xl">SoarSquad</a>
+					<a href="/" class="btn btn-ghost text-3xl">SoarSquad</a>
 				</div>
 				<div class="navbar-end gap-4">
 					@user.ProfilButton(currentUser)

@@ -35,6 +35,16 @@ func prettyDuration(d time.Duration) string {
 	return fmt.Sprintf("%dmin", minutes)
 }
 
+func prettyAltitude(alt int) string {
+	km := alt / 1000
+	m := alt % 1000
+
+	if km > 0 {
+		return fmt.Sprintf("%dkm", km)
+	}
+	return fmt.Sprintf("%dm", m)
+}
+
 func (h *LogbookHandler) GetPage(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 
@@ -79,7 +89,7 @@ func (h *LogbookHandler) GetPage(c echo.Context) error {
 			},
 			{
 				Title:       "Montée totale",
-				Value:       strconv.Itoa(stats.TotalClimb) + "m",
+				Value:       prettyAltitude(stats.TotalClimb),
 				Description: "XX cette année",
 			},
 			{
