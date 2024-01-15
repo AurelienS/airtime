@@ -4,10 +4,6 @@ import "github.com/AurelienS/cigare/internal/model"
 import "github.com/AurelienS/cigare/web/template/user"
 import "github.com/AurelienS/cigare/web/template/flight"
 
-css bodyCss() {
-	font-family: 'Roboto', sans-serif;
-}
-
 templ Base(currentUser model.User) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme="dracula">
@@ -20,13 +16,13 @@ templ Base(currentUser model.User) {
 			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap" rel="stylesheet"/>
 			<script src="/static/htmx.min.js"></script>
 			<style>
-				* {
-					box-sizing: border-box;
-				}
-			</style>
+                * {
+                    box-sizing: border-box;
+                }
+            </style>
 		</head>
-		<body class="flex flex-col w-screen h-screen m-0">
-			<div class="navbar shadow-md bg-neutral z-50 top-0 fixed">
+		<body class="flex flex-col min-h-screen">
+			<div class="navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50">
 				<div class="navbar-start">
 					@flight.UploadFlightForm()
 				</div>
@@ -37,10 +33,10 @@ templ Base(currentUser model.User) {
 					@user.ProfilButton(currentUser)
 				</div>
 			</div>
-			<div id="content" class="w-full h-full flex-grow py-20 overflow-y-auto">
+			<div id="content" class="flex-grow mt-16 mb-16 pt-4 pb-4 overflow-y-auto">
 				{ children... }
 			</div>
-			<footer class="footer footer-center p-4 bg-base-300 text-base-content fixed w-full bottom-0">
+			<footer class="footer footer-center p-4 bg-base-300 text-base-content fixed bottom-0 left-0 right-0">
 				<aside>
 					<p>Copyright © 2024 - All right reserved by the sky</p>
 				</aside>

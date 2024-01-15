@@ -9,21 +9,10 @@ import "github.com/a-h/templ"
 import "context"
 import "io"
 import "bytes"
-import "strings"
 
 import "github.com/AurelienS/cigare/internal/model"
 import "github.com/AurelienS/cigare/web/template/user"
 import "github.com/AurelienS/cigare/web/template/flight"
-
-func bodyCss() templ.CSSClass {
-	var templ_7745c5c3_CSSBuilder strings.Builder
-	templ_7745c5c3_CSSBuilder.WriteString(`font-family:'Roboto', sans-serif;`)
-	templ_7745c5c3_CSSID := templ.CSSID(`bodyCss`, templ_7745c5c3_CSSBuilder.String())
-	return templ.ComponentCSSClass{
-		ID:    templ_7745c5c3_CSSID,
-		Class: templ.SafeCSS(`.` + templ_7745c5c3_CSSID + `{` + templ_7745c5c3_CSSBuilder.String() + `}`),
-	}
-}
 
 func Base(currentUser model.User) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -61,15 +50,15 @@ func Base(currentUser model.User) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Var4 := `
-				* {
-					box-sizing: border-box;
-				}
-			`
+                * {
+                    box-sizing: border-box;
+                }
+            `
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col w-screen h-screen m-0\"><div class=\"navbar shadow-md bg-neutral z-50 top-0 fixed\"><div class=\"navbar-start\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col min-h-screen\"><div class=\"navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50\"><div class=\"navbar-start\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -94,7 +83,7 @@ func Base(currentUser model.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div id=\"content\" class=\"w-full h-full flex-grow py-20 overflow-y-auto\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div id=\"content\" class=\"flex-grow mt-16 mb-16 pt-4 pb-4 overflow-y-auto\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -102,7 +91,7 @@ func Base(currentUser model.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><footer class=\"footer footer-center p-4 bg-base-300 text-base-content fixed w-full bottom-0\"><aside><p>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><footer class=\"footer footer-center p-4 bg-base-300 text-base-content fixed bottom-0 left-0 right-0\"><aside><p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

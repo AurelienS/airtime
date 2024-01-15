@@ -3,7 +3,15 @@ package user
 import "github.com/AurelienS/cigare/internal/model"
 
 templ ProfilButton(user model.User) {
-	<details class="dropdown">
+	<script>
+        document.addEventListener('click', function(event) {
+            var dropdown = document.getElementById('profile-dropdown');
+            if (dropdown.open && !dropdown.contains(event.target)) {
+                dropdown.open = false;
+            }
+        });
+    </script>
+	<details class="dropdown" id="profile-dropdown">
 		<summary class="btn btn-ghost flex px-2 py-1">
 			<span>{ user.Name }</span>
 			<div class="h-full aspect-square mask mask-squircle">
