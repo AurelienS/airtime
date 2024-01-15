@@ -68,7 +68,7 @@ func Base(currentUser model.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body><div class=\"navbar bg-base-100 mb-8\"><div class=\"navbar-start\"></div><div class=\"navbar-center\"><a class=\"btn btn-ghost text-xl\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col h-full min-h-screen\"><div class=\"navbar bg-base-100 mb-8 top-0 sticky\"><div class=\"navbar-start\"></div><div class=\"navbar-center\"><a class=\"btn btn-ghost text-xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -93,7 +93,16 @@ func Base(currentUser model.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><footer class=\"footer footer-center p-4 bg-base-300 text-base-content absolute bottom-0\"><aside><p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var6 := `Copyright © 2024 - All right reserved by the sky`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></aside></footer></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
