@@ -2,6 +2,7 @@ package flightstats
 
 import (
 	"fmt"
+	"math"
 	"strings"
 	"time"
 
@@ -61,8 +62,13 @@ func (fs *FlightStatistic) Compute() {
 			continue
 		}
 
-		smoothedRateOfClimb := fs.calculateSmoothedRateOfClimb(i, climbRateIntegrationPeriod, rateOfClimbHistory)
+		// flight related
+		fs.MaxAltitude = int(math.Max(float64(fs.MaxAltitude), float64(point.GNSSAltitude)))
+		fmt.Println("file: flight_statistics.go ~ line 67 ~ func ~ point.GNSSAltitude : ", point.GNSSAltitude)
+		fmt.Println("file: flight_statistics.go ~ line 67 ~ func ~ fs.MaxAltitude : ", fs.MaxAltitude)
 
+		// thermal related
+		smoothedRateOfClimb := fs.calculateSmoothedRateOfClimb(i, climbRateIntegrationPeriod, rateOfClimbHistory)
 		if current == nil {
 			current = fs.maybeStartNewThermal(smoothedRateOfClimb, minClimbRate, climbRateIntegrationPeriod, point, i)
 		} else {
@@ -137,15 +143,8 @@ func (fs *FlightStatistic) AddThermal(t Thermal, minThermalDuration time.Duratio
 
 	climb := t.Climb()
 	fs.TotalClimb += climb
-	if climb > fs.MaxClimb {
-		fs.MaxClimb = climb
-	}
-	if t.MaxAltitude > fs.MaxAltitude {
-		fs.MaxAltitude = t.MaxAltitude
-	}
-	if t.MaxClimbRate > fs.MaxClimbRate {
-		fs.MaxClimbRate = t.MaxClimbRate
-	}
+	fs.MaxClimb = int(math.Max(float64(fs.MaxClimb), float64(climb)))
+	fs.MaxClimbRate = math.Max(fs.MaxClimbRate, t.MaxClimbRate)
 	fs.AverageClimbRate += t.AverageClimbRate
 }
 

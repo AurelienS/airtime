@@ -36,7 +36,7 @@ func NewServer(client *ent.Client, store sessions.Store) *Server {
 		AuthHandler:    authHandler,
 		LogbookHandler: flightHandler,
 		UserHandler:    userHandler,
-		SquadHandler:   squadHandler,
+		SquadHandler:   squadHandler, 
 	}
 	router.Initialize(e)
 

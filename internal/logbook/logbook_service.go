@@ -1,9 +1,12 @@
 package logbook
 
 import (
+	"archive/zip"
 	"context"
 	"io"
 	"mime/multipart"
+	"path/filepath"
+	"strings"
 	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
@@ -27,14 +30,23 @@ func NewService(
 func (s *Service) ProcessAndAddFlight(ctx context.Context, file *multipart.FileHeader, user model.User) error {
 	src, err := file.Open()
 	if err != nil {
-		util.Error().Err(err).Str("filename", file.Filename).Msg("Failed to open IGC file")
 		return err
 	}
 	defer src.Close()
 
-	byteContent, err := io.ReadAll(src)
+	if strings.HasSuffix(file.Filename, ".zip") {
+		return s.processZipFile(ctx, src, file.Size, user)
+	}
+
+	return s.processSingleFile(ctx, src, file.Filename, user)
+}
+
+func (s *Service) processSingleFile(ctx context.Context, reader io.Reader, filename string,
+	user model.User,
+) error {
+	byteContent, err := io.ReadAll(reader)
 	if err != nil {
-		util.Error().Err(err).Str("filename", file.Filename).Msg("Failed to read IGC file")
+		util.Error().Err(err).Str("filename", filename).Msg("Failed to read IGC file")
 		return err
 	}
 
@@ -51,9 +63,46 @@ func (s *Service) ProcessAndAddFlight(ctx context.Context, file *multipart.FileH
 		return err
 	}
 
-	util.Info().Str("user", user.Email).Str("filename", file.Filename).
+	util.Info().Str("user", user.Email).Str("filename", filename).
 		Msg("File processed and flight record created successfully")
 
+	return nil
+}
+
+func (s *Service) processZipFile(ctx context.Context, zipReader io.ReaderAt, size int64, user model.User) error {
+	zr, err := zip.NewReader(zipReader, size) // 'size' should be the size of the zip file
+	if err != nil {
+		return err
+	}
+
+	addedCount := 0
+	errorCount := 0
+
+	for _, f := range zr.File {
+		if strings.ToLower(filepath.Ext(f.Name)) == ".igc" {
+			file, err := f.Open()
+			if err != nil {
+				continue // or handle the error
+			}
+
+			err = s.processSingleFile(ctx, file, f.Name, user)
+			file.Close()
+
+			if err != nil {
+				errorCount++
+			} else {
+				addedCount++
+			}
+		}
+	}
+
+	util.
+		Info().
+		Str("user", user.Email).
+		Int("added", addedCount).
+		Int("errors", errorCount).
+		Msg("File processed and flight record created successfully")
+		
 	return nil
 }
 
@@ -81,7 +130,7 @@ func (s Service) GetStatistics(ctx context.Context, user model.User) (Stats, err
 	var maxAltitude int
 	var maxVario float64
 	var maxFlightLength time.Duration
-	minFlightLength := time.Duration(1<<63 - 1)
+	minFlightLength := time.Duration(0)
 	averageFlightLength := time.Duration(0)
 	var totalFlightTime time.Duration
 

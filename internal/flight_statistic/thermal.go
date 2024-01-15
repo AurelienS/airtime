@@ -5,34 +5,34 @@ import (
 )
 
 type Thermal struct {
-	Start             time.Time
-	End               time.Time
-	StartAltitude     int
-	MaxAltitude       int
-	DownwardTolerance int
-	MaxClimbRate      float64
-	AverageClimbRate  float64
-	StartIndex        int
-	EndIndex          int
+	Start              time.Time
+	End                time.Time
+	StartAltitude      int
+	MaxThermalAltitude int
+	DownwardTolerance  int
+	MaxClimbRate       float64
+	AverageClimbRate   float64
+	StartIndex         int
+	EndIndex           int
 }
 
 func NewThermal(startTime time.Time, startAltitude, startIndex int) *Thermal {
 	return &Thermal{
-		Start:         startTime,
-		StartAltitude: startAltitude,
-		StartIndex:    startIndex,
-		MaxAltitude:   startAltitude,
+		Start:              startTime,
+		StartAltitude:      startAltitude,
+		StartIndex:         startIndex,
+		MaxThermalAltitude: startAltitude,
 	}
 }
 
 func (t *Thermal) Update(point Point, integratedClimbRate float64) {
-	altitudeGain := point.GNSSAltitude - t.MaxAltitude
+	altitudeGain := point.GNSSAltitude - t.MaxThermalAltitude
 	if altitudeGain < 0 {
 		t.DownwardTolerance++
 	} else {
 		t.DownwardTolerance = 0
-		if point.GNSSAltitude > t.MaxAltitude {
-			t.MaxAltitude = point.GNSSAltitude
+		if point.GNSSAltitude > t.MaxThermalAltitude {
+			t.MaxThermalAltitude = point.GNSSAltitude
 		}
 		if integratedClimbRate > t.MaxClimbRate {
 			t.MaxClimbRate = integratedClimbRate
@@ -53,5 +53,5 @@ func (t *Thermal) Duration() time.Duration {
 }
 
 func (t *Thermal) Climb() int {
-	return t.MaxAltitude - t.StartAltitude
+	return t.MaxThermalAltitude - t.StartAltitude
 }

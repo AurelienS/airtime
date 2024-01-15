@@ -29,6 +29,13 @@ var (
 				OnDelete:   schema.SetNull,
 			},
 		},
+		Indexes: []*schema.Index{
+			{
+				Name:    "flight_date_user_flights",
+				Unique:  true,
+				Columns: []*schema.Column{FlightsColumns[1], FlightsColumns[4]},
+			},
+		},
 	}
 	// FlightStatisticsColumns holds the columns for the "flight_statistics" table.
 	FlightStatisticsColumns = []*schema.Column{

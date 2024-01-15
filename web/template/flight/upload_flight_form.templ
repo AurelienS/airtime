@@ -5,6 +5,7 @@ templ UploadFlightForm() {
 		function triggerUpload(input) {
 			var event = new CustomEvent('fileSelected', {bubbles: true});
 			input.dispatchEvent(event);
+			input.value = null;
 		}
 	</script>
 	<form
@@ -14,13 +15,15 @@ templ UploadFlightForm() {
 		hx-trigger="fileSelected"
 		hx-swap="outerHTML"
 		hx-target="#flightPage"
+		hx-indicator="#loadingIndicator"
 	>
-		<input id="igcfile" type="file" name="igcfile" accept=".igc" style="display:none;" onchange="triggerUpload(this)"/>
+		<input id="igcfile" type="file" name="igcfile" accept=".igc, .zip" style="display:none;" onchange="triggerUpload(this)"/>
 		<button
 			class="btn btn-outline btn-secondary"
 			type="button"
 			onclick="document.getElementById('igcfile').click();"
 		>
+			<span id="loadingIndicator" class="loading loading-spinner"></span>
 			Upload new flight
 		</button>
 	</form>

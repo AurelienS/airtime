@@ -54,7 +54,7 @@ func (h *LogbookHandler) GetPage(c echo.Context) error {
 	}
 
 	sort.Slice(flights, func(i, j int) bool {
-		return flights[i].Date.Before(flights[j].Date)
+		return flights[i].Date.After(flights[j].Date)
 	})
 
 	var flightViews []flight.FlightView
@@ -64,7 +64,7 @@ func (h *LogbookHandler) GetPage(c echo.Context) error {
 			Date:             f.Date.Local().Format("02/01 15:04"),
 			TotalThermicTime: prettyDuration(f.Statistic.TotalThermicTime),
 			TotalFlightTime:  prettyDuration(f.Statistic.TotalFlightTime),
-			MaxClimbRate:     strconv.FormatFloat(f.Statistic.MaxClimbRate, 'f', 2, 64),
+			MaxClimbRate:     strconv.FormatFloat(f.Statistic.MaxClimbRate, 'f', 1, 64),
 			MaxAltitude:      strconv.Itoa(f.Statistic.MaxAltitude),
 		})
 	}
