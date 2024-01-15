@@ -2,12 +2,15 @@ package handler
 
 import (
 	"fmt"
+	"sort"
 	"strconv"
+	"time"
 
 	"github.com/AurelienS/cigare/internal/logbook"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
-	flightView "github.com/AurelienS/cigare/web/template/flight"
+	"github.com/AurelienS/cigare/web/template/component"
+	"github.com/AurelienS/cigare/web/template/flight"
 	"github.com/AurelienS/cigare/web/template/page"
 	"github.com/labstack/echo/v4"
 )
@@ -22,32 +25,113 @@ func NewLogbookHandler(logbookService logbook.Service) LogbookHandler {
 	}
 }
 
+func prettyDuration(d time.Duration) string {
+	hours := int(d.Hours())
+	minutes := int(d.Minutes()) % 60
+
+	if hours > 0 {
+		return fmt.Sprintf("%dh%d", hours, minutes)
+	}
+	return fmt.Sprintf("%dmin", minutes)
+}
+
 func (h *LogbookHandler) GetPage(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 
-	var viewData flightView.DashboardView // := TransformDashboardToView(data)
-	viewData.Img = user.PictureURL
-	return Render(c, page.Flights())
-}
+	flights, err := h.LogbookService.GetFlights(c.Request().Context(), user)
+	if err != nil {
+		return err
+	}
 
-func TransformDashboardToView(data logbook.DashboardData) flightView.DashboardView {
-	var fv []flightView.FlightView
-	for _, f := range data.Flights {
-		fv = append(fv, flightView.FlightView{
-			TakeoffLocation: f.TakeoffLocation,
-			Date:            f.Date.Format("02/01 15h04"),
+	sort.Slice(flights, func(i, j int) bool {
+		return flights[i].Date.Before(flights[j].Date)
+	})
+
+	var flightViews []flight.FlightView
+	for _, f := range flights {
+		flightViews = append(flightViews, flight.FlightView{
+			TakeoffLocation:  f.TakeoffLocation,
+			Date:             f.Date.Local().Format("02/01 15:04"),
+			TotalThermicTime: prettyDuration(f.Statistic.TotalThermicTime),
+			TotalFlightTime:  prettyDuration(f.Statistic.TotalFlightTime),
+			MaxClimbRate:     strconv.FormatFloat(f.Statistic.MaxClimbRate, 'f', 2, 64),
+			MaxAltitude:      strconv.Itoa(f.Statistic.MaxAltitude),
 		})
 	}
 
-	return flightView.DashboardView{
-		Flights:         fv,
-		NumberOfFlight:  strconv.Itoa(len(data.Flights)),
-		TotalFlightTime: fmt.Sprintf("%d", int(data.TotalFlightTime.Hours())),
+	stats, err := h.LogbookService.GetStatistics(c.Request().Context(), user)
+	if err != nil {
+		return err
 	}
+
+	viewData := page.LogbookView{
+		Flights: flightViews,
+		Stats1: []component.StatView{
+			{
+				Title:       "Nombre de vols",
+				Value:       strconv.Itoa(stats.FlightCount),
+				Description: "XX cette année",
+			},
+			{
+				Title:       "Temps de vol total",
+				Value:       prettyDuration(stats.TotalFlightTime),
+				Description: "XX cette année",
+			},
+			{
+				Title:       "Montée totale",
+				Value:       strconv.Itoa(stats.TotalClimb) + "m",
+				Description: "XX cette année",
+			},
+			{
+				Title:       "Temps total en thermique",
+				Value:       prettyDuration(stats.TotalThermicTime),
+				Description: "XX cette année",
+			},
+			{
+				Title:       "Nombre total de thermiques",
+				Value:       strconv.Itoa(stats.TotalNumberOfThermals),
+				Description: "XX cette année",
+			},
+		},
+		Stats2: []component.StatView{
+			{
+				Title:       "Durée moyenne de vol",
+				Value:       prettyDuration(stats.AverageFlightLength),
+				Description: "XX cette année",
+			},
+			{
+				Title:       "Durée maximale de vol",
+				Value:       prettyDuration(stats.MaxFlightLength),
+				Description: "XX cette année",
+			},
+			{
+				Title:       "Durée minimale de vol",
+				Value:       prettyDuration(stats.MinFlightLength),
+				Description: "XX cette année",
+			},
+			{
+				Title:       "Altitude maximale",
+				Value:       strconv.Itoa(stats.MaxAltitude) + "m",
+				Description: "XX cette année",
+			},
+			{
+				Title:       "Plus grand thermique",
+				Value:       strconv.Itoa(stats.MaxClimb) + "m",
+				Description: "XX cette année",
+			},
+
+			{
+				Title:       "Taux de montée maximal",
+				Value:       fmt.Sprintf("%.2f", stats.MaxClimbRate) + "m/s",
+				Description: "XX cette année",
+			},
+		},
+	}
+
+	return Render(c, page.Logbook(viewData))
 }
 
 func (h *LogbookHandler) PostFlight(c echo.Context) error {
-	fmt.Println("file: logbook_handler.go ~ line 55 ~ func ~ PostFlight : ")
 	file, err := c.FormFile("igcfile")
 	if err != nil {
 		util.Error().Err(err).Msg("Failed to get IGC file from form")

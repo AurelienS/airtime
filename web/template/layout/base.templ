@@ -25,22 +25,22 @@ templ Base(currentUser model.User) {
 				}
 			</style>
 		</head>
-		<body class="flex flex-col h-full min-h-screen">
-			<div class="navbar bg-base-100 mb-8 top-0 sticky">
+		<body class="flex flex-col w-screen h-screen m-0">
+			<div class="navbar shadow-md bg-neutral z-50 top-0 fixed">
 				<div class="navbar-start">
 					@flight.UploadFlightForm()
 				</div>
 				<div class="navbar-center">
-					<a class="btn btn-ghost text-xl">SoarSquad</a>
+					<a class="btn btn-ghost text-3xl">SoarSquad</a>
 				</div>
 				<div class="navbar-end gap-4">
 					@user.ProfilButton(currentUser)
 				</div>
 			</div>
-			<div id="content" class="container mx-auto flex flex-col justify-center">
+			<div id="content" class="w-full h-full flex-grow py-20 overflow-y-auto">
 				{ children... }
 			</div>
-			<footer class="footer footer-center p-4 bg-base-300 text-base-content absolute bottom-0">
+			<footer class="footer footer-center p-4 bg-base-300 text-base-content fixed w-full bottom-0">
 				<aside>
 					<p>Copyright © 2024 - All right reserved by the sky</p>
 				</aside>

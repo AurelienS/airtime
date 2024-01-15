@@ -69,3 +69,11 @@ func DBToDomainFlightStatistic(statDB *ent.FlightStatistic) flightstats.FlightSt
 
 	return stat
 }
+
+func DBToDomainFlightStatistics(statsDB []*ent.FlightStatistic) []flightstats.FlightStatistic {
+	var stats []flightstats.FlightStatistic
+	for _, s := range statsDB {
+		stats = append(stats, DBToDomainFlightStatistic(s))
+	}
+	return stats
+}

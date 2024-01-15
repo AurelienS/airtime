@@ -30,15 +30,13 @@ func NewServer(client *ent.Client, store sessions.Store) *Server {
 	flightHandler := handler.NewLogbookHandler(flightService)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService)
-	dashboardHandler := handler.NewDashboardHandler(userService, squadService, flightService)
 	squadHandler := handler.NewSquadHandler(squadService)
 
 	router := Router{
-		AuthHandler:      authHandler,
-		DashboardHandler: dashboardHandler,
-		LogbookHandler:   flightHandler,
-		UserHandler:      userHandler,
-		SquadHandler:     squadHandler,
+		AuthHandler:    authHandler,
+		LogbookHandler: flightHandler,
+		UserHandler:    userHandler,
+		SquadHandler:   squadHandler,
 	}
 	router.Initialize(e)
 

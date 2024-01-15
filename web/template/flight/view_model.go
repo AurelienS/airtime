@@ -1,6 +1,8 @@
 package flight
 
-import "github.com/AurelienS/cigare/internal/model"
+import (
+	"github.com/AurelienS/cigare/internal/model"
+)
 
 type GliderView struct {
 	ID           int
@@ -11,8 +13,12 @@ type GliderView struct {
 
 //nolint:revive
 type FlightView struct {
-	TakeoffLocation string
-	Date            string
+	Date             string
+	TakeoffLocation  string
+	TotalFlightTime  string
+	MaxAltitude      string
+	TotalThermicTime string
+	MaxClimbRate     string
 }
 
 type DashboardView struct {

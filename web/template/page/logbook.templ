@@ -1,0 +1,53 @@
+package page
+
+import "github.com/AurelienS/cigare/web/template/component"
+import "github.com/AurelienS/cigare/web/template/flight"
+
+// 	{
+// 		Title:       "Nombre de vol",
+// 		Icon:        "⏱️",
+// 		NoRank:      true,
+// 		Description: "",
+// 		Categories: []component.StatCategory{
+// 			{Title: "", Value: "20"},
+// 			{Title: "30j", Value: "40"},
+// 			{Title: "365j", Value: "25"},
+// 		},
+// 	},
+// 	{
+// 		Title:       "Temps de vol",
+// 		Icon:        "⏱️",
+// 		NoRank:      true,
+// 		Description: "",
+// 		Categories: []component.StatCategory{
+// 			{Title: "", Value: "20h"},
+// 			{Title: "30j", Value: "40h"},
+// 			{Title: "365j", Value: "25h"},
+// 		},
+// 	},
+// }
+
+type LogbookView struct {
+	Stats1  []component.StatView
+	Stats2  []component.StatView
+	Flights []flight.FlightView
+}
+
+templ Logbook(view LogbookView) {
+	<div id="flightPage" class="container mx-auto flex flex-col w-full  gap-4">
+		<div class="flex flex-col  items-center">
+			<div class="stats shadow w-min">
+				for _, s := range view.Stats1 {
+					@component.Stat(s)
+				}
+			</div>
+			<div class="stats shadow w-min">
+				for _, s := range view.Stats2 {
+					@component.Stat(s)
+				}
+			</div>
+		</div>
+		<div class="divider"></div>
+		@flight.FlightRecords(view.Flights)
+	</div>
+}

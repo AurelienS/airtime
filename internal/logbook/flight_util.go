@@ -15,7 +15,7 @@ import (
 	"gonum.org/v1/plot/plotter"
 )
 
-func TrackToFlight(externalTrack igc.Track, user model.User) model.Flight {
+func TrackToFlight(externalTrack igc.Track) model.Flight {
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
 		util.Warn().Msg("Error loading location Europe/Paris for")
@@ -36,8 +36,6 @@ func TrackToFlight(externalTrack igc.Track, user model.User) model.Flight {
 		Date:            combinedDateTime,
 		TakeoffLocation: externalTrack.Site,
 	}
-
-	// flight.UserID = user.ID
 
 	return flight
 }

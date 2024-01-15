@@ -43,7 +43,7 @@ func (s *Service) ProcessAndAddFlight(ctx context.Context, file *multipart.FileH
 		return err
 	}
 
-	flight := TrackToFlight(track, user)
+	flight := TrackToFlight(track)
 	stats := flightstats.NewFlightStatistics(track.Points)
 	err = s.logbookRepo.InsertFlight(ctx, flight, stats, user)
 	if err != nil {
@@ -57,29 +57,84 @@ func (s *Service) ProcessAndAddFlight(ctx context.Context, file *multipart.FileH
 	return nil
 }
 
-type DashboardData struct {
-	Flights         []model.Flight
-	TotalFlightTime time.Duration
-	NumberOfFlight  int
+type Stats struct {
+	FlightCount           int
+	MaxAltitude           int
+	MaxClimb              int
+	TotalClimb            int
+	TotalNumberOfThermals int
+	MaxClimbRate          float64
+	MaxFlightLength       time.Duration
+	MinFlightLength       time.Duration
+	AverageFlightLength   time.Duration
+	TotalFlightTime       time.Duration
+	TotalThermicTime      time.Duration
 }
 
-func (s Service) GetDashboardData(ctx context.Context, user model.User) (DashboardData, error) {
-	var data DashboardData
-
-	flights, err := s.logbookRepo.GetFlights(ctx, user)
+func (s Service) GetStatistics(ctx context.Context, user model.User) (Stats, error) {
+	logStats := Stats{}
+	stats, err := s.logbookRepo.GetStatistics(ctx, user)
 	if err != nil {
-		return data, err
+		return logStats, err
 	}
 
-	totalFlightTime, err := s.logbookRepo.GetTotalFlightTime(ctx, user.ID)
-	if err != nil {
-		return data, err
+	var maxAltitude int
+	var maxVario float64
+	var maxFlightLength time.Duration
+	var minFlightLength time.Duration
+	averageFlightLength := time.Duration(0)
+	var totalFlightTime time.Duration
+
+	var totalThermicTime time.Duration
+	var maxClimb int
+	var totalClimb int
+	var totalNumberOfThermals int
+
+	flightCount := len(stats)
+
+	for _, stat := range stats {
+		if stat.MaxAltitude > maxAltitude {
+			maxAltitude = stat.MaxAltitude
+		}
+		if stat.MaxClimbRate > maxVario {
+			maxVario = stat.MaxClimbRate
+		}
+		if stat.TotalFlightTime > maxFlightLength {
+			maxFlightLength = stat.TotalFlightTime
+		}
+		if stat.TotalFlightTime < minFlightLength {
+			minFlightLength = stat.TotalFlightTime
+		}
+		if stat.MaxClimb > maxClimb {
+			maxClimb = stat.MaxClimb
+		}
+		totalClimb += stat.TotalClimb
+		totalNumberOfThermals += stat.NumberOfThermals
+		totalThermicTime += stat.TotalThermicTime
+		totalFlightTime += stat.TotalFlightTime
 	}
 
-	data = DashboardData{
-		Flights:         flights,
-		TotalFlightTime: totalFlightTime,
-		NumberOfFlight:  len(flights),
+	if flightCount > 0 {
+		averageFlightLength = totalFlightTime / time.Duration(flightCount)
 	}
-	return data, nil
+
+	logStats = Stats{
+		MaxAltitude:           maxAltitude,
+		MaxClimbRate:          maxVario,
+		MaxFlightLength:       maxFlightLength,
+		MinFlightLength:       minFlightLength,
+		AverageFlightLength:   averageFlightLength,
+		TotalFlightTime:       totalFlightTime,
+		FlightCount:           flightCount,
+		MaxClimb:              maxClimb,
+		TotalClimb:            totalClimb,
+		TotalNumberOfThermals: totalNumberOfThermals,
+		TotalThermicTime:      totalThermicTime,
+	}
+
+	return logStats, nil
+}
+
+func (s Service) GetFlights(ctx context.Context, user model.User) ([]model.Flight, error) {
+	return s.logbookRepo.GetFlights(ctx, user)
 }

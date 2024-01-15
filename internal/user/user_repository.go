@@ -59,13 +59,13 @@ func (r *Repository) UpdateUser(ctx context.Context, incomingUser model.User) (m
 	return model.DBToDomainUser(u), nil
 }
 
-func (r *Repository) UserExists(ctx context.Context, googleId string) bool {
+func (r *Repository) UserExists(ctx context.Context, googleID string) bool {
 	exists, err := r.client.User.
 		Query().
-		Where(user.GoogleIDEQ(googleId)).
+		Where(user.GoogleIDEQ(googleID)).
 		Exist(ctx)
 	if err != nil {
-		util.Error().Msgf("Failed to check if user exists %v", googleId)
+		util.Error().Msgf("Failed to check if user exists %v", googleID)
 		return false
 	}
 	return exists

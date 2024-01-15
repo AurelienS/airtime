@@ -50,7 +50,10 @@ func (r Repository) InsertFlight(
 		SetMaxAltitude(flightStats.MaxAltitude).
 		Save(ctx)
 	if err != nil {
-		tx.Rollback()
+		r := tx.Rollback()
+		if r != nil {
+			return r
+		}
 		return err
 	}
 
@@ -63,7 +66,10 @@ func (r Repository) InsertFlight(
 		SetStatistic(fs).
 		Save(ctx)
 	if err != nil {
-		tx.Rollback()
+		r := tx.Rollback()
+		if r != nil {
+			return r
+		}
 		return err
 	}
 
@@ -79,6 +85,7 @@ func (r *Repository) GetFlights(ctx context.Context, user model.User) ([]model.F
 		Where(userDb.IDEQ(user.ID)).
 		QueryFlights().
 		WithStatistic().
+		WithPilot().
 		All(ctx)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get flights")
@@ -109,4 +116,15 @@ func (r *Repository) GetTotalFlightTime(ctx context.Context, userID int) (time.D
 
 	totalFlightTime := time.Duration(agg) * time.Second
 	return totalFlightTime, nil
+}
+
+func (r *Repository) GetStatistics(ctx context.Context, user model.User) ([]flightstats.FlightStatistic, error) {
+	util.Info().Str("user", user.Email).Msg("Getting statistics")
+
+	// Fetch statistics associated with the user
+	stats, err := r.client.FlightStatistic.
+		Query().
+		Where(flightstatistic.HasFlightWith(flight.HasPilotWith(userDb.IDEQ(user.ID)))).All(ctx)
+
+	return model.DBToDomainFlightStatistics(stats), err
 }

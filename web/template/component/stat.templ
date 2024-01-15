@@ -1,0 +1,14 @@
+package component
+
+type StatView struct {
+	Title       string
+	Value       string
+	Description string
+}
+
+templ Stat(view StatView) {
+	<div class="stat">
+		<div class="stat-title text-lg">{ view.Title }</div>
+		<div class="stat-value text-2xl">{ view.Value }</div>
+	</div>
+}
