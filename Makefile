@@ -1,32 +1,32 @@
 .ONESHELL:
 
-.PHONY: run serve gen tailwind watch build trigger-refresh browser-refresh zip
+.PHONY: run serve gen tailwind watch build trigger-refresh browser-refresh zip ent
 
-run: gen serve
+# Main commands
+watch: gen build trigger-refresh
 
-serve:
-	@go run cmd/server/main.go
-
-gen:
-	@go generate ./..
-	@templ generate
-
-watch: tailwind templ build trigger-refresh
-
-templ:
-	@templ generate &
+gen: ent tailwind templ
 
 build:
 	@go build -o ./tmp/main ./cmd/server/main.go
 
-tailwind:
-	@npm run build-css &
+# Generate code
+templ:
+	@templ generate 
 
+ent:
+	@go generate ./internal/storage/ent 
+
+tailwind:
+	@npm run build-css
+
+# Browser refresh
 trigger-refresh:
 	@touch browser-refresh-trigger.nothing
 
 browser-refresh:
 	@browser-sync start --config bs-config.js
 
+# minimal zip for IA use
 zip:
 	@zip -r base_code.zip . -x "*.git*" -x "*.vscode*" -x "logs/*" -x "tmp/*" -x "go.sum" -x "README.md" -x ".air.toml" -x "dev.env" -x "Makefile" -x "sqlc.yaml" -x "tailwind.config.js"
