@@ -37,10 +37,13 @@ Pour les max/min => paie ta bière notif
 
 
 # Run the code
+run
 ```
-air
+./dev.sh
 ```
 
+if db schema changes run
+
 ```
-make tailwind
+make gen
 ```
