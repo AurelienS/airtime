@@ -93,11 +93,11 @@ func Base(currentUser model.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><footer class=\"footer footer-center p-4 bg-base-300 text-base-content absolute bottom-0\"><aside><p>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><footer class=\"footer footer-center p-4 bg-base-300 text-base-content absolute bottom-0\"><aside class=\"bg-green-500 mt-[3px]\"><p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var6 := `Copyright © 2024 - All right reserved by the sky`
+		templ_7745c5c3_Var6 := `Copyright © 2024 -  All right reserved by the sky`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
