@@ -81,7 +81,7 @@ func (s Service) GetStatistics(ctx context.Context, user model.User) (Stats, err
 	var maxAltitude int
 	var maxVario float64
 	var maxFlightLength time.Duration
-	var minFlightLength time.Duration
+	minFlightLength := time.Duration(1<<63 - 1)
 	averageFlightLength := time.Duration(0)
 	var totalFlightTime time.Duration
 
