@@ -2,7 +2,6 @@ package web
 
 import (
 	"github.com/AurelienS/cigare/internal/logbook"
-	"github.com/AurelienS/cigare/internal/squad"
 	"github.com/AurelienS/cigare/internal/storage/ent"
 	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/web/handler"
@@ -21,22 +20,18 @@ func NewServer(client *ent.Client, store sessions.Store) *Server {
 
 	flightRepo := logbook.NewRepository(client)
 	userRepo := user.NewRepository(client)
-	squadRepo := squad.NewRepository(client)
 
 	flightService := logbook.NewService(flightRepo)
 	userService := user.NewService(userRepo)
-	squadService := squad.NewService(squadRepo)
 
 	flightHandler := handler.NewLogbookHandler(flightService)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService)
-	squadHandler := handler.NewSquadHandler(squadService)
 
 	router := Router{
 		AuthHandler:    authHandler,
 		LogbookHandler: flightHandler,
 		UserHandler:    userHandler,
-		SquadHandler:   squadHandler, 
 	}
 	router.Initialize(e)
 

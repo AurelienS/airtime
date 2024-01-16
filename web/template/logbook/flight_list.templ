@@ -1,0 +1,79 @@
+package logbook
+
+import "github.com/AurelienS/cigare/web/template"
+
+templ FlightList(flights []template.FlightView, year string) {
+	<div class="flex flex-col items-center">
+		if len(flights) < 1 {
+			<div>No flight yet</div>
+		} else {
+			<div class="overflow-x-auto w-full h-96">
+				<table class="table table-pin-rows">
+					<!-- head -->
+					<thead>
+						<tr class="text-lg">
+							<th>Date</th>
+							<th>Lieu</th>
+							<th>Durée</th>
+							<th>Altitude max</th>
+							<th>Vario max</th>
+							<th>temps de thermique</th>
+						</tr>
+					</thead>
+					<tbody>
+						for _, flight := range flights {
+							<tr class="hover">
+								<td>{ flight.Date }</td>
+								<th>{ flight.TakeoffLocation }</th>
+								<td>{ flight.TotalFlightTime }</td>
+								<td>{ flight.MaxAltitude }</td>
+								<td>{ flight.MaxClimbRate }</td>
+								<td>{ flight.TotalThermicTime }</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		}
+		<form
+			class="join"
+			hx-get="/logbook/year"
+			hx-trigger="change"
+			hx-target="#flightPage"
+			hx-swap="outerHTML"
+		>
+			<input
+				class="join-item btn btn-square"
+				type="radio"
+				name="yearValue"
+				aria-label="2021"
+				value="2021"
+				checked?={ year == "2021" }
+			/>
+			<input
+				class="join-item btn btn-square"
+				type="radio"
+				name="yearValue"
+				aria-label="2022"
+				value="2022"
+				checked?={ year == "2022" }
+			/>
+			<input
+				class="join-item btn btn-square"
+				type="radio"
+				name="yearValue"
+				aria-label="2023"
+				value="2023"
+				checked?={ year == "2023" }
+			/>
+			<input
+				class="join-item btn btn-square"
+				type="radio"
+				name="yearValue"
+				aria-label="2024"
+				value="2024"
+				checked?={ year == "2024" }
+			/>
+		</form>
+	</div>
+}

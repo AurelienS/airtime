@@ -2,7 +2,7 @@ package layout
 
 import "github.com/AurelienS/cigare/internal/model"
 import "github.com/AurelienS/cigare/web/template/user"
-import "github.com/AurelienS/cigare/web/template/flight"
+import "github.com/AurelienS/cigare/web/template/logbook"
 
 templ Base(currentUser model.User) {
 	<!DOCTYPE html>
@@ -24,7 +24,7 @@ templ Base(currentUser model.User) {
 		<body class="flex flex-col min-h-screen">
 			<div class="navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50">
 				<div class="navbar-start">
-					@flight.UploadFlightForm()
+					@logbook.UploadFlightForm()
 				</div>
 				<div class="navbar-center">
 					<a href="/" class="btn btn-ghost text-3xl">SoarSquad</a>

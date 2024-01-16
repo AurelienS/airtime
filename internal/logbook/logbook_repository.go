@@ -76,14 +76,17 @@ func (r Repository) InsertFlight(
 	return tx.Commit()
 }
 
-func (r *Repository) GetFlights(ctx context.Context, user model.User) ([]model.Flight, error) {
+func (r *Repository) GetFlights(ctx context.Context, year int, user model.User) ([]model.Flight, error) {
 	util.Info().Str("user", user.Email).Msg("Getting user flights")
 
-	// Fetch flights associated with the user
+	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	endOfYear := time.Date(year, time.December, 31, 23, 59, 59, 999999999, time.UTC)
+
 	flightsDB, err := r.client.User.
 		Query().
 		Where(userDb.IDEQ(user.ID)).
 		QueryFlights().
+		Where(flight.DateGTE(startOfYear), flight.DateLTE(endOfYear)).
 		WithStatistic().
 		WithPilot().
 		All(ctx)
@@ -100,31 +103,23 @@ func (r *Repository) GetFlights(ctx context.Context, user model.User) ([]model.F
 	return flights, nil
 }
 
-func (r *Repository) GetTotalFlightTime(ctx context.Context, userID int) (time.Duration, error) {
-	util.Info().Int("user_id", userID).Msg("Getting total flight time")
-
-	// Perform the sum aggregation on the total flight time
-	agg, err := r.client.FlightStatistic.
-		Query().
-		Where(flightstatistic.HasFlightWith(flight.HasPilotWith(userDb.IDEQ(userID)))).
-		Aggregate(ent.Sum(flightstatistic.FieldTotalFlightTime)).
-		Int(ctx)
-	if err != nil {
-		util.Error().Err(err).Int("user_id", userID).Msg("Failed to get total flight time")
-		return 0, err
-	}
-
-	totalFlightTime := time.Duration(agg) * time.Second
-	return totalFlightTime, nil
-}
-
-func (r *Repository) GetStatistics(ctx context.Context, user model.User) ([]flightstats.FlightStatistic, error) {
+func (r *Repository) GetStatistics(ctx context.Context,
+	startDate time.Time,
+	endDate time.Time,
+	user model.User,
+) ([]flightstats.FlightStatistic, error) {
 	util.Info().Str("user", user.Email).Msg("Getting statistics")
 
-	// Fetch statistics associated with the user
 	stats, err := r.client.FlightStatistic.
 		Query().
-		Where(flightstatistic.HasFlightWith(flight.HasPilotWith(userDb.IDEQ(user.ID)))).All(ctx)
+		Where(
+			flightstatistic.HasFlightWith(
+				flight.HasPilotWith(userDb.IDEQ(user.ID)),
+				flight.DateGTE(startDate),
+				flight.DateLTE(endDate),
+			),
+		).
+		All(ctx)
 
 	return model.DBToDomainFlightStatistics(stats), err
 }

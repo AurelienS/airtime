@@ -1,14 +1,12 @@
 package component
 
-type StatView struct {
-	Title       string
-	Value       string
-	Description string
-}
+import "github.com/AurelienS/cigare/web/template"
 
-templ Stat(view StatView) {
+
+templ Stat(view template.StatView) {
 	<div class="stat">
 		<div class="stat-title text-lg text-secondary">{ view.Title }</div>
 		<div class="stat-value text-2xl">{ view.Value }</div>
+		<div class="stat-desc">{ view.Description }</div>
 	</div>
 }

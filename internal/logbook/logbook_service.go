@@ -102,7 +102,7 @@ func (s *Service) processZipFile(ctx context.Context, zipReader io.ReaderAt, siz
 		Int("added", addedCount).
 		Int("errors", errorCount).
 		Msg("File processed and flight record created successfully")
-		
+
 	return nil
 }
 
@@ -120,9 +120,18 @@ type Stats struct {
 	TotalThermicTime      time.Duration
 }
 
-func (s Service) GetStatistics(ctx context.Context, user model.User) (Stats, error) {
+func (s Service) GetStatistics(ctx context.Context, year int, user model.User) (Stats, error) {
 	logStats := Stats{}
-	stats, err := s.logbookRepo.GetStatistics(ctx, user)
+
+	startDate := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	var endDate time.Time
+	if year == 0 {
+		endDate = time.Now()
+	} else {
+		endDate = time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC)
+	}
+
+	stats, err := s.logbookRepo.GetStatistics(ctx, startDate, endDate, user)
 	if err != nil {
 		return logStats, err
 	}
@@ -184,6 +193,6 @@ func (s Service) GetStatistics(ctx context.Context, user model.User) (Stats, err
 	return logStats, nil
 }
 
-func (s Service) GetFlights(ctx context.Context, user model.User) ([]model.Flight, error) {
-	return s.logbookRepo.GetFlights(ctx, user)
+func (s Service) GetFlights(ctx context.Context, year int, user model.User) ([]model.Flight, error) {
+	return s.logbookRepo.GetFlights(ctx, year, user)
 }

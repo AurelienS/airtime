@@ -12,7 +12,7 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/internal/model"
 import "github.com/AurelienS/cigare/web/template/user"
-import "github.com/AurelienS/cigare/web/template/flight"
+import "github.com/AurelienS/cigare/web/template/logbook"
 
 func Base(currentUser model.User) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -62,7 +62,7 @@ func Base(currentUser model.User) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = flight.UploadFlightForm().Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = logbook.UploadFlightForm().Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
