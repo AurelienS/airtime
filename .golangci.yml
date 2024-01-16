@@ -262,6 +262,6 @@ issues:
         - gosec
         - noctx
         - wrapcheck
-    - path: "web/template/.*\\.go"
-      linters: 
+    - path: "web/view/.*\\.go"
+      linters:
         - cyclop

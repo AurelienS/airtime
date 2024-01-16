@@ -8,7 +8,7 @@ import (
 	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
-	"github.com/AurelienS/cigare/web/template/page"
+	"github.com/AurelienS/cigare/web/view/userview"
 	"github.com/labstack/echo/v4"
 	"github.com/markbates/goth/gothic"
 )
@@ -79,5 +79,5 @@ func (h *AuthHandler) GetAuthProvider(c echo.Context) error {
 
 func (h *AuthHandler) GetLogin(c echo.Context) error {
 	util.Info().Msg("Rendering login page")
-	return Render(c, page.Login())
+	return Render(c, userview.Login())
 }

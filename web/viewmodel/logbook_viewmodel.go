@@ -1,4 +1,11 @@
-package template
+package viewmodel
+
+type LogbookView struct {
+	StatMain      []StatView
+	StatSecondary []StatView
+	Flights       []FlightView
+	Year          string
+}
 
 type FlightView struct {
 	Date             string
@@ -13,11 +20,4 @@ type StatView struct {
 	Title       string
 	Value       string
 	Description string
-}
-
-type LogbookView struct {
-	Stats1  []StatView
-	Stats2  []StatView
-	Flights []FlightView
-	Year    string
 }

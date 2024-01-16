@@ -15,7 +15,7 @@ func Initialize(isProd bool) (*web.Server, error) {
 	store := session.ConfigureSessionStore(isProd)
 	client := initializeDatabase()
 
-	if err := client.Debug().Schema.Create(
+	if err := client.Schema.Create(
 		context.Background(),
 		migrate.WithDropIndex(true),
 		migrate.WithDropColumn(true),

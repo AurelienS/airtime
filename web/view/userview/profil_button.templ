@@ -1,8 +1,8 @@
-package user
+package userview
 
-import "github.com/AurelienS/cigare/internal/model"
+import "github.com/AurelienS/cigare/web/viewmodel"
 
-templ ProfilButton(user model.User) {
+templ ProfilButton(user viewmodel.UserView) {
 	<script>
         document.addEventListener('click', function(event) {
             var dropdown = document.getElementById('profile-dropdown');

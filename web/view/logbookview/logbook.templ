@@ -1,19 +1,19 @@
-package logbook
+package logbookview
 
-import "github.com/AurelienS/cigare/web/template/component"
-import "github.com/AurelienS/cigare/web/template"
+import "github.com/AurelienS/cigare/web/viewmodel"
 
-templ Logbook(view template.LogbookView) {
+
+templ Logbook(view viewmodel.LogbookView) {
 	<div id="flightPage" class="container mx-auto w-full gap-4">
 		<div class="flex flex-col  items-center">
 			<div class="stats shadow w-min">
-				for _, s := range view.Stats1 {
-					@component.Stat(s)
+				for _, s := range view.StatMain {
+					@Stat(s)
 				}
 			</div>
 			<div class="stats shadow w-min">
-				for _, s := range view.Stats2 {
-					@component.Stat(s)
+				for _, s := range view.StatSecondary {
+					@Stat(s)
 				}
 			</div>
 		</div>
