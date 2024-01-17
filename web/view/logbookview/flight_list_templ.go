@@ -205,7 +205,7 @@ func FlightList(flights []viewmodel.FlightView, year string, flyingYears []strin
 			return templ_7745c5c3_Err
 		}
 		for _, y := range flyingYears {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"join-item btn btn-square\" type=\"radio\" name=\"yearValue\" aria-label=\"")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<input class=\"join-item btn btn-square \" type=\"radio\" name=\"yearValue\" aria-label=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

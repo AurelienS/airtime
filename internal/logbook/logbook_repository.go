@@ -2,6 +2,7 @@ package logbook
 
 import (
 	"context"
+	"sort"
 	"time"
 
 	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
@@ -160,6 +161,8 @@ func (r Repository) GetFlyingYears(ctx context.Context, user model.User) ([]int,
 	for year := range yearSet {
 		uniqueYears = append(uniqueYears, year)
 	}
+
+	sort.Ints(uniqueYears)
 
 	return uniqueYears, nil
 }

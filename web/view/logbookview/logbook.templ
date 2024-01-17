@@ -2,11 +2,10 @@ package logbookview
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-
 templ Logbook(view viewmodel.LogbookView) {
 	<div id="flightPage" class="container mx-auto w-full gap-4">
-		<div class="flex flex-col  items-center">
-			<div class="stats shadow w-min">
+		<div class="flex flex-col items-center gap-3">
+			<div class="stats content shadow w-min">
 				for _, s := range view.StatMain {
 					@Stat(s)
 				}
@@ -17,7 +16,7 @@ templ Logbook(view viewmodel.LogbookView) {
 				}
 			</div>
 		</div>
-		<div class="divider divider-secondary"></div>
+		<div class="divider"></div>
 		<div class="w-full flex justify-end m-2 ">
 			<button class="btn btn-outline btn-xs">voir records</button>
 		</div>

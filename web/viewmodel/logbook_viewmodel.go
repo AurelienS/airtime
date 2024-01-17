@@ -18,7 +18,7 @@ type FlightView struct {
 }
 
 type StatView struct {
-	Title       string
-	Value       string
-	Description string
+	Title            string
+	AlltimeValue     string
+	CurrentYearValue string
 }

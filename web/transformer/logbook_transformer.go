@@ -19,12 +19,12 @@ func TransformLogbookToViewModel(
 	flyingYears []int,
 ) viewmodel.LogbookView {
 	flightViews := sortAndConvertToViewModel(flights)
-	statMain := getMainStat(yearStats, allTimeStats, year)
-	statSecondary := getSecondaryStat(yearStats, allTimeStats, year)
+	statMain := getMainStat(yearStats, allTimeStats)
+	statSecondary := getSecondaryStat(yearStats, allTimeStats)
 
 	flyingYearsString := make([]string, 0, len(flyingYears))
-	for _, year := range flyingYears {
-		flyingYearsString = append(flyingYearsString, strconv.Itoa(year))
+	for _, y := range flyingYears {
+		flyingYearsString = append(flyingYearsString, strconv.Itoa(y))
 	}
 
 	return viewmodel.LogbookView{
@@ -55,72 +55,68 @@ func sortAndConvertToViewModel(flights []model.Flight) []viewmodel.FlightView {
 	return flightViews
 }
 
-func getDescription(value string, year int) string {
-	return fmt.Sprintf("%s en %d", value, year)
-}
-
-func getMainStat(yearStats, allTimeStats logbook.Stats, year int) []viewmodel.StatView {
+func getMainStat(yearStats, allTimeStats logbook.Stats) []viewmodel.StatView {
 	return []viewmodel.StatView{
 		{
-			Title:       "Nombre de vols",
-			Value:       strconv.Itoa(allTimeStats.FlightCount),
-			Description: getDescription(strconv.Itoa(yearStats.FlightCount), year),
+			Title:            "Nombre de vols",
+			AlltimeValue:     strconv.Itoa(allTimeStats.FlightCount),
+			CurrentYearValue: strconv.Itoa(yearStats.FlightCount),
 		},
 		{
-			Title:       "Temps de vol total",
-			Value:       prettyDuration(allTimeStats.TotalFlightTime),
-			Description: getDescription(prettyDuration(yearStats.TotalFlightTime), year),
+			Title:            "Temps de vol total",
+			AlltimeValue:     prettyDuration(allTimeStats.TotalFlightTime),
+			CurrentYearValue: prettyDuration(yearStats.TotalFlightTime),
 		},
 		{
-			Title:       "Montée totale",
-			Value:       prettyAltitude(allTimeStats.TotalClimb),
-			Description: getDescription(prettyAltitude(yearStats.TotalClimb), year),
+			Title:            "Montée totale",
+			AlltimeValue:     prettyAltitude(allTimeStats.TotalClimb, false),
+			CurrentYearValue: prettyAltitude(yearStats.TotalClimb, false),
 		},
 		{
-			Title:       "Temps total en thermique",
-			Value:       prettyDuration(allTimeStats.TotalThermicTime),
-			Description: getDescription(prettyDuration(yearStats.TotalThermicTime), year),
+			Title:            "Temps total en thermique",
+			AlltimeValue:     prettyDuration(allTimeStats.TotalThermicTime),
+			CurrentYearValue: prettyDuration(yearStats.TotalThermicTime),
 		},
 		{
-			Title:       "Nombre total de thermiques",
-			Value:       strconv.Itoa(allTimeStats.TotalNumberOfThermals),
-			Description: getDescription(strconv.Itoa(yearStats.TotalNumberOfThermals), year),
+			Title:            "Nombre total de thermiques",
+			AlltimeValue:     strconv.Itoa(allTimeStats.TotalNumberOfThermals),
+			CurrentYearValue: strconv.Itoa(yearStats.TotalNumberOfThermals),
 		},
 	}
 }
 
-func getSecondaryStat(yearStats, allTimeStats logbook.Stats, year int) []viewmodel.StatView {
+func getSecondaryStat(yearStats, allTimeStats logbook.Stats) []viewmodel.StatView {
 	return []viewmodel.StatView{
 		{
-			Title:       "Durée moyenne de vol",
-			Value:       prettyDuration(allTimeStats.AverageFlightLength),
-			Description: getDescription(prettyDuration(yearStats.AverageFlightLength), year),
+			Title:            "Durée moyenne de vol",
+			AlltimeValue:     prettyDuration(allTimeStats.AverageFlightLength),
+			CurrentYearValue: prettyDuration(yearStats.AverageFlightLength),
 		},
 		{
-			Title:       "Durée maximale de vol",
-			Value:       prettyDuration(allTimeStats.MaxFlightLength),
-			Description: getDescription(prettyDuration(yearStats.MaxFlightLength), year),
+			Title:            "Durée maximale de vol",
+			AlltimeValue:     prettyDuration(allTimeStats.MaxFlightLength),
+			CurrentYearValue: prettyDuration(yearStats.MaxFlightLength),
 		},
 		{
-			Title:       "Durée minimale de vol",
-			Value:       prettyDuration(allTimeStats.MinFlightLength),
-			Description: getDescription(prettyDuration(yearStats.MinFlightLength), year),
+			Title:            "Durée minimale de vol",
+			AlltimeValue:     prettyDuration(allTimeStats.MinFlightLength),
+			CurrentYearValue: prettyDuration(yearStats.MinFlightLength),
 		},
 		{
-			Title:       "Altitude maximale",
-			Value:       strconv.Itoa(allTimeStats.MaxAltitude) + "m",
-			Description: getDescription(strconv.Itoa(yearStats.MaxAltitude)+"m", year),
+			Title:            "Altitude maximale",
+			AlltimeValue:     prettyAltitude(allTimeStats.MaxAltitude, true),
+			CurrentYearValue: prettyAltitude(yearStats.MaxAltitude, true),
 		},
 		{
-			Title:       "Plus grand thermique",
-			Value:       strconv.Itoa(allTimeStats.MaxClimb) + "m",
-			Description: getDescription(strconv.Itoa(yearStats.MaxClimb)+"m", year),
+			Title:            "Plus grand thermique",
+			AlltimeValue:     prettyAltitude(allTimeStats.MaxClimb, true),
+			CurrentYearValue: prettyAltitude(yearStats.MaxClimb, true),
 		},
 
 		{
-			Title:       "Taux de montée maximal",
-			Value:       fmt.Sprintf("%.2f", allTimeStats.MaxClimbRate) + "m/s",
-			Description: getDescription(fmt.Sprintf("%.2f", yearStats.MaxClimbRate)+"m/s", year),
+			Title:            "Taux de montée maximal",
+			AlltimeValue:     fmt.Sprintf("%.2f", allTimeStats.MaxClimbRate) + " m/s",
+			CurrentYearValue: fmt.Sprintf("%.2f", yearStats.MaxClimbRate) + " m/s",
 		},
 	}
 }
@@ -132,15 +128,18 @@ func prettyDuration(d time.Duration) string {
 	if hours > 0 {
 		return fmt.Sprintf("%dh%d", hours, minutes)
 	}
-	return fmt.Sprintf("%dmin", minutes)
+	return fmt.Sprintf("%d min", minutes)
 }
 
-func prettyAltitude(alt int) string {
+func prettyAltitude(alt int, forceMeter bool) string {
+	if forceMeter {
+		return strconv.Itoa(alt) + " m"
+	}
 	km := alt / 1000
 	m := alt % 1000
 
 	if km > 0 {
-		return fmt.Sprintf("%dkm", km)
+		return fmt.Sprintf("%d km", km)
 	}
-	return fmt.Sprintf("%dm", m)
+	return fmt.Sprintf("%d m", m)
 }

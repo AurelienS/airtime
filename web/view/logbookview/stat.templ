@@ -2,11 +2,17 @@ package logbookview
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-
 templ Stat(view viewmodel.StatView) {
-	<div class="stat">
-		<div class="stat-title text-lg text-secondary">{ view.Title }</div>
-		<div class="stat-value text-2xl">{ view.Value }</div>
-		<div class="stat-desc">{ view.Description }</div>
+	<div class="stat bg-neutral text-neutral-content">
+		<div class="stat-title text-lg text-neutral-content ">{ view.Title }</div>
+		<div class="stat-value flex w-full justify-center">
+			<div class="text-xl font-bold">
+				{ view.CurrentYearValue }
+			</div>
+			<div class="divider divider-horizontal  h-2 my-auto"></div>
+			<div class="text-xs font-light h-fit my-auto">
+				{ view.AlltimeValue }
+			</div>
+		</div>
 	</div>
 }
