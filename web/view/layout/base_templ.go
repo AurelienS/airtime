@@ -58,7 +58,7 @@ func Base(currentUser viewmodel.UserView) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col min-h-screen\"><div class=\"navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50\"><div class=\"navbar-start\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col h-screen\"><div class=\"navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50\"><div class=\"navbar-start\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -83,7 +83,7 @@ func Base(currentUser viewmodel.UserView) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div id=\"content\" class=\"flex-grow mt-16 mb-16 pt-4 pb-4 overflow-y-auto\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div id=\"content\" class=\"flex-grow mt-20 mb-16 overflow-y-auto \">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

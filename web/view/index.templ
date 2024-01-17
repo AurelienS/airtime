@@ -5,6 +5,6 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 
 templ Index(user viewmodel.UserView) {
 	@layout.Base(user) {
-		<div hx-get="/logbooka" hx-trigger="load"></div>
+		<div hx-get="/logbook" hx-trigger="load"></div>
 	}
 }

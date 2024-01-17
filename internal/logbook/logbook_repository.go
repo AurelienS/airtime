@@ -125,7 +125,8 @@ func (r *Repository) GetStatistics(ctx context.Context,
 	return model.DBToDomainFlightStatistics(stats), err
 }
 
-func (r *Repository) GetLastFlight(ctx context.Context, user model.User) (model.Flight, error) {
+// If there is no last flight, it return nil without an error.
+func (r *Repository) GetLastFlight(ctx context.Context, user model.User) (*model.Flight, error) {
 	util.Info().Str("user", user.Email).Msg("Getting last flight")
 
 	flt, err := r.client.Flight.
@@ -136,10 +137,17 @@ func (r *Repository) GetLastFlight(ctx context.Context, user model.User) (model.
 		WithStatistic().
 		First(ctx)
 	if err != nil {
-		return model.Flight{}, err
+		if ent.IsNotFound(err) {
+			util.Debug().Str("user", user.Email).Msg("No flight found")
+			return nil, nil // Not a error but no flight
+		} else {
+			util.Error().Err(err).Str("user", user.Email).Msg("Failed querying user")
+			return nil, err
+		}
 	}
 
-	return model.DBToDomainFlight(flt), nil
+	domainModel := model.DBToDomainFlight(flt)
+	return &domainModel, nil
 }
 
 func (r Repository) GetFlyingYears(ctx context.Context, user model.User) ([]int, error) {

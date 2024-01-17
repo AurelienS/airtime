@@ -120,16 +120,8 @@ type Stats struct {
 	TotalThermicTime      time.Duration
 }
 
-func (s Service) GetStatistics(ctx context.Context, year int, user model.User) (Stats, error) {
+func (s Service) GetStatistics(ctx context.Context, startDate, endDate time.Time, user model.User) (Stats, error) {
 	logStats := Stats{}
-
-	startDate := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
-	var endDate time.Time
-	if year == 0 {
-		endDate = time.Now()
-	} else {
-		endDate = time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC)
-	}
 
 	stats, err := s.logbookRepo.GetStatistics(ctx, startDate, endDate, user)
 	if err != nil {
@@ -201,6 +193,6 @@ func (s Service) GetFlyingYears(ctx context.Context, user model.User) ([]int, er
 	return s.logbookRepo.GetFlyingYears(ctx, user)
 }
 
-func (s Service) GetLastFlight(ctx context.Context, user model.User) (model.Flight, error) {
+func (s Service) GetLastFlight(ctx context.Context, user model.User) (*model.Flight, error) {
 	return s.logbookRepo.GetLastFlight(ctx, user)
 }

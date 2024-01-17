@@ -2,12 +2,12 @@ package logbookview
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-templ FlightList(flights []viewmodel.FlightView, year string, flyingYears []string) {
+templ FlightList(flights []viewmodel.FlightView) {
 	<div class="flex flex-col items-center">
 		if len(flights) < 1 {
 			<div>No flight yet</div>
 		} else {
-			<div class="overflow-x-auto w-full h-96">
+			<div class="overflow-x-auto w-full ">
 				<table class="table table-pin-rows">
 					<!-- head -->
 					<thead>
@@ -35,23 +35,5 @@ templ FlightList(flights []viewmodel.FlightView, year string, flyingYears []stri
 				</table>
 			</div>
 		}
-		<form
-			class="join"
-			hx-get="/logbook/year"
-			hx-trigger="change"
-			hx-target="#flightPage"
-			hx-swap="outerHTML"
-		>
-			for _,y := range flyingYears {
-				<input
-					class="join-item btn btn-square "
-					type="radio"
-					name="yearValue"
-					aria-label={ y }
-					value={ y }
-					checked?={ year == y }
-				/>
-			}
-		</form>
 	</div>
 }

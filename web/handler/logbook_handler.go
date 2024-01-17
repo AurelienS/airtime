@@ -3,12 +3,14 @@ package handler
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/AurelienS/cigare/internal/logbook"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/transformer"
 	"github.com/AurelienS/cigare/web/view/logbookview"
+	"github.com/AurelienS/cigare/web/viewmodel"
 	"github.com/labstack/echo/v4"
 )
 
@@ -22,16 +24,6 @@ func NewLogbookHandler(logbookService logbook.Service) LogbookHandler {
 	}
 }
 
-func (h *LogbookHandler) RedirectToLastYearLogbook(c echo.Context) error {
-	lastFlight, err := h.LogbookService.GetLastFlight(c.Request().Context(), session.GetUserFromContext(c))
-	if err != nil {
-		return err
-	}
-	lastYear := lastFlight.Date.Year()
-	redirectTo := fmt.Sprintf("/logbook/%d", lastYear)
-	return c.Redirect(301, redirectTo)
-}
-
 func (h *LogbookHandler) Get(c echo.Context) error {
 	ctx := c.Request().Context()
 	user := session.GetUserFromContext(c)
@@ -41,12 +33,25 @@ func (h *LogbookHandler) Get(c echo.Context) error {
 		yearParam = c.FormValue("yearValue")
 	}
 
-	year, err := strconv.Atoi(yearParam)
+	flyingYears, err := h.LogbookService.GetFlyingYears(ctx, user)
 	if err != nil {
 		return err
 	}
 
-	flyingYears, err := h.LogbookService.GetFlyingYears(ctx, user)
+	numberOfYearFlying := len(flyingYears)
+	if numberOfYearFlying == 0 {
+		return Render(c, logbookview.Logbook(viewmodel.LogbookView{}))
+	}
+
+	if yearParam == "" {
+		if numberOfYearFlying == 1 {
+			yearParam = strconv.Itoa(flyingYears[0])
+		} else {
+			yearParam = strconv.Itoa(flyingYears[numberOfYearFlying-1])
+		}
+	}
+
+	year, err := strconv.Atoi(yearParam)
 	if err != nil {
 		return err
 	}
@@ -70,12 +75,22 @@ func (h *LogbookHandler) Get(c echo.Context) error {
 		return err
 	}
 
-	allTimeStats, err := h.LogbookService.GetStatistics(ctx, 0, user)
+	allTimeStats, err := h.LogbookService.GetStatistics(
+		ctx,
+		time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC),
+		time.Now(),
+		user,
+	)
 	if err != nil {
 		return err
 	}
 
-	yearStats, err := h.LogbookService.GetStatistics(ctx, year, user)
+	yearStats, err := h.LogbookService.GetStatistics(
+		ctx,
+		time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC),
+		time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC),
+		user,
+	)
 	if err != nil {
 		return err
 	}

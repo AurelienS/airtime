@@ -46,8 +46,8 @@ func sortAndConvertToViewModel(flights []model.Flight) []viewmodel.FlightView {
 		flightViews = append(flightViews, viewmodel.FlightView{
 			TakeoffLocation:  f.TakeoffLocation,
 			Date:             f.Date.Local().Format("02/01 15:04"),
-			TotalThermicTime: prettyDuration(f.Statistic.TotalThermicTime),
-			TotalFlightTime:  prettyDuration(f.Statistic.TotalFlightTime),
+			TotalThermicTime: prettyDuration(f.Statistic.TotalThermicTime, false),
+			TotalFlightTime:  prettyDuration(f.Statistic.TotalFlightTime, true),
 			MaxClimbRate:     strconv.FormatFloat(f.Statistic.MaxClimbRate, 'f', 1, 64),
 			MaxAltitude:      strconv.Itoa(f.Statistic.MaxAltitude),
 		})
@@ -64,8 +64,8 @@ func getMainStat(yearStats, allTimeStats logbook.Stats) []viewmodel.StatView {
 		},
 		{
 			Title:            "Temps de vol total",
-			AlltimeValue:     prettyDuration(allTimeStats.TotalFlightTime),
-			CurrentYearValue: prettyDuration(yearStats.TotalFlightTime),
+			AlltimeValue:     prettyDuration(allTimeStats.TotalFlightTime, true),
+			CurrentYearValue: prettyDuration(yearStats.TotalFlightTime, false),
 		},
 		{
 			Title:            "Montée totale",
@@ -74,8 +74,8 @@ func getMainStat(yearStats, allTimeStats logbook.Stats) []viewmodel.StatView {
 		},
 		{
 			Title:            "Temps total en thermique",
-			AlltimeValue:     prettyDuration(allTimeStats.TotalThermicTime),
-			CurrentYearValue: prettyDuration(yearStats.TotalThermicTime),
+			AlltimeValue:     prettyDuration(allTimeStats.TotalThermicTime, true),
+			CurrentYearValue: prettyDuration(yearStats.TotalThermicTime, false),
 		},
 		{
 			Title:            "Nombre total de thermiques",
@@ -89,18 +89,18 @@ func getSecondaryStat(yearStats, allTimeStats logbook.Stats) []viewmodel.StatVie
 	return []viewmodel.StatView{
 		{
 			Title:            "Durée moyenne de vol",
-			AlltimeValue:     prettyDuration(allTimeStats.AverageFlightLength),
-			CurrentYearValue: prettyDuration(yearStats.AverageFlightLength),
+			AlltimeValue:     prettyDuration(allTimeStats.AverageFlightLength, false),
+			CurrentYearValue: prettyDuration(yearStats.AverageFlightLength, false),
 		},
 		{
 			Title:            "Durée maximale de vol",
-			AlltimeValue:     prettyDuration(allTimeStats.MaxFlightLength),
-			CurrentYearValue: prettyDuration(yearStats.MaxFlightLength),
+			AlltimeValue:     prettyDuration(allTimeStats.MaxFlightLength, false),
+			CurrentYearValue: prettyDuration(yearStats.MaxFlightLength, false),
 		},
 		{
 			Title:            "Durée minimale de vol",
-			AlltimeValue:     prettyDuration(allTimeStats.MinFlightLength),
-			CurrentYearValue: prettyDuration(yearStats.MinFlightLength),
+			AlltimeValue:     prettyDuration(allTimeStats.MinFlightLength, false),
+			CurrentYearValue: prettyDuration(yearStats.MinFlightLength, false),
 		},
 		{
 			Title:            "Altitude maximale",
@@ -121,12 +121,16 @@ func getSecondaryStat(yearStats, allTimeStats logbook.Stats) []viewmodel.StatVie
 	}
 }
 
-func prettyDuration(d time.Duration) string {
+func prettyDuration(d time.Duration, onlyHour bool) string {
 	hours := int(d.Hours())
 	minutes := int(d.Minutes()) % 60
 
+	if onlyHour && hours > 0 {
+		return fmt.Sprintf("%d h", hours)
+	}
+
 	if hours > 0 {
-		return fmt.Sprintf("%dh%d", hours, minutes)
+		return fmt.Sprintf("%dh%02d", hours, minutes)
 	}
 	return fmt.Sprintf("%d min", minutes)
 }

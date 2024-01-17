@@ -21,7 +21,7 @@ templ Base(currentUser viewmodel.UserView) {
                 }
             </style>
 		</head>
-		<body class="flex flex-col min-h-screen">
+		<body class="flex flex-col h-screen">
 			<div class="navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50">
 				<div class="navbar-start">
 					@logbookview.UploadFlightForm()
@@ -33,7 +33,7 @@ templ Base(currentUser viewmodel.UserView) {
 					@userview.ProfilButton(currentUser)
 				</div>
 			</div>
-			<div id="content" class="flex-grow mt-16 mb-16 pt-4 pb-4 overflow-y-auto">
+			<div id="content" class="flex-grow mt-20 mb-16 overflow-y-auto ">
 				{ children... }
 			</div>
 			<footer class="footer footer-center p-4 bg-base-300 text-base-content fixed bottom-0 left-0 right-0">
