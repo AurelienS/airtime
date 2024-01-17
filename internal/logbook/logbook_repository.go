@@ -8,7 +8,7 @@ import (
 	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/storage/ent"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	userDb "github.com/AurelienS/cigare/internal/storage/ent/user"
+	userDB "github.com/AurelienS/cigare/internal/storage/ent/user"
 
 	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	"github.com/AurelienS/cigare/internal/util"
@@ -84,7 +84,7 @@ func (r *Repository) GetFlights(ctx context.Context, year int, user model.User) 
 
 	flightsDB, err := r.client.User.
 		Query().
-		Where(userDb.IDEQ(user.ID)).
+		Where(userDB.IDEQ(user.ID)).
 		QueryFlights().
 		Where(flight.DateGTE(startOfYear), flight.DateLTE(endOfYear)).
 		WithStatistic().
@@ -114,7 +114,7 @@ func (r *Repository) GetStatistics(ctx context.Context,
 		Query().
 		Where(
 			flightstatistic.HasFlightWith(
-				flight.HasPilotWith(userDb.IDEQ(user.ID)),
+				flight.HasPilotWith(userDB.IDEQ(user.ID)),
 				flight.DateGTE(startDate),
 				flight.DateLTE(endDate),
 			),
@@ -122,4 +122,44 @@ func (r *Repository) GetStatistics(ctx context.Context,
 		All(ctx)
 
 	return model.DBToDomainFlightStatistics(stats), err
+}
+
+func (r *Repository) GetLastFlight(ctx context.Context, user model.User) (model.Flight, error) {
+	util.Info().Str("user", user.Email).Msg("Getting last flight")
+
+	flt, err := r.client.Flight.
+		Query().
+		Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).
+		Order(ent.Desc(flight.FieldDate)).
+		WithPilot().
+		WithStatistic().
+		First(ctx)
+	if err != nil {
+		return model.Flight{}, err
+	}
+
+	return model.DBToDomainFlight(flt), nil
+}
+
+func (r Repository) GetFlyingYears(ctx context.Context, user model.User) ([]int, error) {
+	flights, err := r.client.Flight.
+		Query().
+		Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).
+		All(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	yearSet := make(map[int]bool)
+	for _, f := range flights {
+		year := f.Date.Year()
+		yearSet[year] = true
+	}
+
+	uniqueYears := make([]int, 0, len(yearSet))
+	for year := range yearSet {
+		uniqueYears = append(uniqueYears, year)
+	}
+
+	return uniqueYears, nil
 }

@@ -21,6 +21,6 @@ templ Logbook(view viewmodel.LogbookView) {
 		<div class="w-full flex justify-end m-2 ">
 			<button class="btn btn-outline btn-xs">voir records</button>
 		</div>
-		@FlightList(view.Flights, view.Year)
+		@FlightList(view.Flights, view.CurrentYear, view.AvailableYears)
 	</div>
 }

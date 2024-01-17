@@ -16,16 +16,23 @@ func TransformLogbookToViewModel(
 	yearStats logbook.Stats,
 	allTimeStats logbook.Stats,
 	year int,
+	flyingYears []int,
 ) viewmodel.LogbookView {
 	flightViews := sortAndConvertToViewModel(flights)
 	statMain := getMainStat(yearStats, allTimeStats, year)
 	statSecondary := getSecondaryStat(yearStats, allTimeStats, year)
 
+	flyingYearsString := make([]string, 0, len(flyingYears))
+	for _, year := range flyingYears {
+		flyingYearsString = append(flyingYearsString, strconv.Itoa(year))
+	}
+
 	return viewmodel.LogbookView{
-		Year:          strconv.Itoa(year),
-		Flights:       flightViews,
-		StatMain:      statMain,
-		StatSecondary: statSecondary,
+		CurrentYear:    strconv.Itoa(year),
+		AvailableYears: flyingYearsString,
+		Flights:        flightViews,
+		StatMain:       statMain,
+		StatSecondary:  statSecondary,
 	}
 }
 

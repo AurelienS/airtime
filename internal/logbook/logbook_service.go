@@ -196,3 +196,11 @@ func (s Service) GetStatistics(ctx context.Context, year int, user model.User) (
 func (s Service) GetFlights(ctx context.Context, year int, user model.User) ([]model.Flight, error) {
 	return s.logbookRepo.GetFlights(ctx, year, user)
 }
+
+func (s Service) GetFlyingYears(ctx context.Context, user model.User) ([]int, error) {
+	return s.logbookRepo.GetFlyingYears(ctx, user)
+}
+
+func (s Service) GetLastFlight(ctx context.Context, user model.User) (model.Flight, error) {
+	return s.logbookRepo.GetLastFlight(ctx, user)
+}

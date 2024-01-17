@@ -64,8 +64,6 @@ func (fs *FlightStatistic) Compute() {
 
 		// flight related
 		fs.MaxAltitude = int(math.Max(float64(fs.MaxAltitude), float64(point.GNSSAltitude)))
-		fmt.Println("file: flight_statistics.go ~ line 67 ~ func ~ point.GNSSAltitude : ", point.GNSSAltitude)
-		fmt.Println("file: flight_statistics.go ~ line 67 ~ func ~ fs.MaxAltitude : ", fs.MaxAltitude)
 
 		// thermal related
 		smoothedRateOfClimb := fs.calculateSmoothedRateOfClimb(i, climbRateIntegrationPeriod, rateOfClimbHistory)

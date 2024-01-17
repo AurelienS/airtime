@@ -26,7 +26,7 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.Use(middleware.AuthMiddleware)
 	authGroup.GET("", r.IndexHandler.Get)
 
-	authGroup.GET("logbook", r.LogbookHandler.RedirectToCurrentYearLogbook)
+	authGroup.GET("logbooka", r.LogbookHandler.RedirectToLastYearLogbook)
 	authGroup.GET("logbook/:year", r.LogbookHandler.Get)
 	authGroup.POST("logbook/flight", r.LogbookHandler.PostFlight)
 

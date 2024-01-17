@@ -1,10 +1,11 @@
 package viewmodel
 
 type LogbookView struct {
-	StatMain      []StatView
-	StatSecondary []StatView
-	Flights       []FlightView
-	Year          string
+	StatMain       []StatView
+	StatSecondary  []StatView
+	Flights        []FlightView
+	CurrentYear    string
+	AvailableYears []string
 }
 
 type FlightView struct {

@@ -58,7 +58,7 @@ func Logbook(view viewmodel.LogbookView) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = FlightList(view.Flights, view.Year).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = FlightList(view.Flights, view.CurrentYear, view.AvailableYears).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
