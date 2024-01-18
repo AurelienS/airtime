@@ -1,0 +1,8 @@
+package logbookview
+
+import "github.com/AurelienS/cigare/internal/model"
+import "strconv"
+
+templ Flight(f model.Flight) {
+	<div>flight id { strconv.Itoa(f.ID) }</div>
+}

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/AurelienS/cigare/internal/logbook"
+	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/transformer"
@@ -24,7 +25,7 @@ func NewLogbookHandler(logbookService logbook.Service) LogbookHandler {
 	}
 }
 
-func (h *LogbookHandler) Get(c echo.Context) error {
+func (h *LogbookHandler) GetLog(c echo.Context) error {
 	ctx := c.Request().Context()
 	user := session.GetUserFromContext(c)
 	yearParam := c.Param("year")
@@ -101,6 +102,11 @@ func (h *LogbookHandler) Get(c echo.Context) error {
 	return Render(c, logbookview.Logbook(viewData))
 }
 
+func (h *LogbookHandler) GetFlight(c echo.Context) error {
+	var f model.Flight
+	return Render(c, logbookview.Flight(f))
+}
+
 func (h *LogbookHandler) PostFlight(c echo.Context) error {
 	file, err := c.FormFile("igcfile")
 	if err != nil {
@@ -118,9 +124,13 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 
 	c.Set("flight_added", "Flight processed and added successfully")
 
-	return h.Get(c)
+	return h.GetLog(c)
 }
 
 func (h *LogbookHandler) GetProgression(c echo.Context) error {
 	return Render(c, logbookview.Progression("foo"))
+}
+
+func (h *LogbookHandler) GetRecords(c echo.Context) error {
+	return Render(c, logbookview.Records())
 }
