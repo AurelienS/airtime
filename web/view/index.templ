@@ -5,6 +5,11 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 
 templ Index(user viewmodel.UserView) {
 	@layout.Base(user) {
-		<div hx-get="/logbook" hx-trigger="load"></div>
+		<div role="tablist" class="tabs tabs-bordered">
+			<a role="tab" class="tab" hx-get="/logbook/records" hx-target="#tab">Records</a>
+			<a role="tab" class="tab " hx-get="/logbook/log" hx-target="#tab">Carnet de vol</a>
+			<a role="tab" class="tab" hx-get="/logbook/progression" hx-target="#tab">Progression</a>
+		</div>
+		<div id="tab" class="mt-2 "></div>
 	}
 }

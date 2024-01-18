@@ -120,3 +120,7 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 
 	return h.Get(c)
 }
+
+func (h *LogbookHandler) GetProgression(c echo.Context) error {
+	return Render(c, logbookview.Progression("foo"))
+}

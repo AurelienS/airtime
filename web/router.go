@@ -26,9 +26,10 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.Use(middleware.AuthMiddleware)
 	authGroup.GET("", r.IndexHandler.Get)
 
-	authGroup.GET("logbook", r.LogbookHandler.Get)
-	authGroup.GET("logbook/:year", r.LogbookHandler.Get)
-	authGroup.POST("logbook/flight", r.LogbookHandler.PostFlight)
+	authGroup.GET("logbook/log", r.LogbookHandler.Get)
+	authGroup.GET("logbook/progression", r.LogbookHandler.GetProgression)
+	authGroup.GET("logbook/log/:year", r.LogbookHandler.Get)
+	authGroup.POST("logbook/log/flight", r.LogbookHandler.PostFlight)
 
 	authGroup.GET("logout", r.AuthHandler.GetLogout)
 }

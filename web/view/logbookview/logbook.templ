@@ -20,28 +20,25 @@ templ Logbook(view viewmodel.LogbookView) {
 				}
 			</div>
 		</div>
-		<div class="w-full flex justify-between items-center px-4">
-			<button class="btn btn-outline btn-xs">voir records</button>
-			<form
-				class="join self-start"
-				hx-get="/logbook/year"
-				hx-trigger="change"
-				hx-target="#flightPage"
-				hx-swap="outerHTML"
-			>
-				for _,y := range view.AvailableYears {
-					<input
-						class="join-item btn btn-square  "
-						type="radio"
-						name="yearValue"
-						aria-label={ y }
-						value={ y }
-						checked?={ view.CurrentYear == y }
-					/>
-				}
-			</form>
-			<button class="btn btn-outline btn-xs">voir progression</button>
-		</div>
+		<div id="progression"></div>
+		<form
+			class="join self-center"
+			hx-get="/logbook/log/year"
+			hx-trigger="change"
+			hx-target="#flightPage"
+			hx-swap="outerHTML"
+		>
+			for _,y := range view.AvailableYears {
+				<input
+					class="join-item btn btn-square  "
+					type="radio"
+					name="yearValue"
+					aria-label={ y }
+					value={ y }
+					checked?={ view.CurrentYear == y }
+				/>
+			}
+		</form>
 		@FlightList(view.Flights)
 	</div>
 }
