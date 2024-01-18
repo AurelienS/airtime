@@ -1,24 +1,19 @@
 .ONESHELL:
 
-.PHONY: run serve gen tailwind watch build trigger-refresh browser-refresh zip ent
+.PHONY: run serve gen watch build trigger-refresh browser-refresh zip ent
 
 # Main commands
-watch: gen build trigger-refresh
-
-gen: ent tailwind templ
+watch: templ build trigger-refresh
 
 build:
 	@go build -o ./tmp/main ./cmd/server/main.go
 
 # Generate code
 templ:
-	@templ generate 
+	@templ generate
 
 ent:
-	@go generate ./internal/storage/ent 
-
-tailwind:
-	@npm run build-css
+	@go generate ./internal/storage/ent
 
 # Browser refresh
 trigger-refresh:
