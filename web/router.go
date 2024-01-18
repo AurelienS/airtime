@@ -19,6 +19,8 @@ func (r *Router) Initialize(e *echo.Echo) {
 	e.Static("/static", "web/static/")
 
 	e.GET("/login", r.AuthHandler.GetLogin)
+	e.GET("/dummy", r.IndexHandler.Dummy)
+	e.GET("/landing", r.IndexHandler.Landing)
 	e.GET("/auth/:provider/callback", r.AuthHandler.GetAuthCallback)
 	e.GET("/auth/:provider", r.AuthHandler.GetAuthProvider)
 

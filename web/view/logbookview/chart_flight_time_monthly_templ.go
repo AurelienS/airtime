@@ -12,8 +12,8 @@ import "bytes"
 
 func setUpChartFlightTimeMonthly(data string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setUpChartFlightTimeMonthly_6643`,
-		Function: `function __templ_setUpChartFlightTimeMonthly_6643(data){const ctx = document.getElementById('chart_flight_time_monthly');
+		Name: `__templ_setUpChartFlightTimeMonthly_e341`,
+		Function: `function __templ_setUpChartFlightTimeMonthly_e341(data){const ctx = document.getElementById('chart_flight_time_monthly');
 	new Chart(ctx, {
     type: 'line',
     data: {
@@ -23,14 +23,62 @@ func setUpChartFlightTimeMonthly(data string) templ.ComponentScript {
         data: [45, 49, 60, 61, 36, 35, 20, 50, 40, 45, 50, 60],
         backgroundColor: 'rgba(54, 162, 235, 0.5)',
         borderColor: 'rgb(54, 162, 235)',
-        borderWidth: 1
+        borderWidth: 1,
+        cubicInterpolationMode: 'monotone'
     },
     {
         label: '2023',
         data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
         backgroundColor: 'rgba(255, 99, 132, 0.5)',
         borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 1
+        borderWidth: 1,
+        cubicInterpolationMode: 'monotone',
+        hidden:true,
+    },
+    {
+        label: '2024',
+        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: 'rgb(255, 99, 132)',
+        borderWidth: 1,
+        cubicInterpolationMode: 'monotone',
+        hidden:true,
+    },
+    {
+        label: '2025',
+        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: 'rgb(255, 99, 132)',
+        borderWidth: 1,
+        cubicInterpolationMode: 'monotone',
+        hidden:true,
+    },
+    {
+        label: '2026',
+        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: 'rgb(255, 99, 132)',
+        borderWidth: 1,
+        cubicInterpolationMode: 'monotone',
+        hidden:true,
+    },
+    {
+        label: '2027',
+        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: 'rgb(255, 99, 132)',
+        borderWidth: 1,
+        cubicInterpolationMode: 'monotone',
+        hidden:true,
+    },
+    {
+        label: '2028',
+        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+        borderColor: 'rgb(255, 99, 132)',
+        borderWidth: 1,
+        cubicInterpolationMode: 'monotone',
+        hidden:true,
     }]
     },
     options: {
@@ -42,7 +90,8 @@ func setUpChartFlightTimeMonthly(data string) templ.ComponentScript {
         },
         plugins: {
             legend: {
-                display: true
+                display: true,
+                position: 'left'
             }
         },
         responsive: true,
@@ -52,8 +101,8 @@ func setUpChartFlightTimeMonthly(data string) templ.ComponentScript {
         }
     }
 });}`,
-		Call:       templ.SafeScript(`__templ_setUpChartFlightTimeMonthly_6643`, data),
-		CallInline: templ.SafeScriptInline(`__templ_setUpChartFlightTimeMonthly_6643`, data),
+		Call:       templ.SafeScript(`__templ_setUpChartFlightTimeMonthly_e341`, data),
+		CallInline: templ.SafeScriptInline(`__templ_setUpChartFlightTimeMonthly_e341`, data),
 	}
 }
 
