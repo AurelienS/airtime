@@ -67,15 +67,15 @@ func WriteSeedData() {
 
 				_, err = client.FlightStatistic.
 					Create().
-					SetTotalThermicTime(random(100, 1000)).
-					SetTotalFlightTime(random(120, 1000)).
-					SetMaxClimb(random(1100, 4808)).
-					SetMaxClimbRate(float64(random(1, 15)) + rand.Float64()).
-					SetTotalClimb(random(3000, 10000)).
+					SetTotalThermicTime(random(0, 20000)).
+					SetTotalFlightTime(random(0, 20000)).
+					SetMaxClimb(random(0, 4808)).
+					SetMaxClimbRate(float64(random(1, 9)) + rand.Float64()).
+					SetTotalClimb(random(0, 20000)).
 					SetAverageClimbRate(rand.Float64() * 5).
-					SetNumberOfThermals(random(1, 50)).
+					SetNumberOfThermals(random(0, 500)).
 					SetPercentageThermic(rand.Float64() * 100).
-					SetMaxAltitude(random(1500, 4500)).
+					SetMaxAltitude(random(1100, 4808)).
 					SetFlight(f).
 					Save(ctx)
 				if err != nil {
