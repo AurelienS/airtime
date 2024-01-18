@@ -1,0 +1,76 @@
+package logbookview
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/component"
+import "fmt"
+
+templ TabLog(view viewmodel.LogbookView, user viewmodel.UserView) {
+	@Index(user) {
+		@TabList("log")
+		if view.IsFlightAdded {
+			@component.Toast("flight added")
+		}
+		<div class="flex-col items-center gap-3 hidden md:flex ">
+			<div class="stats content shadow w-min">
+				for _, s := range view.StatMain {
+					@Stat(s)
+				}
+			</div>
+			<div class="stats shadow w-min">
+				for _, s := range view.StatSecondary {
+					@Stat(s)
+				}
+			</div>
+		</div>
+		<div id="flights" class="flex flex-col items-center">
+			<div class="join self-center">
+				for _,y := range view.AvailableYears {
+					<input
+						class="join-item btn btn-square  "
+						type="radio"
+						aria-label={ y }
+						value={ y }
+						checked?={ view.CurrentYear == y }
+						hx-get={ fmt.Sprintf("/logbook/log/%s", y) }
+						hx-trigger="change"
+						hx-target="#logbook_page"
+						hx-select="#logbook_page"
+						hx-swap="outerHTML"
+						hx-push-url="true"
+					/>
+				}
+			</div>
+			if len(view.Flights) < 1 {
+				<div>No flight yet</div>
+			} else {
+				<div class="overflow-x-auto w-full ">
+					<table class="table table-pin-rows">
+						<!-- head -->
+						<thead>
+							<tr class="text-lg">
+								<th>Date</th>
+								<th>Lieu</th>
+								<th>Durée</th>
+								<th>Altitude max</th>
+								<th>Vario max</th>
+								<th>temps de thermique</th>
+							</tr>
+						</thead>
+						<tbody>
+							for _, flight := range view.Flights {
+								<tr class="hover">
+									<td>{ flight.Date }</td>
+									<th>{ flight.TakeoffLocation }</th>
+									<td>{ flight.TotalFlightTime }</td>
+									<td>{ flight.MaxAltitude }</td>
+									<td>{ flight.MaxClimbRate }</td>
+									<td>{ flight.TotalThermicTime }</td>
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			}
+		</div>
+	}
+}

@@ -1,0 +1,35 @@
+package logbookview
+
+templ TabList(active string) {
+	<div role="tablist" class="tabs tabs-bordered w-full">
+		<a
+			role="tab"
+			class={ "tab", templ.KV("tab-active", active == "records") }
+			hx-get="/logbook/records"
+			hx-target="#logbook_page"
+			hx-select="#logbook_page"
+			hx-swap="outerHTML"
+			hx-push-url="true"
+		>Records</a>
+		<a
+			role="tab"
+			class={ "tab", templ.KV("tab-active", active == "log") }
+			hx-get="/logbook/log"
+			hx-target="#logbook_page"
+			hx-select="#logbook_page"
+			hx-swap="outerHTML"
+			hx-push-url="true"
+		>
+			Carnet de vol
+		</a>
+		<a
+			role="tab"
+			class={ "tab", templ.KV("tab-active", active == "progression") }
+			hx-get="/logbook/progression"
+			hx-target="#logbook_page"
+			hx-select="#logbook_page"
+			hx-swap="outerHTML"
+			hx-push-url="true"
+		>Progression</a>
+	</div>
+}

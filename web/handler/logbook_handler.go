@@ -25,15 +25,12 @@ func NewLogbookHandler(logbookService logbook.Service) LogbookHandler {
 	}
 }
 
-func (h *LogbookHandler) GetLog(c echo.Context) error {
+func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	ctx := c.Request().Context()
 	user := session.GetUserFromContext(c)
+	userview := transformer.TransformUserToViewModel(user)
 	yearParam := c.Param("year")
 	isFlightAdded := c.Get("flight_added") != nil
-
-	if yearParam == "year" {
-		yearParam = c.FormValue("yearValue")
-	}
 
 	flyingYears, err := h.LogbookService.GetFlyingYears(ctx, user)
 	if err != nil {
@@ -42,7 +39,7 @@ func (h *LogbookHandler) GetLog(c echo.Context) error {
 
 	numberOfYearFlying := len(flyingYears)
 	if numberOfYearFlying == 0 {
-		return Render(c, logbookview.Logbook(viewmodel.LogbookView{}))
+		return Render(c, logbookview.TabLog(viewmodel.LogbookView{}, userview))
 	}
 
 	if yearParam == "" {
@@ -68,7 +65,8 @@ func (h *LogbookHandler) GetLog(c echo.Context) error {
 
 	if !flyingYearIncludeYear && len(flyingYears) > 0 {
 		lastYear := flyingYears[len(flyingYears)-1]
-		redirectTo := fmt.Sprintf("/logbook/%d", lastYear)
+		redirectTo := fmt.Sprintf("/logbook/log/%d", lastYear)
+		fmt.Println("file: logbook_handler.go ~ line 69 ~ if!flyingYearIncludeYear&&len ~ redirectTo : ", redirectTo)
 		return c.Redirect(301, redirectTo)
 	}
 
@@ -99,7 +97,19 @@ func (h *LogbookHandler) GetLog(c echo.Context) error {
 
 	viewData := transformer.TransformLogbookToViewModel(flights, yearStats, allTimeStats, year, flyingYears, isFlightAdded)
 
-	return Render(c, logbookview.Logbook(viewData))
+	return Render(c, logbookview.TabLog(viewData, userview))
+}
+
+func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
+	user := session.GetUserFromContext(c)
+	userview := transformer.TransformUserToViewModel(user)
+	return Render(c, logbookview.TabProgression("foo", userview))
+}
+
+func (h *LogbookHandler) GetTabRecords(c echo.Context) error {
+	user := session.GetUserFromContext(c)
+	userview := transformer.TransformUserToViewModel(user)
+	return Render(c, logbookview.TabRecords(userview))
 }
 
 func (h *LogbookHandler) GetFlight(c echo.Context) error {
@@ -124,13 +134,5 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 
 	c.Set("flight_added", "Flight processed and added successfully")
 
-	return h.GetLog(c)
-}
-
-func (h *LogbookHandler) GetProgression(c echo.Context) error {
-	return Render(c, logbookview.Progression("foo"))
-}
-
-func (h *LogbookHandler) GetRecords(c echo.Context) error {
-	return Render(c, logbookview.Records())
+	return h.GetTabLog(c)
 }

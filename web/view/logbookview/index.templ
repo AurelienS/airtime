@@ -1,0 +1,12 @@
+package logbookview
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/layout"
+
+templ Index( user viewmodel.UserView) {
+	@layout.Base(user) {
+		<div id="logbook_page" class="flex flex-col items-stretch gap-12 container mx-auto" style="padding-left: calc(100vw - 100%);">
+			{ children... }
+		</div>
+	}
+}
