@@ -11,6 +11,7 @@ import "io"
 import "bytes"
 
 import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/component"
 
 func Logbook(view viewmodel.LogbookView) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -25,7 +26,17 @@ func Logbook(view viewmodel.LogbookView) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"flightPage\" class=\"container mx-auto w-full flex flex-col gap-8\"><div class=\"flex-col items-center gap-3 hidden md:flex \"><div class=\"stats content shadow w-min\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"flightPage\" class=\"container relative mx-auto w-full flex flex-col gap-8\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if view.IsFlightAdded {
+			templ_7745c5c3_Err = component.Toast("flight added").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex-col items-center gap-3 hidden md:flex \"><div class=\"stats content shadow w-min\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,0 +1,25 @@
+package component
+
+import "fmt"
+import "time"
+
+var uniqueID = fmt.Sprintf("toast-%d", time.Now().UnixNano())
+
+script automaticRemover(content, id string) {
+	setTimeout(function() {
+		var toastElement = document.getElementById(id);
+		if (toastElement) {
+			toastElement.remove();
+		}
+	}, 5000);
+}
+
+templ Toast(message string) {
+	@automaticRemover(message, uniqueID)
+	<div id={ uniqueID } role="alert" class="absolute alert alert-success" onLoad="">
+		<svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none" viewBox="0 0 24 24">
+			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+		</svg>
+		<span>{ message }</span>
+	</div>
+}

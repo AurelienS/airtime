@@ -6,6 +6,7 @@ type LogbookView struct {
 	Flights        []FlightView
 	CurrentYear    string
 	AvailableYears []string
+	IsFlightAdded  bool
 }
 
 type FlightView struct {

@@ -28,6 +28,7 @@ func (h *LogbookHandler) Get(c echo.Context) error {
 	ctx := c.Request().Context()
 	user := session.GetUserFromContext(c)
 	yearParam := c.Param("year")
+	isFlightAdded := c.Get("flight_added") != nil
 
 	if yearParam == "year" {
 		yearParam = c.FormValue("yearValue")
@@ -95,7 +96,7 @@ func (h *LogbookHandler) Get(c echo.Context) error {
 		return err
 	}
 
-	viewData := transformer.TransformLogbookToViewModel(flights, yearStats, allTimeStats, year, flyingYears)
+	viewData := transformer.TransformLogbookToViewModel(flights, yearStats, allTimeStats, year, flyingYears, isFlightAdded)
 
 	return Render(c, logbookview.Logbook(viewData))
 }
@@ -114,6 +115,8 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to process and insert flight")
 		return err
 	}
+
+	c.Set("flight_added", "Flight processed and added successfully")
 
 	return h.Get(c)
 }

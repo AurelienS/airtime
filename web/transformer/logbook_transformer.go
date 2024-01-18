@@ -17,6 +17,7 @@ func TransformLogbookToViewModel(
 	allTimeStats logbook.Stats,
 	year int,
 	flyingYears []int,
+	isFlightAdded bool,
 ) viewmodel.LogbookView {
 	flightViews := sortAndConvertToViewModel(flights)
 	statMain := getMainStat(yearStats, allTimeStats)
@@ -33,6 +34,7 @@ func TransformLogbookToViewModel(
 		Flights:        flightViews,
 		StatMain:       statMain,
 		StatSecondary:  statSecondary,
+		IsFlightAdded:  isFlightAdded,
 	}
 }
 

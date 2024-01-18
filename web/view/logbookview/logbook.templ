@@ -1,9 +1,13 @@
 package logbookview
 
 import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/component"
 
 templ Logbook(view viewmodel.LogbookView) {
-	<div id="flightPage" class="container mx-auto w-full flex flex-col gap-8">
+	<div id="flightPage" class="container relative mx-auto w-full flex flex-col gap-8">
+		if view.IsFlightAdded {
+			@component.Toast("flight added")
+		}
 		<div class="flex-col items-center gap-3 hidden md:flex ">
 			<div class="stats content shadow w-min">
 				for _, s := range view.StatMain {
