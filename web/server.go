@@ -1,9 +1,9 @@
 package web
 
 import (
-	"github.com/AurelienS/cigare/internal/logbook"
+	"github.com/AurelienS/cigare/internal/repository"
+	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/internal/storage/ent"
-	"github.com/AurelienS/cigare/internal/user"
 	"github.com/AurelienS/cigare/web/handler"
 
 	"github.com/gorilla/sessions"
@@ -18,19 +18,19 @@ type Server struct {
 func NewServer(client *ent.Client, store sessions.Store) *Server {
 	e := echo.New()
 
-	flightRepo := logbook.NewRepository(client)
-	userRepo := user.NewRepository(client)
+	flightRepo := repository.NewFlightRepository(client)
+	userRepo := repository.NewUserRepository(client)
 
-	flightService := logbook.NewService(flightRepo)
-	userService := user.NewService(userRepo)
+	flightService := service.NewLogbookService(flightRepo)
+	userService := service.NewUserService(userRepo)
 
-	flightHandler := handler.NewLogbookHandler(flightService)
+	logbookHandler := handler.NewLogbookHandler(flightService)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService)
 
 	router := Router{
 		AuthHandler:    authHandler,
-		LogbookHandler: flightHandler,
+		LogbookHandler: logbookHandler,
 		UserHandler:    userHandler,
 	}
 	router.Initialize(e)

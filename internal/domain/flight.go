@@ -1,8 +1,30 @@
-package model
+package domain
 
 import (
 	"time"
+
+	"github.com/golang/geo/s2"
 )
+
+type Point struct {
+	s2.LatLng
+	Time             time.Time
+	PressureAltitude int
+	GNSSAltitude     int
+	NumSatellites    int
+	Description      string
+}
+
+type Flight struct {
+	ID              int
+	Date            time.Time
+	TakeoffLocation string
+	IgcFilePath     string
+	Pilot           User
+	Statistic       FlightStatistic
+	CreatedAt       time.Time
+	UpdatedAt       time.Time
+}
 
 type Thermal struct {
 	Start              time.Time

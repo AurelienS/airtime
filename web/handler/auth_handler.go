@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/AurelienS/cigare/internal/model"
-	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/internal/domain"
+	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/view/userview"
@@ -14,10 +14,10 @@ import (
 )
 
 type AuthHandler struct {
-	userService user.Service
+	userService service.UserService
 }
 
-func NewAuthHandler(userService user.Service) AuthHandler {
+func NewAuthHandler(userService service.UserService) AuthHandler {
 	return AuthHandler{userService: userService}
 }
 
@@ -44,7 +44,7 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		return err
 	}
 
-	user := model.User{
+	user := domain.User{
 		GoogleID:   googleUser.UserID,
 		Email:      googleUser.Email,
 		Name:       googleUser.Name,

@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/AurelienS/cigare/internal/logbook"
-	"github.com/AurelienS/cigare/internal/model"
+	"github.com/AurelienS/cigare/internal/domain"
+	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/transformer"
@@ -16,10 +16,10 @@ import (
 )
 
 type LogbookHandler struct {
-	LogbookService logbook.Service
+	LogbookService service.LogbookService
 }
 
-func NewLogbookHandler(logbookService logbook.Service) LogbookHandler {
+func NewLogbookHandler(logbookService service.LogbookService) LogbookHandler {
 	return LogbookHandler{
 		LogbookService: logbookService,
 	}
@@ -108,10 +108,10 @@ func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
 		return err
 	}
 
-	totalFlightTimeExtractor := func(stats model.StatsAggregated) int {
+	totalFlightTimeExtractor := func(stats domain.StatsAggregated) int {
 		return int(stats.TotalFlightTime.Hours())
 	}
-	flightCountExtractor := func(stats model.StatsAggregated) int {
+	flightCountExtractor := func(stats domain.StatsAggregated) int {
 		return stats.FlightCount
 	}
 
@@ -124,7 +124,7 @@ func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
 }
 
 func (h *LogbookHandler) GetFlight(c echo.Context) error {
-	var f model.Flight
+	var f domain.Flight
 	return Render(c, logbookview.Flight(f))
 }
 

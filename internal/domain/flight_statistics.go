@@ -1,4 +1,4 @@
-package model
+package domain
 
 import (
 	"fmt"
@@ -46,7 +46,26 @@ func NewFlightStatistics(points []igc.Point) FlightStatistic {
 	return stat
 }
 
-func ComputeAggregateStatistics(stats []FlightStatistic) StatsAggregated {
+type StatsAggregated struct {
+	FlightCount           int
+	MaxAltitude           int
+	MaxClimb              int
+	TotalClimb            int
+	TotalNumberOfThermals int
+	MaxClimbRate          float64
+	MaxFlightLength       time.Duration
+	MinFlightLength       time.Duration
+	AverageFlightLength   time.Duration
+	TotalFlightTime       time.Duration
+	TotalThermicTime      time.Duration
+}
+
+type (
+	Year           = int
+	StatsYearMonth = map[Year]map[time.Month]StatsAggregated
+)
+
+func ComputeAggregateStatistics(flights []Flight) StatsAggregated {
 	var maxAltitude int
 	var maxVario float64
 	var maxFlightLength time.Duration
@@ -59,28 +78,28 @@ func ComputeAggregateStatistics(stats []FlightStatistic) StatsAggregated {
 	var totalClimb int
 	var totalNumberOfThermals int
 
-	flightCount := len(stats)
+	flightCount := len(flights)
 
-	for _, stat := range stats {
-		if stat.MaxAltitude > maxAltitude {
-			maxAltitude = stat.MaxAltitude
+	for _, f := range flights {
+		if f.Statistic.MaxAltitude > maxAltitude {
+			maxAltitude = f.Statistic.MaxAltitude
 		}
-		if stat.MaxClimbRate > maxVario {
-			maxVario = stat.MaxClimbRate
+		if f.Statistic.MaxClimbRate > maxVario {
+			maxVario = f.Statistic.MaxClimbRate
 		}
-		if stat.TotalFlightTime > maxFlightLength {
-			maxFlightLength = stat.TotalFlightTime
+		if f.Statistic.TotalFlightTime > maxFlightLength {
+			maxFlightLength = f.Statistic.TotalFlightTime
 		}
-		if stat.TotalFlightTime < minFlightLength {
-			minFlightLength = stat.TotalFlightTime
+		if f.Statistic.TotalFlightTime < minFlightLength {
+			minFlightLength = f.Statistic.TotalFlightTime
 		}
-		if stat.MaxClimb > maxClimb {
-			maxClimb = stat.MaxClimb
+		if f.Statistic.MaxClimb > maxClimb {
+			maxClimb = f.Statistic.MaxClimb
 		}
-		totalClimb += stat.TotalClimb
-		totalNumberOfThermals += stat.NumberOfThermals
-		totalThermicTime += stat.TotalThermicTime
-		totalFlightTime += stat.TotalFlightTime
+		totalClimb += f.Statistic.TotalClimb
+		totalNumberOfThermals += f.Statistic.NumberOfThermals
+		totalThermicTime += f.Statistic.TotalThermicTime
+		totalFlightTime += f.Statistic.TotalFlightTime
 	}
 
 	if flightCount > 0 {

@@ -6,14 +6,14 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/AurelienS/cigare/internal/model"
+	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/web/viewmodel"
 )
 
 func TransformLogbookToViewModel(
-	flights []model.Flight,
-	yearStats model.StatsAggregated,
-	allTimeStats model.StatsAggregated,
+	flights []domain.Flight,
+	yearStats domain.StatsAggregated,
+	allTimeStats domain.StatsAggregated,
 	year int,
 	flyingYears []int,
 	isFlightAdded bool,
@@ -60,9 +60,9 @@ var datasetColors = []string{
 	"rgb(255, 69, 0)",    // Rouge orangé
 }
 
-type StatExtractor func(stats model.StatsAggregated) int
+type StatExtractor func(stats domain.StatsAggregated) int
 
-func TransformStatsViewModel(statsYearMonth model.StatsYearMonth, extractor StatExtractor) []viewmodel.ChartDataset {
+func TransformStatsViewModel(statsYearMonth domain.StatsYearMonth, extractor StatExtractor) []viewmodel.ChartDataset {
 	datasets := []viewmodel.ChartDataset{}
 
 	// Create a slice of years to sort
@@ -110,7 +110,7 @@ func TransformStatsViewModel(statsYearMonth model.StatsYearMonth, extractor Stat
 	return datasets
 }
 
-func sortAndConvertToViewModel(flights []model.Flight) []viewmodel.FlightView {
+func sortAndConvertToViewModel(flights []domain.Flight) []viewmodel.FlightView {
 	sort.Slice(flights, func(i, j int) bool {
 		return flights[i].Date.After(flights[j].Date)
 	})
@@ -129,7 +129,7 @@ func sortAndConvertToViewModel(flights []model.Flight) []viewmodel.FlightView {
 	return flightViews
 }
 
-func getMainStat(yearStats, allTimeStats model.StatsAggregated) []viewmodel.StatView {
+func getMainStat(yearStats, allTimeStats domain.StatsAggregated) []viewmodel.StatView {
 	return []viewmodel.StatView{
 		{
 			Title:            "Nombre de vols",
@@ -159,7 +159,7 @@ func getMainStat(yearStats, allTimeStats model.StatsAggregated) []viewmodel.Stat
 	}
 }
 
-func getSecondaryStat(yearStats, allTimeStats model.StatsAggregated) []viewmodel.StatView {
+func getSecondaryStat(yearStats, allTimeStats domain.StatsAggregated) []viewmodel.StatView {
 	return []viewmodel.StatView{
 		{
 			Title:            "Durée moyenne de vol",

@@ -1,26 +1,26 @@
-package user
+package repository
 
 import (
 	"context"
 
 	"github.com/AurelienS/cigare/internal/converter"
-	"github.com/AurelienS/cigare/internal/model"
+	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/internal/storage/ent"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 	"github.com/AurelienS/cigare/internal/util"
 )
 
-type Repository struct {
+type UserRepository struct {
 	client *ent.Client
 }
 
-func NewRepository(client *ent.Client) Repository {
-	return Repository{
+func NewUserRepository(client *ent.Client) UserRepository {
+	return UserRepository{
 		client: client,
 	}
 }
 
-func (r *Repository) InsertUser(ctx context.Context, user model.User) (model.User, error) {
+func (r *UserRepository) InsertUser(ctx context.Context, user domain.User) (domain.User, error) {
 	u, err := r.client.User.
 		Create().
 		SetGoogleID(user.GoogleID).
@@ -36,7 +36,7 @@ func (r *Repository) InsertUser(ctx context.Context, user model.User) (model.Use
 	return converter.DBToDomainUser(u), nil
 }
 
-func (r *Repository) UpdateUser(ctx context.Context, incomingUser model.User) (model.User, error) {
+func (r *UserRepository) UpdateUser(ctx context.Context, incomingUser domain.User) (domain.User, error) {
 	u, err := r.client.User.
 		Query().
 		Where(user.GoogleIDEQ(incomingUser.GoogleID)).
@@ -60,7 +60,7 @@ func (r *Repository) UpdateUser(ctx context.Context, incomingUser model.User) (m
 	return converter.DBToDomainUser(u), nil
 }
 
-func (r *Repository) UserExists(ctx context.Context, googleID string) bool {
+func (r *UserRepository) UserExists(ctx context.Context, googleID string) bool {
 	exists, err := r.client.User.
 		Query().
 		Where(user.GoogleIDEQ(googleID)).

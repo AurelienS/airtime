@@ -1,4 +1,4 @@
-package logbook
+package repository
 
 import (
 	"context"
@@ -6,29 +6,28 @@ import (
 	"time"
 
 	"github.com/AurelienS/cigare/internal/converter"
-	"github.com/AurelienS/cigare/internal/model"
+	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/internal/storage/ent"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	userDB "github.com/AurelienS/cigare/internal/storage/ent/user"
 	"github.com/AurelienS/cigare/internal/util"
 )
 
-type Repository struct {
+type FlightRepository struct {
 	client *ent.Client
 }
 
-func NewRepository(client *ent.Client) Repository {
-	return Repository{
+func NewFlightRepository(client *ent.Client) FlightRepository {
+	return FlightRepository{
 		client: client,
 	}
 }
 
-func (r Repository) InsertFlight(
+func (r FlightRepository) InsertFlight(
 	ctx context.Context,
-	flight model.Flight,
-	flightStats model.FlightStatistic,
-	user model.User,
+	flight domain.Flight,
+	flightStats domain.FlightStatistic,
+	user domain.User,
 ) error {
 	util.Info().Str("user", user.Email).Msg("Inserting flight")
 
@@ -76,12 +75,12 @@ func (r Repository) InsertFlight(
 	return tx.Commit()
 }
 
-func (r *Repository) GetFlights(
+func (r *FlightRepository) GetFlights(
 	ctx context.Context,
 	startDate time.Time,
 	endDate time.Time,
-	user model.User,
-) ([]model.Flight, error) {
+	user domain.User,
+) ([]domain.Flight, error) {
 	util.Info().Str("user", user.Email).Msg("Getting user flights")
 
 	flightsDB, err := r.client.User.
@@ -97,7 +96,7 @@ func (r *Repository) GetFlights(
 		return nil, err
 	}
 
-	var flights []model.Flight
+	var flights []domain.Flight
 	for _, f := range flightsDB {
 		flights = append(flights, converter.DBToDomainFlight(f))
 	}
@@ -105,29 +104,8 @@ func (r *Repository) GetFlights(
 	return flights, nil
 }
 
-func (r *Repository) GetStatistics(ctx context.Context,
-	startDate time.Time,
-	endDate time.Time,
-	user model.User,
-) ([]model.FlightStatistic, error) {
-	util.Info().Str("user", user.Email).Msg("Getting statistics")
-
-	stats, err := r.client.FlightStatistic.
-		Query().
-		Where(
-			flightstatistic.HasFlightWith(
-				flight.HasPilotWith(userDB.IDEQ(user.ID)),
-				flight.DateGTE(startDate),
-				flight.DateLTE(endDate),
-			),
-		).
-		All(ctx)
-
-	return converter.DBToDomainFlightStatistics(stats), err
-}
-
 // If there is no last flight, it return nil without an error.
-func (r *Repository) GetLastFlight(ctx context.Context, user model.User) (*model.Flight, error) {
+func (r *FlightRepository) GetLastFlight(ctx context.Context, user domain.User) (*domain.Flight, error) {
 	util.Info().Str("user", user.Email).Msg("Getting last flight")
 
 	flt, err := r.client.Flight.
@@ -150,7 +128,7 @@ func (r *Repository) GetLastFlight(ctx context.Context, user model.User) (*model
 	return &domainModel, nil
 }
 
-func (r Repository) GetFlyingYears(ctx context.Context, user model.User) ([]int, error) {
+func (r FlightRepository) GetFlyingYears(ctx context.Context, user domain.User) ([]int, error) {
 	flights, err := r.client.Flight.
 		Query().
 		Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).

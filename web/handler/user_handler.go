@@ -1,14 +1,14 @@
 package handler
 
 import (
-	"github.com/AurelienS/cigare/internal/user"
+	"github.com/AurelienS/cigare/internal/service"
 )
 
 type UserHandler struct {
-	userService user.Service
+	userService service.UserService
 }
 
-func NewUserHandler(userService user.Service) UserHandler {
+func NewUserHandler(userService service.UserService) UserHandler {
 	return UserHandler{
 		userService: userService,
 	}
