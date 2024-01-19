@@ -140,11 +140,10 @@ func (r *Repository) GetLastFlight(ctx context.Context, user model.User) (*model
 	if err != nil {
 		if ent.IsNotFound(err) {
 			util.Debug().Str("user", user.Email).Msg("No flight found")
-			return nil, nil // Not a error but no flight
-		} else {
-			util.Error().Err(err).Str("user", user.Email).Msg("Failed querying user")
-			return nil, err
+			return nil, nil //nolint:nilnil
 		}
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed querying user")
+		return nil, err
 	}
 
 	domainModel := converter.DBToDomainFlight(flt)

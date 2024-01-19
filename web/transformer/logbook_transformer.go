@@ -37,7 +37,7 @@ func TransformLogbookToViewModel(
 	}
 }
 
-var dataset_colors = []string{
+var datasetColors = []string{
 	"rgb(255, 99, 132)",  // Rouge clair
 	"rgb(54, 162, 235)",  // Bleu clair
 	"rgb(255, 206, 86)",  // Jaune
@@ -92,7 +92,7 @@ func TransformStatsViewModel(statsYearMonth model.StatsYearMonth, extractor Stat
 
 		monthDataset := viewmodel.ChartDataset{
 			Label: strconv.Itoa(year),
-			Color: dataset_colors[colorCounter%len(dataset_colors)],
+			Color: datasetColors[colorCounter%len(datasetColors)],
 			Data:  []int{},
 		}
 		colorCounter++
