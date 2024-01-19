@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"math/rand"
-	"os"
 	"time"
 )
 
@@ -19,7 +18,7 @@ func randomUniqueDays(year, month, numDays int) []time.Time {
 	var dates []time.Time
 
 	for len(days) < numDays {
-		day := random(1, 28) // Assurez-vous de respecter les jours du mois
+		day := random(1, 28)
 		if _, exists := days[day]; !exists {
 			days[day] = true
 			date := time.Date(year, time.Month(month), day, random(0, 23), random(0, 59), random(0, 59), 0, time.UTC)
@@ -36,17 +35,6 @@ func WriteSeedData() {
 	userID := 1
 	startYear := 2010
 	endYear := 2019
-
-	fileF, err := os.Create("seed_flights.txt")
-	if err != nil {
-		panic(err)
-	}
-	defer fileF.Close()
-	fileFs, err := os.Create("seed_flights_stat.txt")
-	if err != nil {
-		panic(err)
-	}
-	defer fileFs.Close()
 
 	for year := startYear; year <= endYear; year++ {
 		for month := 1; month <= 12; month++ {

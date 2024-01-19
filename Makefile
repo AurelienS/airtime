@@ -8,7 +8,7 @@ build:
 	@go build -o ./tmp/main ./cmd/server/main.go
 
 seed:
-	@go run ./cmd/seed/main.go
+	@go run ./cmd/database/seed.go
 
 templ:
 	@templ generate
