@@ -44,7 +44,7 @@ func TabProgression(view viewmodel.ProgressionView) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = ChartFlightTimeMonthly(view.Datasets).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = ChartLineMontly(view.FlightTimeMonthlyData, "chart_flight_time_monthly").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -52,8 +52,12 @@ func TabProgression(view viewmodel.ProgressionView) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Var4 := `Evolution du temps passé en l'air par an`
+			templ_7745c5c3_Var4 := `Nombre de vol`
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = ChartLineMontly(view.FlightCountMonthlyData, "chart_flight_count_monthly").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -25,9 +25,9 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 // 	"rgb(255, 69, 0)",    // Rouge orangé
 // }
 
-script setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) {
+script setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string) {
     console.log("ds",datasets);
-	const ctx = document.getElementById('chart_flight_time_monthly');
+	const ctx = document.getElementById(id);
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -65,7 +65,7 @@ script setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) {
 
 }
 
-templ ChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) {
-	<canvas id="chart_flight_time_monthly"></canvas>
-	@setUpChartFlightTimeMonthly(datasets)
+templ ChartLineMontly(datasets []viewmodel.ChartDataset, id string) {
+	<canvas id={id}></canvas>
+	@setUpChartFlightTimeMonthly(datasets, id)
 }

@@ -60,7 +60,9 @@ var dataset_colors = []string{
 	"rgb(255, 69, 0)",    // Rouge orangé
 }
 
-func TransformStatsViewModel(statsYearMonth model.StatsYearMonth) []viewmodel.ChartDataset {
+type StatExtractor func(stats model.StatsAggregated) int
+
+func TransformStatsViewModel(statsYearMonth model.StatsYearMonth, extractor StatExtractor) []viewmodel.ChartDataset {
 	datasets := []viewmodel.ChartDataset{}
 
 	// Create a slice of years to sort
@@ -69,7 +71,7 @@ func TransformStatsViewModel(statsYearMonth model.StatsYearMonth) []viewmodel.Ch
 		years = append(years, year)
 	}
 
-	// Sort years slice
+	// Sort years slice in reverse order
 	sort.Sort(sort.Reverse(sort.IntSlice(years)))
 
 	colorCounter := 0
@@ -98,7 +100,8 @@ func TransformStatsViewModel(statsYearMonth model.StatsYearMonth) []viewmodel.Ch
 		// Append stats for each month in sorted order
 		for _, month := range months {
 			stats := monthStatsMap[month]
-			monthDataset.Data = append(monthDataset.Data, int(stats.TotalFlightTime.Hours()))
+			// Use the extractor function to get the specific stat
+			monthDataset.Data = append(monthDataset.Data, extractor(stats))
 		}
 
 		datasets = append(datasets, monthDataset)

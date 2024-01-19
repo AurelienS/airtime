@@ -66,7 +66,6 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	if !flyingYearIncludeYear && len(flyingYears) > 0 {
 		lastYear := flyingYears[len(flyingYears)-1]
 		redirectTo := fmt.Sprintf("/logbook/log/%d", lastYear)
-		fmt.Println("file: logbook_handler.go ~ line 69 ~ if!flyingYearIncludeYear&&len ~ redirectTo : ", redirectTo)
 		return c.Redirect(301, redirectTo)
 	}
 
@@ -109,9 +108,17 @@ func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
 		return err
 	}
 
+	totalFlightTimeExtractor := func(stats model.StatsAggregated) int {
+		return int(stats.TotalFlightTime.Hours())
+	}
+	flightCountExtractor := func(stats model.StatsAggregated) int {
+		return stats.FlightCount
+	}
+
 	view := viewmodel.ProgressionView{
-		User:     transformer.TransformUserToViewModel(user),
-		Datasets: transformer.TransformStatsViewModel(statsYearMonth),
+		User:                   transformer.TransformUserToViewModel(user),
+		FlightTimeMonthlyData:  transformer.TransformStatsViewModel(statsYearMonth, totalFlightTimeExtractor),
+		FlightCountMonthlyData: transformer.TransformStatsViewModel(statsYearMonth, flightCountExtractor),
 	}
 	return Render(c, logbookview.TabProgression(view))
 }

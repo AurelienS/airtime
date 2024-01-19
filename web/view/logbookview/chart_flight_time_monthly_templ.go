@@ -34,11 +34,11 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 //		"rgb(75, 0, 130)",    // Indigo
 //		"rgb(255, 69, 0)",    // Rouge orangé
 //	}
-func setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) templ.ComponentScript {
+func setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setUpChartFlightTimeMonthly_16e9`,
-		Function: `function __templ_setUpChartFlightTimeMonthly_16e9(datasets){console.log("ds",datasets);
-	const ctx = document.getElementById('chart_flight_time_monthly');
+		Name: `__templ_setUpChartFlightTimeMonthly_1264`,
+		Function: `function __templ_setUpChartFlightTimeMonthly_1264(datasets, id){console.log("ds",datasets);
+	const ctx = document.getElementById(id);
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -72,12 +72,12 @@ func setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) templ.Compon
             }
         }
     });}`,
-		Call:       templ.SafeScript(`__templ_setUpChartFlightTimeMonthly_16e9`, datasets),
-		CallInline: templ.SafeScriptInline(`__templ_setUpChartFlightTimeMonthly_16e9`, datasets),
+		Call:       templ.SafeScript(`__templ_setUpChartFlightTimeMonthly_1264`, datasets, id),
+		CallInline: templ.SafeScriptInline(`__templ_setUpChartFlightTimeMonthly_1264`, datasets, id),
 	}
 }
 
-func ChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) templ.Component {
+func ChartLineMontly(datasets []viewmodel.ChartDataset, id string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -90,11 +90,19 @@ func ChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<canvas id=\"chart_flight_time_monthly\"></canvas>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<canvas id=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = setUpChartFlightTimeMonthly(datasets).Render(ctx, templ_7745c5c3_Buffer)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(id))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"></canvas>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = setUpChartFlightTimeMonthly(datasets, id).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

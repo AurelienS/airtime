@@ -8,11 +8,11 @@ templ TabProgression(view viewmodel.ProgressionView) {
 		<div class="grid grid-cols-3 grid-rows-2  gap-4">
 			<div class="max-h-[320px]">
 				Nombre d'heure de vol
-				@ChartFlightTimeMonthly(view.Datasets)
+				@ChartLineMontly(view.FlightTimeMonthlyData, "chart_flight_time_monthly")
 			</div>
 			<div class="max-h-[320px]">
-				Evolution du temps passé en l'air par an
-				// @ChartFlightTimeYearly(data)
+				Nombre de vol
+				@ChartLineMontly(view.FlightCountMonthlyData, "chart_flight_count_monthly")
 			</div>
 			<div class="max-h-[320px]">
 				Evolution thermique / pas thermique

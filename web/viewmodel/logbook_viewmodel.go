@@ -25,8 +25,10 @@ type StatView struct {
 }
 
 type ProgressionView struct {
-	User     UserView
-	Datasets []ChartDataset
+	User UserView
+
+	FlightTimeMonthlyData  []ChartDataset
+	FlightCountMonthlyData []ChartDataset
 }
 
 type ChartDataset struct {
