@@ -4,9 +4,9 @@ SoarSquad, c'est l'appli parapente qui s'amuse avec vos statistiques, sans aucun
 
 # Version 1
 - [x] vue d'ensemble
+    - [ ] ajout pagination par mois
 - [ ] vue d'un vol
 - [ ] la progression
-- [ ] les records
 - [ ] gestion des exports
 - [ ] cron pour recevoir un export annuel
 

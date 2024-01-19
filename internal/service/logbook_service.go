@@ -69,7 +69,12 @@ func (s *LogbookService) processSingleFile(ctx context.Context, reader io.Reader
 	return nil
 }
 
-func (s *LogbookService) processZipFile(ctx context.Context, zipReader io.ReaderAt, size int64, user domain.User) error {
+func (s *LogbookService) processZipFile(
+	ctx context.Context,
+	zipReader io.ReaderAt,
+	size int64,
+	user domain.User,
+) error {
 	zr, err := zip.NewReader(zipReader, size) // 'size' should be the size of the zip file
 	if err != nil {
 		return err

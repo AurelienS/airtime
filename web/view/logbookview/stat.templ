@@ -3,8 +3,8 @@ package logbookview
 import "github.com/AurelienS/cigare/web/viewmodel"
 
 templ Stat(view viewmodel.StatView) {
-	<div class="stat bg-neutral text-neutral-content">
-		<div class="stat-title text-lg text-neutral-content ">{ view.Title }</div>
+	<div class="stat">
+		<div class="stat-title text-lg">{ view.Title }</div>
 		<div class="stat-value flex w-full justify-center">
 			<div class="text-xl font-bold">
 				{ view.CurrentYearValue }

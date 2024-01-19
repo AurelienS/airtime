@@ -94,7 +94,13 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 		return err
 	}
 
-	viewData := transformer.TransformLogbookToViewModel(flights, yearStats, allTimeStats, year, flyingYears, isFlightAdded)
+	viewData := transformer.TransformLogbookToViewModel(
+		&flights,
+		yearStats,
+		allTimeStats,
+		year,
+		flyingYears,
+		isFlightAdded)
 
 	return Render(c, logbookview.TabLog(viewData, userview))
 }

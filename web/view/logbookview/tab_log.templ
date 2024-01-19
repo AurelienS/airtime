@@ -11,12 +11,12 @@ templ TabLog(view viewmodel.LogbookView, user viewmodel.UserView) {
 			@component.Toast("flight added")
 		}
 		<div class="flex-col items-center gap-3 hidden md:flex ">
-			<div class="stats content shadow w-min">
+			<div class="stats w-min">
 				for _, s := range view.StatMain {
 					@Stat(s)
 				}
 			</div>
-			<div class="stats shadow w-min">
+			<div class="stats w-min">
 				for _, s := range view.StatSecondary {
 					@Stat(s)
 				}

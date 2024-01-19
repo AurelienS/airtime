@@ -47,7 +47,7 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"flex-col items-center gap-3 hidden md:flex \"><div class=\"stats content shadow w-min\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div class=\"flex-col items-center gap-3 hidden md:flex \"><div class=\"stats w-min\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -57,7 +57,7 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					return templ_7745c5c3_Err
 				}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"stats shadow w-min\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"stats w-min\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

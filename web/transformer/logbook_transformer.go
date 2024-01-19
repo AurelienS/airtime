@@ -11,14 +11,14 @@ import (
 )
 
 func TransformLogbookToViewModel(
-	flights []domain.Flight,
+	flights *[]domain.Flight,
 	yearStats domain.StatsAggregated,
 	allTimeStats domain.StatsAggregated,
 	year int,
 	flyingYears []int,
 	isFlightAdded bool,
 ) viewmodel.LogbookView {
-	flightViews := sortAndConvertToViewModel(flights)
+	flightViews := sortAndConvertToViewModel(*flights)
 	statMain := getMainStat(yearStats, allTimeStats)
 	statSecondary := getSecondaryStat(yearStats, allTimeStats)
 
@@ -116,7 +116,10 @@ func sortAndConvertToViewModel(flights []domain.Flight) []viewmodel.FlightView {
 	})
 
 	var flightViews []viewmodel.FlightView
-	for _, f := range flights {
+	for i, f := range flights {
+		if i > 20 {
+			break
+		}
 		flightViews = append(flightViews, viewmodel.FlightView{
 			TakeoffLocation:  f.TakeoffLocation,
 			Date:             f.Date.Local().Format("02/01 15:04"),
