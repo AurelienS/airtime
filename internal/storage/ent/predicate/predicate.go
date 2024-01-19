@@ -12,8 +12,5 @@ type Flight func(*sql.Selector)
 // FlightStatistic is the predicate function for flightstatistic builders.
 type FlightStatistic func(*sql.Selector)
 
-// Squad is the predicate function for squad builders.
-type Squad func(*sql.Selector)
-
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

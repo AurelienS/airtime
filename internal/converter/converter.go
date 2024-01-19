@@ -1,14 +1,14 @@
-package model
+package converter
 
 import (
 	"time"
 
-	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
+	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/storage/ent"
 )
 
-func DBToDomainUser(userDB *ent.User) User {
-	return User{
+func DBToDomainUser(userDB *ent.User) model.User {
+	return model.User{
 		ID:         userDB.ID,
 		GoogleID:   userDB.GoogleID,
 		Email:      userDB.Email,
@@ -17,33 +17,16 @@ func DBToDomainUser(userDB *ent.User) User {
 	}
 }
 
-func DBToDomainUsers(userDB []*ent.User) []User {
-	var users []User
+func DBToDomainUsers(userDB []*ent.User) []model.User {
+	var users []model.User
 	for _, user := range userDB {
 		users = append(users, DBToDomainUser(user))
 	}
 	return users
 }
 
-func DBToDomainSquad(squadDB *ent.Squad) Squad {
-	return Squad{
-		ID:        squadDB.ID,
-		Name:      squadDB.Name,
-		CreatedAt: squadDB.CreatedAt,
-		Members:   DBToDomainUsers(squadDB.Edges.Members),
-	}
-}
-
-func DBToDomainSquads(squadsDB []*ent.Squad) []Squad {
-	var squads []Squad
-	for _, squad := range squadsDB {
-		squads = append(squads, DBToDomainSquad(squad))
-	}
-	return squads
-}
-
-func DBToDomainFlight(flightDB *ent.Flight) Flight {
-	return Flight{
+func DBToDomainFlight(flightDB *ent.Flight) model.Flight {
+	return model.Flight{
 		ID:              flightDB.ID,
 		Date:            flightDB.Date,
 		TakeoffLocation: flightDB.TakeoffLocation,
@@ -53,8 +36,8 @@ func DBToDomainFlight(flightDB *ent.Flight) Flight {
 	}
 }
 
-func DBToDomainFlightStatistic(statDB *ent.FlightStatistic) flightstats.FlightStatistic {
-	var stat flightstats.FlightStatistic
+func DBToDomainFlightStatistic(statDB *ent.FlightStatistic) model.FlightStatistic {
+	var stat model.FlightStatistic
 
 	stat.ID = statDB.ID
 	stat.TotalThermicTime = time.Duration(statDB.TotalThermicTime) * time.Second
@@ -70,8 +53,8 @@ func DBToDomainFlightStatistic(statDB *ent.FlightStatistic) flightstats.FlightSt
 	return stat
 }
 
-func DBToDomainFlightStatistics(statsDB []*ent.FlightStatistic) []flightstats.FlightStatistic {
-	var stats []flightstats.FlightStatistic
+func DBToDomainFlightStatistics(statsDB []*ent.FlightStatistic) []model.FlightStatistic {
+	var stats []model.FlightStatistic
 	for _, s := range statsDB {
 		stats = append(stats, DBToDomainFlightStatistic(s))
 	}

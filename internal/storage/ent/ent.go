@@ -14,7 +14,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
 	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
-	"github.com/AurelienS/cigare/internal/storage/ent/squad"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
 
@@ -78,7 +77,6 @@ func checkColumn(table, column string) error {
 		columnCheck = sql.NewColumnCheck(map[string]func(string) bool{
 			flight.Table:          flight.ValidColumn,
 			flightstatistic.Table: flightstatistic.ValidColumn,
-			squad.Table:           squad.ValidColumn,
 			user.Table:            user.ValidColumn,
 		})
 	})

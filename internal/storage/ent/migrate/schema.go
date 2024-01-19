@@ -65,18 +65,6 @@ var (
 			},
 		},
 	}
-	// SquadsColumns holds the columns for the "squads" table.
-	SquadsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "name", Type: field.TypeString},
-		{Name: "created_at", Type: field.TypeTime},
-	}
-	// SquadsTable holds the schema information for the "squads" table.
-	SquadsTable = &schema.Table{
-		Name:       "squads",
-		Columns:    SquadsColumns,
-		PrimaryKey: []*schema.Column{SquadsColumns[0]},
-	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -92,44 +80,15 @@ var (
 		Columns:    UsersColumns,
 		PrimaryKey: []*schema.Column{UsersColumns[0]},
 	}
-	// UserSquadsColumns holds the columns for the "user_squads" table.
-	UserSquadsColumns = []*schema.Column{
-		{Name: "user_id", Type: field.TypeInt},
-		{Name: "squad_id", Type: field.TypeInt},
-	}
-	// UserSquadsTable holds the schema information for the "user_squads" table.
-	UserSquadsTable = &schema.Table{
-		Name:       "user_squads",
-		Columns:    UserSquadsColumns,
-		PrimaryKey: []*schema.Column{UserSquadsColumns[0], UserSquadsColumns[1]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "user_squads_user_id",
-				Columns:    []*schema.Column{UserSquadsColumns[0]},
-				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-			{
-				Symbol:     "user_squads_squad_id",
-				Columns:    []*schema.Column{UserSquadsColumns[1]},
-				RefColumns: []*schema.Column{SquadsColumns[0]},
-				OnDelete:   schema.Cascade,
-			},
-		},
-	}
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		FlightsTable,
 		FlightStatisticsTable,
-		SquadsTable,
 		UsersTable,
-		UserSquadsTable,
 	}
 )
 
 func init() {
 	FlightsTable.ForeignKeys[0].RefTable = UsersTable
 	FlightStatisticsTable.ForeignKeys[0].RefTable = FlightsTable
-	UserSquadsTable.ForeignKeys[0].RefTable = UsersTable
-	UserSquadsTable.ForeignKeys[1].RefTable = SquadsTable
 }

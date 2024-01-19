@@ -2,25 +2,25 @@ package logbookview
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-templ TabProgression(data string, user viewmodel.UserView) {
-	@Index(user) {
+templ TabProgression(view viewmodel.ProgressionView) {
+	@Index(view.User) {
 		@TabList("progression")
 		<div class="grid grid-cols-3 grid-rows-2  gap-4">
 			<div class="max-h-[320px]">
 				Nombre d'heure de vol
-				@ChartFlightTimeMonthly(data)
+				@ChartFlightTimeMonthly(view.Datasets)
 			</div>
 			<div class="max-h-[320px]">
 				Evolution du temps passé en l'air par an
-				@ChartFlightTimeYearly(data)
+				// @ChartFlightTimeYearly(data)
 			</div>
 			<div class="max-h-[320px]">
 				Evolution thermique / pas thermique
 				<div class="grid grid-cols-2 grid-rows-2 gap-2 w-full h-full">
-					@ChartThermicRatio(data, "2021")
-					@ChartThermicRatio(data, "2022")
-					@ChartThermicRatio(data, "2023")
-					@ChartThermicRatio(data, "2024")
+					// @ChartThermicRatio(data, "2021")
+					// @ChartThermicRatio(data, "2022")
+					// @ChartThermicRatio(data, "2023")
+					// @ChartThermicRatio(data, "2024")
 				</div>
 			</div>
 		</div>

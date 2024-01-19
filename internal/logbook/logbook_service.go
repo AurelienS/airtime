@@ -9,7 +9,6 @@ import (
 	"strings"
 	"time"
 
-	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
 	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
@@ -56,7 +55,7 @@ func (s *Service) processSingleFile(ctx context.Context, reader io.Reader, filen
 	}
 
 	flight := TrackToFlight(track)
-	stats := flightstats.NewFlightStatistics(track.Points)
+	stats := model.NewFlightStatistics(track.Points)
 	err = s.logbookRepo.InsertFlight(ctx, flight, stats, user)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
@@ -106,87 +105,65 @@ func (s *Service) processZipFile(ctx context.Context, zipReader io.ReaderAt, siz
 	return nil
 }
 
-type Stats struct {
-	FlightCount           int
-	MaxAltitude           int
-	MaxClimb              int
-	TotalClimb            int
-	TotalNumberOfThermals int
-	MaxClimbRate          float64
-	MaxFlightLength       time.Duration
-	MinFlightLength       time.Duration
-	AverageFlightLength   time.Duration
-	TotalFlightTime       time.Duration
-	TotalThermicTime      time.Duration
+func (s Service) GetStatisticsByYearAndMonth(ctx context.Context, user model.User) (model.StatsYearMonth, error) {
+	statsYearMonth := model.StatsYearMonth{}
+
+	flights, err := s.logbookRepo.GetFlights(ctx, time.Time{}, time.Now(), user)
+	if err != nil {
+		return statsYearMonth, err
+	}
+
+	// Prepare map to hold statistics by year and month
+	flightsStatisticsByYearMonth := make(map[int]map[time.Month][]model.FlightStatistic)
+	for _, flight := range flights {
+		stat := flight.Statistic
+		year, month, _ := flight.Date.Date()
+
+		// Initialize year and month if not already present
+		if flightsStatisticsByYearMonth[year] == nil {
+			flightsStatisticsByYearMonth[year] = make(map[time.Month][]model.FlightStatistic)
+			for m := time.January; m <= time.December; m++ {
+				flightsStatisticsByYearMonth[year][m] = []model.FlightStatistic{}
+			}
+		}
+		flightsStatisticsByYearMonth[year][month] = append(flightsStatisticsByYearMonth[year][month], stat)
+	}
+
+	// Flatten the YearMonth stats to aggregated stats
+	for year, monthStats := range flightsStatisticsByYearMonth {
+		if statsYearMonth[year] == nil {
+			statsYearMonth[year] = make(map[time.Month]model.StatsAggregated)
+		}
+		for month, stats := range monthStats {
+			statsYearMonth[year][month] = model.ComputeAggregateStatistics(stats)
+		}
+	}
+
+	return statsYearMonth, err
 }
 
-func (s Service) GetStatistics(ctx context.Context, startDate, endDate time.Time, user model.User) (Stats, error) {
-	logStats := Stats{}
+func (s Service) GetStatistics(
+	ctx context.Context,
+	startDate, endDate time.Time,
+	user model.User,
+) (model.StatsAggregated, error) {
+	logStats := model.StatsAggregated{}
 
 	stats, err := s.logbookRepo.GetStatistics(ctx, startDate, endDate, user)
 	if err != nil {
 		return logStats, err
 	}
 
-	var maxAltitude int
-	var maxVario float64
-	var maxFlightLength time.Duration
-	minFlightLength := time.Duration(0)
-	averageFlightLength := time.Duration(0)
-	var totalFlightTime time.Duration
+	aggregatedStats := model.ComputeAggregateStatistics(stats)
 
-	var totalThermicTime time.Duration
-	var maxClimb int
-	var totalClimb int
-	var totalNumberOfThermals int
-
-	flightCount := len(stats)
-
-	for _, stat := range stats {
-		if stat.MaxAltitude > maxAltitude {
-			maxAltitude = stat.MaxAltitude
-		}
-		if stat.MaxClimbRate > maxVario {
-			maxVario = stat.MaxClimbRate
-		}
-		if stat.TotalFlightTime > maxFlightLength {
-			maxFlightLength = stat.TotalFlightTime
-		}
-		if stat.TotalFlightTime < minFlightLength {
-			minFlightLength = stat.TotalFlightTime
-		}
-		if stat.MaxClimb > maxClimb {
-			maxClimb = stat.MaxClimb
-		}
-		totalClimb += stat.TotalClimb
-		totalNumberOfThermals += stat.NumberOfThermals
-		totalThermicTime += stat.TotalThermicTime
-		totalFlightTime += stat.TotalFlightTime
-	}
-
-	if flightCount > 0 {
-		averageFlightLength = totalFlightTime / time.Duration(flightCount)
-	}
-
-	logStats = Stats{
-		MaxAltitude:           maxAltitude,
-		MaxClimbRate:          maxVario,
-		MaxFlightLength:       maxFlightLength,
-		MinFlightLength:       minFlightLength,
-		AverageFlightLength:   averageFlightLength,
-		TotalFlightTime:       totalFlightTime,
-		FlightCount:           flightCount,
-		MaxClimb:              maxClimb,
-		TotalClimb:            totalClimb,
-		TotalNumberOfThermals: totalNumberOfThermals,
-		TotalThermicTime:      totalThermicTime,
-	}
-
-	return logStats, nil
+	return aggregatedStats, nil
 }
 
 func (s Service) GetFlights(ctx context.Context, year int, user model.User) ([]model.Flight, error) {
-	return s.logbookRepo.GetFlights(ctx, year, user)
+	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	endOfYear := time.Date(year, time.December, 31, 23, 59, 59, 999999999, time.UTC)
+
+	return s.logbookRepo.GetFlights(ctx, startOfYear, endOfYear, user)
 }
 
 func (s Service) GetFlyingYears(ctx context.Context, user model.User) ([]int, error) {

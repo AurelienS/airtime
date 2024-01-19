@@ -1,4 +1,4 @@
-package logbookview
+package component
 
 templ UploadFlightForm() {
 	<script>
@@ -10,12 +10,12 @@ templ UploadFlightForm() {
 	</script>
 	<form
 		id="uploadForm"
-		hx-post="logbook/flight"
+		hx-post="/logbook/log/flight"
 		enctype="multipart/form-data"
 		hx-trigger="fileSelected"
 		hx-swap="outerHTML"
-		hx-target="#flightPage"
-		hx-indicator="#loadingIndicator"
+		hx-target="#logbook_page"
+		hx-select="#logbook_page"
 	>
 		<input id="igcfile" type="file" name="igcfile" accept=".igc, .zip" style="display:none;" onchange="triggerUpload(this)"/>
 		<button

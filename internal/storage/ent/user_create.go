@@ -11,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/squad"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
 
@@ -73,21 +72,6 @@ func (uc *UserCreate) AddFlights(f ...*Flight) *UserCreate {
 		ids[i] = f[i].ID
 	}
 	return uc.AddFlightIDs(ids...)
-}
-
-// AddSquadIDs adds the "squads" edge to the Squad entity by IDs.
-func (uc *UserCreate) AddSquadIDs(ids ...int) *UserCreate {
-	uc.mutation.AddSquadIDs(ids...)
-	return uc
-}
-
-// AddSquads adds the "squads" edges to the Squad entity.
-func (uc *UserCreate) AddSquads(s ...*Squad) *UserCreate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return uc.AddSquadIDs(ids...)
 }
 
 // Mutation returns the UserMutation object of the builder.
@@ -203,22 +187,6 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(flight.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := uc.mutation.SquadsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.SquadsTable,
-			Columns: user.SquadsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(squad.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

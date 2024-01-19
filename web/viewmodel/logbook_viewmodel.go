@@ -23,3 +23,19 @@ type StatView struct {
 	AlltimeValue     string
 	CurrentYearValue string
 }
+
+type ProgressionView struct {
+	User     UserView
+	Datasets []ChartDataset
+}
+
+type ChartDataset struct {
+	Label string
+	Data  []int
+	Color string
+}
+
+type ChartData struct {
+	Labels   []string
+	Datasets []ChartDataset
+}

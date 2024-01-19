@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
 	"github.com/AurelienS/cigare/internal/storage/ent/predicate"
-	"github.com/AurelienS/cigare/internal/storage/ent/squad"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
 
@@ -115,21 +114,6 @@ func (uu *UserUpdate) AddFlights(f ...*Flight) *UserUpdate {
 	return uu.AddFlightIDs(ids...)
 }
 
-// AddSquadIDs adds the "squads" edge to the Squad entity by IDs.
-func (uu *UserUpdate) AddSquadIDs(ids ...int) *UserUpdate {
-	uu.mutation.AddSquadIDs(ids...)
-	return uu
-}
-
-// AddSquads adds the "squads" edges to the Squad entity.
-func (uu *UserUpdate) AddSquads(s ...*Squad) *UserUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return uu.AddSquadIDs(ids...)
-}
-
 // Mutation returns the UserMutation object of the builder.
 func (uu *UserUpdate) Mutation() *UserMutation {
 	return uu.mutation
@@ -154,27 +138,6 @@ func (uu *UserUpdate) RemoveFlights(f ...*Flight) *UserUpdate {
 		ids[i] = f[i].ID
 	}
 	return uu.RemoveFlightIDs(ids...)
-}
-
-// ClearSquads clears all "squads" edges to the Squad entity.
-func (uu *UserUpdate) ClearSquads() *UserUpdate {
-	uu.mutation.ClearSquads()
-	return uu
-}
-
-// RemoveSquadIDs removes the "squads" edge to Squad entities by IDs.
-func (uu *UserUpdate) RemoveSquadIDs(ids ...int) *UserUpdate {
-	uu.mutation.RemoveSquadIDs(ids...)
-	return uu
-}
-
-// RemoveSquads removes "squads" edges to Squad entities.
-func (uu *UserUpdate) RemoveSquads(s ...*Squad) *UserUpdate {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return uu.RemoveSquadIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
@@ -266,51 +229,6 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(flight.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if uu.mutation.SquadsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.SquadsTable,
-			Columns: user.SquadsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(squad.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.RemovedSquadsIDs(); len(nodes) > 0 && !uu.mutation.SquadsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.SquadsTable,
-			Columns: user.SquadsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(squad.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uu.mutation.SquadsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.SquadsTable,
-			Columns: user.SquadsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(squad.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -423,21 +341,6 @@ func (uuo *UserUpdateOne) AddFlights(f ...*Flight) *UserUpdateOne {
 	return uuo.AddFlightIDs(ids...)
 }
 
-// AddSquadIDs adds the "squads" edge to the Squad entity by IDs.
-func (uuo *UserUpdateOne) AddSquadIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.AddSquadIDs(ids...)
-	return uuo
-}
-
-// AddSquads adds the "squads" edges to the Squad entity.
-func (uuo *UserUpdateOne) AddSquads(s ...*Squad) *UserUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return uuo.AddSquadIDs(ids...)
-}
-
 // Mutation returns the UserMutation object of the builder.
 func (uuo *UserUpdateOne) Mutation() *UserMutation {
 	return uuo.mutation
@@ -462,27 +365,6 @@ func (uuo *UserUpdateOne) RemoveFlights(f ...*Flight) *UserUpdateOne {
 		ids[i] = f[i].ID
 	}
 	return uuo.RemoveFlightIDs(ids...)
-}
-
-// ClearSquads clears all "squads" edges to the Squad entity.
-func (uuo *UserUpdateOne) ClearSquads() *UserUpdateOne {
-	uuo.mutation.ClearSquads()
-	return uuo
-}
-
-// RemoveSquadIDs removes the "squads" edge to Squad entities by IDs.
-func (uuo *UserUpdateOne) RemoveSquadIDs(ids ...int) *UserUpdateOne {
-	uuo.mutation.RemoveSquadIDs(ids...)
-	return uuo
-}
-
-// RemoveSquads removes "squads" edges to Squad entities.
-func (uuo *UserUpdateOne) RemoveSquads(s ...*Squad) *UserUpdateOne {
-	ids := make([]int, len(s))
-	for i := range s {
-		ids[i] = s[i].ID
-	}
-	return uuo.RemoveSquadIDs(ids...)
 }
 
 // Where appends a list predicates to the UserUpdate builder.
@@ -604,51 +486,6 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(flight.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if uuo.mutation.SquadsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.SquadsTable,
-			Columns: user.SquadsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(squad.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.RemovedSquadsIDs(); len(nodes) > 0 && !uuo.mutation.SquadsCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.SquadsTable,
-			Columns: user.SquadsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(squad.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := uuo.mutation.SquadsIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.M2M,
-			Inverse: false,
-			Table:   user.SquadsTable,
-			Columns: user.SquadsPrimaryKey,
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(squad.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

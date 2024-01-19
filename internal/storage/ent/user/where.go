@@ -403,29 +403,6 @@ func HasFlightsWith(preds ...predicate.Flight) predicate.User {
 	})
 }
 
-// HasSquads applies the HasEdge predicate on the "squads" edge.
-func HasSquads() predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, SquadsTable, SquadsPrimaryKey...),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasSquadsWith applies the HasEdge predicate on the "squads" edge with a given conditions (other predicates).
-func HasSquadsWith(preds ...predicate.Squad) predicate.User {
-	return predicate.User(func(s *sql.Selector) {
-		step := newSquadsStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.User) predicate.User {
 	return predicate.User(sql.AndPredicates(predicates...))

@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/AurelienS/cigare/internal/storage/ent/schema"
-	"github.com/AurelienS/cigare/internal/storage/ent/squad"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
 
@@ -14,12 +13,6 @@ import (
 // (default values, validators, hooks and policies) and stitches it
 // to their package variables.
 func init() {
-	squadFields := schema.Squad{}.Fields()
-	_ = squadFields
-	// squadDescCreatedAt is the schema descriptor for createdAt field.
-	squadDescCreatedAt := squadFields[1].Descriptor()
-	// squad.DefaultCreatedAt holds the default value on creation for the createdAt field.
-	squad.DefaultCreatedAt = squadDescCreatedAt.Default.(func() time.Time)
 	userFields := schema.User{}.Fields()
 	_ = userFields
 	// userDescCreatedAt is the schema descriptor for createdAt field.

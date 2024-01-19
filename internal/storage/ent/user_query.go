@@ -13,7 +13,6 @@ import (
 	"entgo.io/ent/schema/field"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
 	"github.com/AurelienS/cigare/internal/storage/ent/predicate"
-	"github.com/AurelienS/cigare/internal/storage/ent/squad"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
 
@@ -25,7 +24,6 @@ type UserQuery struct {
 	inters      []Interceptor
 	predicates  []predicate.User
 	withFlights *FlightQuery
-	withSquads  *SquadQuery
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -77,28 +75,6 @@ func (uq *UserQuery) QueryFlights() *FlightQuery {
 			sqlgraph.From(user.Table, user.FieldID, selector),
 			sqlgraph.To(flight.Table, flight.FieldID),
 			sqlgraph.Edge(sqlgraph.O2M, false, user.FlightsTable, user.FlightsColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QuerySquads chains the current query on the "squads" edge.
-func (uq *UserQuery) QuerySquads() *SquadQuery {
-	query := (&SquadClient{config: uq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := uq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := uq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(user.Table, user.FieldID, selector),
-			sqlgraph.To(squad.Table, squad.FieldID),
-			sqlgraph.Edge(sqlgraph.M2M, false, user.SquadsTable, user.SquadsPrimaryKey...),
 		)
 		fromU = sqlgraph.SetNeighbors(uq.driver.Dialect(), step)
 		return fromU, nil
@@ -299,7 +275,6 @@ func (uq *UserQuery) Clone() *UserQuery {
 		inters:      append([]Interceptor{}, uq.inters...),
 		predicates:  append([]predicate.User{}, uq.predicates...),
 		withFlights: uq.withFlights.Clone(),
-		withSquads:  uq.withSquads.Clone(),
 		// clone intermediate query.
 		sql:  uq.sql.Clone(),
 		path: uq.path,
@@ -314,17 +289,6 @@ func (uq *UserQuery) WithFlights(opts ...func(*FlightQuery)) *UserQuery {
 		opt(query)
 	}
 	uq.withFlights = query
-	return uq
-}
-
-// WithSquads tells the query-builder to eager-load the nodes that are connected to
-// the "squads" edge. The optional arguments are used to configure the query builder of the edge.
-func (uq *UserQuery) WithSquads(opts ...func(*SquadQuery)) *UserQuery {
-	query := (&SquadClient{config: uq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	uq.withSquads = query
 	return uq
 }
 
@@ -406,9 +370,8 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 	var (
 		nodes       = []*User{}
 		_spec       = uq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			uq.withFlights != nil,
-			uq.withSquads != nil,
 		}
 	)
 	_spec.ScanValues = func(columns []string) ([]any, error) {
@@ -433,13 +396,6 @@ func (uq *UserQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*User, e
 		if err := uq.loadFlights(ctx, query, nodes,
 			func(n *User) { n.Edges.Flights = []*Flight{} },
 			func(n *User, e *Flight) { n.Edges.Flights = append(n.Edges.Flights, e) }); err != nil {
-			return nil, err
-		}
-	}
-	if query := uq.withSquads; query != nil {
-		if err := uq.loadSquads(ctx, query, nodes,
-			func(n *User) { n.Edges.Squads = []*Squad{} },
-			func(n *User, e *Squad) { n.Edges.Squads = append(n.Edges.Squads, e) }); err != nil {
 			return nil, err
 		}
 	}
@@ -474,67 +430,6 @@ func (uq *UserQuery) loadFlights(ctx context.Context, query *FlightQuery, nodes 
 			return fmt.Errorf(`unexpected referenced foreign-key "user_flights" returned %v for node %v`, *fk, n.ID)
 		}
 		assign(node, n)
-	}
-	return nil
-}
-func (uq *UserQuery) loadSquads(ctx context.Context, query *SquadQuery, nodes []*User, init func(*User), assign func(*User, *Squad)) error {
-	edgeIDs := make([]driver.Value, len(nodes))
-	byID := make(map[int]*User)
-	nids := make(map[int]map[*User]struct{})
-	for i, node := range nodes {
-		edgeIDs[i] = node.ID
-		byID[node.ID] = node
-		if init != nil {
-			init(node)
-		}
-	}
-	query.Where(func(s *sql.Selector) {
-		joinT := sql.Table(user.SquadsTable)
-		s.Join(joinT).On(s.C(squad.FieldID), joinT.C(user.SquadsPrimaryKey[1]))
-		s.Where(sql.InValues(joinT.C(user.SquadsPrimaryKey[0]), edgeIDs...))
-		columns := s.SelectedColumns()
-		s.Select(joinT.C(user.SquadsPrimaryKey[0]))
-		s.AppendSelect(columns...)
-		s.SetDistinct(false)
-	})
-	if err := query.prepareQuery(ctx); err != nil {
-		return err
-	}
-	qr := QuerierFunc(func(ctx context.Context, q Query) (Value, error) {
-		return query.sqlAll(ctx, func(_ context.Context, spec *sqlgraph.QuerySpec) {
-			assign := spec.Assign
-			values := spec.ScanValues
-			spec.ScanValues = func(columns []string) ([]any, error) {
-				values, err := values(columns[1:])
-				if err != nil {
-					return nil, err
-				}
-				return append([]any{new(sql.NullInt64)}, values...), nil
-			}
-			spec.Assign = func(columns []string, values []any) error {
-				outValue := int(values[0].(*sql.NullInt64).Int64)
-				inValue := int(values[1].(*sql.NullInt64).Int64)
-				if nids[inValue] == nil {
-					nids[inValue] = map[*User]struct{}{byID[outValue]: {}}
-					return assign(columns[1:], values[1:])
-				}
-				nids[inValue][byID[outValue]] = struct{}{}
-				return nil
-			}
-		})
-	})
-	neighbors, err := withInterceptors[[]*Squad](ctx, query, qr, query.inters)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		nodes, ok := nids[n.ID]
-		if !ok {
-			return fmt.Errorf(`unexpected "squads" node returned %v`, n.ID)
-		}
-		for kn := range nodes {
-			assign(kn, n)
-		}
 	}
 	return nil
 }

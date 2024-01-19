@@ -10,6 +10,8 @@ import "context"
 import "io"
 import "bytes"
 
+import "github.com/AurelienS/cigare/web/viewmodel"
+
 //	colors := []string{
 //		"rgb(255, 99, 132)",  // Rouge clair
 //		"rgb(54, 162, 235)",  // Bleu clair
@@ -32,103 +34,50 @@ import "bytes"
 //		"rgb(75, 0, 130)",    // Indigo
 //		"rgb(255, 69, 0)",    // Rouge orangé
 //	}
-func setUpChartFlightTimeMonthly(data string) templ.ComponentScript {
+func setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setUpChartFlightTimeMonthly_e341`,
-		Function: `function __templ_setUpChartFlightTimeMonthly_e341(data){const ctx = document.getElementById('chart_flight_time_monthly');
-	new Chart(ctx, {
-    type: 'line',
-    data: {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-        datasets: [{
-        label: '2022',
-        data: [45, 49, 60, 61, 36, 35, 20, 50, 40, 45, 50, 60],
-        backgroundColor: 'rgba(54, 162, 235, 0.5)',
-        borderColor: 'rgb(54, 162, 235)',
-        borderWidth: 1,
-        cubicInterpolationMode: 'monotone'
-    },
-    {
-        label: '2023',
-        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 1,
-        cubicInterpolationMode: 'monotone',
-        hidden:true,
-    },
-    {
-        label: '2024',
-        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 1,
-        cubicInterpolationMode: 'monotone',
-        hidden:true,
-    },
-    {
-        label: '2025',
-        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 1,
-        cubicInterpolationMode: 'monotone',
-        hidden:true,
-    },
-    {
-        label: '2026',
-        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 1,
-        cubicInterpolationMode: 'monotone',
-        hidden:true,
-    },
-    {
-        label: '2027',
-        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 1,
-        cubicInterpolationMode: 'monotone',
-        hidden:true,
-    },
-    {
-        label: '2028',
-        data: [65, 59, 80, 81, 56, 55, 40, 70, 60, 75, 80, 90],
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-        borderColor: 'rgb(255, 99, 132)',
-        borderWidth: 1,
-        cubicInterpolationMode: 'monotone',
-        hidden:true,
-    }]
-    },
-    options: {
-        scales: {
-            y: {
-                beginAtZero: true
+		Name: `__templ_setUpChartFlightTimeMonthly_16e9`,
+		Function: `function __templ_setUpChartFlightTimeMonthly_16e9(datasets){console.log("ds",datasets);
+	const ctx = document.getElementById('chart_flight_time_monthly');
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+            datasets: datasets.map((ds, index) => ({
+                label: ds.Label,
+                data: ds.Data,
+                backgroundColor: ds.Color,
+                borderColor: ds.Color,
+                borderWidth: 1,
+                cubicInterpolationMode: 'monotone',
+                hidden: index > 1,
+            }))
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true
+                },
             },
-
-        },
-        plugins: {
-            legend: {
-                display: true,
-                position: 'left'
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'left'
+                },
+            },
+            animation: {
+                duration: 1000
             }
-        },
-        responsive: true,
-        maintainAspectRatio: false,
-        animation: {
-            duration: 1000
         }
-    }
-});}`,
-		Call:       templ.SafeScript(`__templ_setUpChartFlightTimeMonthly_e341`, data),
-		CallInline: templ.SafeScriptInline(`__templ_setUpChartFlightTimeMonthly_e341`, data),
+    });}`,
+		Call:       templ.SafeScript(`__templ_setUpChartFlightTimeMonthly_16e9`, datasets),
+		CallInline: templ.SafeScriptInline(`__templ_setUpChartFlightTimeMonthly_16e9`, datasets),
 	}
 }
 
-func ChartFlightTimeMonthly(data string) templ.Component {
+func ChartFlightTimeMonthly(datasets []viewmodel.ChartDataset) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -145,7 +94,7 @@ func ChartFlightTimeMonthly(data string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = setUpChartFlightTimeMonthly(data).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = setUpChartFlightTimeMonthly(datasets).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

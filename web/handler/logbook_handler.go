@@ -102,8 +102,18 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 
 func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	userview := transformer.TransformUserToViewModel(user)
-	return Render(c, logbookview.TabProgression("foo", userview))
+	statsYearMonth, err := h.LogbookService.GetStatisticsByYearAndMonth(
+		c.Request().Context(),
+		user)
+	if err != nil {
+		return err
+	}
+
+	view := viewmodel.ProgressionView{
+		User:     transformer.TransformUserToViewModel(user),
+		Datasets: transformer.TransformStatsViewModel(statsYearMonth),
+	}
+	return Render(c, logbookview.TabProgression(view))
 }
 
 func (h *LogbookHandler) GetTabRecords(c echo.Context) error {

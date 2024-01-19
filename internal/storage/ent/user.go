@@ -37,11 +37,9 @@ type User struct {
 type UserEdges struct {
 	// Flights holds the value of the flights edge.
 	Flights []*Flight `json:"flights,omitempty"`
-	// Squads holds the value of the squads edge.
-	Squads []*Squad `json:"squads,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // FlightsOrErr returns the Flights value or an error if the edge
@@ -51,15 +49,6 @@ func (e UserEdges) FlightsOrErr() ([]*Flight, error) {
 		return e.Flights, nil
 	}
 	return nil, &NotLoadedError{edge: "flights"}
-}
-
-// SquadsOrErr returns the Squads value or an error if the edge
-// was not loaded in eager-loading.
-func (e UserEdges) SquadsOrErr() ([]*Squad, error) {
-	if e.loadedTypes[1] {
-		return e.Squads, nil
-	}
-	return nil, &NotLoadedError{edge: "squads"}
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -140,11 +129,6 @@ func (u *User) Value(name string) (ent.Value, error) {
 // QueryFlights queries the "flights" edge of the User entity.
 func (u *User) QueryFlights() *FlightQuery {
 	return NewUserClient(u.config).QueryFlights(u)
-}
-
-// QuerySquads queries the "squads" edge of the User entity.
-func (u *User) QuerySquads() *SquadQuery {
-	return NewUserClient(u.config).QuerySquads(u)
 }
 
 // Update returns a builder for updating this User.

@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 
+	"github.com/AurelienS/cigare/internal/converter"
 	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/storage/ent"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
@@ -32,7 +33,7 @@ func (r *Repository) InsertUser(ctx context.Context, user model.User) (model.Use
 		return user, err
 	}
 	util.Info().Str("user", user.Email).Msg("Inserted user")
-	return model.DBToDomainUser(u), nil
+	return converter.DBToDomainUser(u), nil
 }
 
 func (r *Repository) UpdateUser(ctx context.Context, incomingUser model.User) (model.User, error) {
@@ -56,7 +57,7 @@ func (r *Repository) UpdateUser(ctx context.Context, incomingUser model.User) (m
 		return incomingUser, err
 	}
 	util.Info().Str("user", u.Email).Msg("Updated user")
-	return model.DBToDomainUser(u), nil
+	return converter.DBToDomainUser(u), nil
 }
 
 func (r *Repository) UserExists(ctx context.Context, googleID string) bool {

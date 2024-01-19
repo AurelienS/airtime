@@ -16,8 +16,6 @@ type Tx struct {
 	Flight *FlightClient
 	// FlightStatistic is the client for interacting with the FlightStatistic builders.
 	FlightStatistic *FlightStatisticClient
-	// Squad is the client for interacting with the Squad builders.
-	Squad *SquadClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 
@@ -153,7 +151,6 @@ func (tx *Tx) Client() *Client {
 func (tx *Tx) init() {
 	tx.Flight = NewFlightClient(tx.config)
 	tx.FlightStatistic = NewFlightStatisticClient(tx.config)
-	tx.Squad = NewSquadClient(tx.config)
 	tx.User = NewUserClient(tx.config)
 }
 

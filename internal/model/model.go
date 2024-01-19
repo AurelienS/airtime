@@ -2,8 +2,6 @@ package model
 
 import (
 	"time"
-
-	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
 )
 
 type Flight struct {
@@ -12,7 +10,7 @@ type Flight struct {
 	TakeoffLocation string
 	IgcFilePath     string
 	Pilot           User
-	Statistic       flightstats.FlightStatistic
+	Statistic       FlightStatistic
 	CreatedAt       time.Time
 	UpdatedAt       time.Time
 }
@@ -31,3 +29,22 @@ type User struct {
 	Name       string
 	PictureURL string
 }
+
+type StatsAggregated struct {
+	FlightCount           int
+	MaxAltitude           int
+	MaxClimb              int
+	TotalClimb            int
+	TotalNumberOfThermals int
+	MaxClimbRate          float64
+	MaxFlightLength       time.Duration
+	MinFlightLength       time.Duration
+	AverageFlightLength   time.Duration
+	TotalFlightTime       time.Duration
+	TotalThermicTime      time.Duration
+}
+
+type (
+	Year           = int
+	StatsYearMonth = map[Year]map[time.Month]StatsAggregated
+)

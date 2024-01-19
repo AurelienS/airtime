@@ -5,13 +5,12 @@ import (
 	"sort"
 	"time"
 
-	flightstats "github.com/AurelienS/cigare/internal/flight_statistic"
+	"github.com/AurelienS/cigare/internal/converter"
 	"github.com/AurelienS/cigare/internal/model"
 	"github.com/AurelienS/cigare/internal/storage/ent"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	userDB "github.com/AurelienS/cigare/internal/storage/ent/user"
-
 	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
+	userDB "github.com/AurelienS/cigare/internal/storage/ent/user"
 	"github.com/AurelienS/cigare/internal/util"
 )
 
@@ -28,7 +27,7 @@ func NewRepository(client *ent.Client) Repository {
 func (r Repository) InsertFlight(
 	ctx context.Context,
 	flight model.Flight,
-	flightStats flightstats.FlightStatistic,
+	flightStats model.FlightStatistic,
 	user model.User,
 ) error {
 	util.Info().Str("user", user.Email).Msg("Inserting flight")
@@ -77,17 +76,19 @@ func (r Repository) InsertFlight(
 	return tx.Commit()
 }
 
-func (r *Repository) GetFlights(ctx context.Context, year int, user model.User) ([]model.Flight, error) {
+func (r *Repository) GetFlights(
+	ctx context.Context,
+	startDate time.Time,
+	endDate time.Time,
+	user model.User,
+) ([]model.Flight, error) {
 	util.Info().Str("user", user.Email).Msg("Getting user flights")
-
-	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
-	endOfYear := time.Date(year, time.December, 31, 23, 59, 59, 999999999, time.UTC)
 
 	flightsDB, err := r.client.User.
 		Query().
 		Where(userDB.IDEQ(user.ID)).
 		QueryFlights().
-		Where(flight.DateGTE(startOfYear), flight.DateLTE(endOfYear)).
+		Where(flight.DateGTE(startDate), flight.DateLTE(endDate)).
 		WithStatistic().
 		WithPilot().
 		All(ctx)
@@ -98,7 +99,7 @@ func (r *Repository) GetFlights(ctx context.Context, year int, user model.User) 
 
 	var flights []model.Flight
 	for _, f := range flightsDB {
-		flights = append(flights, model.DBToDomainFlight(f))
+		flights = append(flights, converter.DBToDomainFlight(f))
 	}
 
 	return flights, nil
@@ -108,7 +109,7 @@ func (r *Repository) GetStatistics(ctx context.Context,
 	startDate time.Time,
 	endDate time.Time,
 	user model.User,
-) ([]flightstats.FlightStatistic, error) {
+) ([]model.FlightStatistic, error) {
 	util.Info().Str("user", user.Email).Msg("Getting statistics")
 
 	stats, err := r.client.FlightStatistic.
@@ -122,7 +123,7 @@ func (r *Repository) GetStatistics(ctx context.Context,
 		).
 		All(ctx)
 
-	return model.DBToDomainFlightStatistics(stats), err
+	return converter.DBToDomainFlightStatistics(stats), err
 }
 
 // If there is no last flight, it return nil without an error.
@@ -146,7 +147,7 @@ func (r *Repository) GetLastFlight(ctx context.Context, user model.User) (*model
 		}
 	}
 
-	domainModel := model.DBToDomainFlight(flt)
+	domainModel := converter.DBToDomainFlight(flt)
 	return &domainModel, nil
 }
 

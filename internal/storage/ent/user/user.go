@@ -26,8 +26,6 @@ const (
 	FieldCreatedAt = "created_at"
 	// EdgeFlights holds the string denoting the flights edge name in mutations.
 	EdgeFlights = "flights"
-	// EdgeSquads holds the string denoting the squads edge name in mutations.
-	EdgeSquads = "squads"
 	// Table holds the table name of the user in the database.
 	Table = "users"
 	// FlightsTable is the table that holds the flights relation/edge.
@@ -37,11 +35,6 @@ const (
 	FlightsInverseTable = "flights"
 	// FlightsColumn is the table column denoting the flights relation/edge.
 	FlightsColumn = "user_flights"
-	// SquadsTable is the table that holds the squads relation/edge. The primary key declared below.
-	SquadsTable = "user_squads"
-	// SquadsInverseTable is the table name for the Squad entity.
-	// It exists in this package in order to avoid circular dependency with the "squad" package.
-	SquadsInverseTable = "squads"
 )
 
 // Columns holds all SQL columns for user fields.
@@ -53,12 +46,6 @@ var Columns = []string{
 	FieldPictureURL,
 	FieldCreatedAt,
 }
-
-var (
-	// SquadsPrimaryKey and SquadsColumn2 are the table columns denoting the
-	// primary key for the squads relation (M2M).
-	SquadsPrimaryKey = []string{"user_id", "squad_id"}
-)
 
 // ValidColumn reports if the column name is valid (part of the table columns).
 func ValidColumn(column string) bool {
@@ -121,31 +108,10 @@ func ByFlights(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newFlightsStep(), append([]sql.OrderTerm{term}, terms...)...)
 	}
 }
-
-// BySquadsCount orders the results by squads count.
-func BySquadsCount(opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborsCount(s, newSquadsStep(), opts...)
-	}
-}
-
-// BySquads orders the results by squads terms.
-func BySquads(term sql.OrderTerm, terms ...sql.OrderTerm) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newSquadsStep(), append([]sql.OrderTerm{term}, terms...)...)
-	}
-}
 func newFlightsStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(FlightsInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.O2M, false, FlightsTable, FlightsColumn),
-	)
-}
-func newSquadsStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(SquadsInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.M2M, false, SquadsTable, SquadsPrimaryKey...),
 	)
 }

@@ -12,6 +12,7 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/view/userview"
 import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/component"
 
 func Base(currentUser viewmodel.UserView) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
@@ -75,7 +76,15 @@ func Base(currentUser viewmodel.UserView) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col h-screen\"><div class=\"navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50\"><div class=\"navbar-start\"></div><div class=\"navbar-center\"><a href=\"/\" class=\"btn btn-ghost text-3xl\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col h-screen\"><div class=\"navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50\"><div class=\"navbar-start\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = component.UploadFlightForm().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"navbar-center\"><a href=\"/\" class=\"btn btn-ghost text-3xl\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1,4 +1,4 @@
-package flightstats
+package model
 
 import (
 	"fmt"
@@ -44,6 +44,63 @@ func NewFlightStatistics(points []igc.Point) FlightStatistic {
 	}
 	stat.Compute()
 	return stat
+}
+
+func ComputeAggregateStatistics(stats []FlightStatistic) StatsAggregated {
+	var maxAltitude int
+	var maxVario float64
+	var maxFlightLength time.Duration
+	minFlightLength := time.Duration(0)
+	averageFlightLength := time.Duration(0)
+	var totalFlightTime time.Duration
+
+	var totalThermicTime time.Duration
+	var maxClimb int
+	var totalClimb int
+	var totalNumberOfThermals int
+
+	flightCount := len(stats)
+
+	for _, stat := range stats {
+		if stat.MaxAltitude > maxAltitude {
+			maxAltitude = stat.MaxAltitude
+		}
+		if stat.MaxClimbRate > maxVario {
+			maxVario = stat.MaxClimbRate
+		}
+		if stat.TotalFlightTime > maxFlightLength {
+			maxFlightLength = stat.TotalFlightTime
+		}
+		if stat.TotalFlightTime < minFlightLength {
+			minFlightLength = stat.TotalFlightTime
+		}
+		if stat.MaxClimb > maxClimb {
+			maxClimb = stat.MaxClimb
+		}
+		totalClimb += stat.TotalClimb
+		totalNumberOfThermals += stat.NumberOfThermals
+		totalThermicTime += stat.TotalThermicTime
+		totalFlightTime += stat.TotalFlightTime
+	}
+
+	if flightCount > 0 {
+		averageFlightLength = totalFlightTime / time.Duration(flightCount)
+	}
+
+	aggregatedStats := StatsAggregated{
+		FlightCount:           flightCount,
+		MaxAltitude:           maxAltitude,
+		MaxClimb:              maxClimb,
+		TotalClimb:            totalClimb,
+		TotalNumberOfThermals: totalNumberOfThermals,
+		MaxClimbRate:          maxVario,
+		MaxFlightLength:       maxFlightLength,
+		MinFlightLength:       minFlightLength,
+		AverageFlightLength:   averageFlightLength,
+		TotalFlightTime:       totalFlightTime,
+		TotalThermicTime:      totalThermicTime,
+	}
+	return aggregatedStats
 }
 
 func (fs *FlightStatistic) Compute() {

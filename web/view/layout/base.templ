@@ -2,6 +2,7 @@ package layout
 
 import "github.com/AurelienS/cigare/web/view/userview"
 import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/component"
 
 templ Base(currentUser viewmodel.UserView) {
 	<!DOCTYPE html>
@@ -26,7 +27,7 @@ templ Base(currentUser viewmodel.UserView) {
 		<body class="flex flex-col h-screen">
 			<div class="navbar shadow-md bg-base-100 fixed top-0 left-0 right-0 z-50">
 				<div class="navbar-start">
-					// @logbookview.UploadFlightForm()
+					@component.UploadFlightForm()
 				</div>
 				<div class="navbar-center">
 					<a href="/" class="btn btn-ghost text-3xl">SoarSquad</a>
