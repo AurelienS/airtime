@@ -29,8 +29,6 @@ func (r FlightRepository) InsertFlight(
 	flightStats domain.FlightStatistic,
 	user domain.User,
 ) error {
-	util.Info().Str("user", user.Email).Msg("Inserting flight")
-
 	tx, err := r.client.Tx(ctx)
 	if err != nil {
 		return err
@@ -51,8 +49,14 @@ func (r FlightRepository) InsertFlight(
 	if err != nil {
 		r := tx.Rollback()
 		if r != nil {
+			util.
+				Error().
+				Err(err).
+				Str("user", user.Email).
+				Msg("Failed to insert flight statistic into database AND failed to rollback transaction")
 			return r
 		}
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert statistic flight into database")
 		return err
 	}
 
@@ -67,12 +71,95 @@ func (r FlightRepository) InsertFlight(
 	if err != nil {
 		r := tx.Rollback()
 		if r != nil {
+			util.
+				Error().
+				Err(err).
+				Str("user", user.Email).
+				Msg("Failed to insert flight into database AND failed to rollback transaction")
 			return r
 		}
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
 		return err
 	}
 
 	return tx.Commit()
+}
+
+func (r FlightRepository) InsertFlights(
+	ctx context.Context,
+	flights []domain.Flight,
+	flightStats []domain.FlightStatistic,
+	user domain.User,
+) error {
+	tx, err := r.client.Tx(ctx)
+	if err != nil {
+		return err
+	}
+
+	// Batch insert flight statistics
+	bulkStats := make([]*ent.FlightStatisticCreate, len(flightStats))
+	for i, flightStat := range flightStats {
+		bulkStats[i] = tx.FlightStatistic.
+			Create().
+			SetTotalThermicTime(int(flightStat.TotalThermicTime.Seconds())).
+			SetTotalFlightTime(int(flightStat.TotalFlightTime.Seconds())).
+			SetMaxClimb(flightStat.MaxClimb).
+			SetMaxClimbRate(flightStat.MaxClimbRate).
+			SetTotalClimb(flightStat.TotalClimb).
+			SetAverageClimbRate(flightStat.AverageClimbRate).
+			SetNumberOfThermals(flightStat.NumberOfThermals).
+			SetPercentageThermic(flightStat.PercentageThermic).
+			SetMaxAltitude(flightStat.MaxAltitude)
+	}
+	stats, err := tx.FlightStatistic.
+		CreateBulk(bulkStats...).Save(ctx)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	// Batch insert flights
+	bulkFlights := make([]*ent.FlightCreate, len(flights))
+	for i, flight := range flights {
+		bulkFlights[i] = tx.Flight.
+			Create().
+			SetDate(flight.Date).
+			SetTakeoffLocation(flight.TakeoffLocation).
+			SetIgcFilePath("not yet").
+			SetPilotID(user.ID).
+			SetStatistic(stats[i])
+	}
+	err = tx.Flight.
+		CreateBulk(bulkFlights...).
+		OnConflict().
+		DoNothing().
+		Exec(ctx)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	return tx.Commit()
+}
+
+func (r *FlightRepository) GetFlight(
+	ctx context.Context,
+	flightID int,
+	user domain.User,
+) (domain.Flight, error) {
+	flightDB, err := r.client.User.
+		Query().
+		Where(userDB.IDEQ(user.ID)).
+		QueryFlights().
+		Where(flight.IDEQ(flightID)).
+		WithStatistic().
+		WithPilot().
+		First(ctx)
+	if err != nil {
+		return domain.Flight{}, err
+	}
+
+	return converter.DBToDomainFlight(flightDB), nil
 }
 
 func (r *FlightRepository) GetFlights(

@@ -35,10 +35,12 @@ func (s *LogbookService) ProcessAndAddFlight(ctx context.Context, file *multipar
 	defer src.Close()
 
 	if strings.HasSuffix(file.Filename, ".zip") {
-		return s.processZipFile(ctx, src, file.Size, user)
+		e := s.processZipFile(ctx, src, file.Size, user)
+		return e
 	}
+	e := s.processSingleFile(ctx, src, file.Filename, user)
 
-	return s.processSingleFile(ctx, src, file.Filename, user)
+	return e
 }
 
 func (s *LogbookService) processSingleFile(ctx context.Context, reader io.Reader, filename string,
@@ -59,12 +61,8 @@ func (s *LogbookService) processSingleFile(ctx context.Context, reader io.Reader
 	stats := domain.NewFlightStatistics(track.Points)
 	err = s.logbookRepo.InsertFlight(ctx, flight, stats, user)
 	if err != nil {
-		util.Error().Err(err).Str("user", user.Email).Msg("Failed to insert flight into database")
 		return err
 	}
-
-	util.Info().Str("user", user.Email).Str("filename", filename).
-		Msg("File processed and flight record created successfully")
 
 	return nil
 }
@@ -75,30 +73,56 @@ func (s *LogbookService) processZipFile(
 	size int64,
 	user domain.User,
 ) error {
+	var flights []domain.Flight
+	var flightStats []domain.FlightStatistic
+
 	zr, err := zip.NewReader(zipReader, size) // 'size' should be the size of the zip file
 	if err != nil {
 		return err
 	}
 
+	dates := map[time.Time]struct{}{}
 	addedCount := 0
 	errorCount := 0
-
 	for _, f := range zr.File {
 		if strings.ToLower(filepath.Ext(f.Name)) == ".igc" {
-			file, err := f.Open()
-			if err != nil {
-				continue // or handle the error
-			}
-
-			err = s.processSingleFile(ctx, file, f.Name, user)
-			file.Close()
-
-			if err != nil {
+			rc, err1 := f.Open()
+			if err1 != nil {
 				errorCount++
-			} else {
-				addedCount++
+				continue
 			}
+
+			byteContent, err1 := io.ReadAll(rc)
+			rc.Close() // Ensure file is closed after reading
+			if err1 != nil {
+				errorCount++
+				continue
+			}
+
+			track, err1 := igc.Parse(string(byteContent))
+			if err1 != nil {
+				errorCount++
+				continue
+			}
+
+			flight := TrackToFlight(track)
+			if _, exists := dates[flight.Date]; exists {
+				errorCount++
+				continue
+			}
+			dates[flight.Date] = struct{}{}
+			stats := domain.NewFlightStatistics(track.Points)
+
+			flights = append(flights, flight)
+			flightStats = append(flightStats, stats)
+
+			addedCount++
 		}
+	}
+
+	err = s.logbookRepo.InsertFlights(ctx, flights, flightStats, user)
+	if err != nil {
+		return err
 	}
 
 	util.
@@ -172,6 +196,10 @@ func (s LogbookService) GetFlights(ctx context.Context, year int, user domain.Us
 	endOfYear := time.Date(year, time.December, 31, 23, 59, 59, 999999999, time.UTC)
 
 	return s.logbookRepo.GetFlights(ctx, startOfYear, endOfYear, user)
+}
+
+func (s LogbookService) GetFlight(ctx context.Context, flightID int, user domain.User) (domain.Flight, error) {
+	return s.logbookRepo.GetFlight(ctx, flightID, user)
 }
 
 func (s LogbookService) GetFlyingYears(ctx context.Context, user domain.User) ([]int, error) {

@@ -123,15 +123,31 @@ func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
 
 	view := viewmodel.ProgressionView{
 		User:                   transformer.TransformUserToViewModel(user),
-		FlightTimeMonthlyData:  transformer.TransformStatsViewModel(statsYearMonth, totalFlightTimeExtractor),
-		FlightCountMonthlyData: transformer.TransformStatsViewModel(statsYearMonth, flightCountExtractor),
+		FlightTimeMonthlyData:  transformer.TransformChartViewModel(statsYearMonth, totalFlightTimeExtractor),
+		FlightCountMonthlyData: transformer.TransformChartViewModel(statsYearMonth, flightCountExtractor),
 	}
 	return Render(c, logbookview.TabProgression(view))
 }
 
 func (h *LogbookHandler) GetFlight(c echo.Context) error {
-	var f domain.Flight
-	return Render(c, logbookview.Flight(f))
+	user := session.GetUserFromContext(c)
+
+	flightIDParam := c.Param("flight")
+	flightID, err := strconv.Atoi(flightIDParam)
+	if err != nil {
+		return err
+	}
+	flight, err := h.LogbookService.GetFlight(c.Request().Context(), flightID, user)
+	if err != nil {
+		return err
+	}
+
+	view := viewmodel.FlightDetailView{
+		UserView:   transformer.TransformUserToViewModel(user),
+		FlightView: transformer.TransformFlightToViewModel(flight),
+		Stats:      transformer.TransformStatToViewModel(flight.Statistic),
+	}
+	return Render(c, logbookview.Flight(view))
 }
 
 func (h *LogbookHandler) PostFlight(c echo.Context) error {

@@ -14,7 +14,8 @@ templ:
 	@templ generate
 
 ent:
-	@go generate ./internal/storage/ent
+	@go run -mod=mod entgo.io/ent/cmd/ent generate --feature sql/upsert ./internal/storage/ent
+
 
 trigger-refresh:
 	@touch browser-refresh-trigger.nothing

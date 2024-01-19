@@ -10,12 +10,24 @@ type LogbookView struct {
 }
 
 type FlightView struct {
+	ID               string
 	Date             string
 	TakeoffLocation  string
 	TotalFlightTime  string
 	MaxAltitude      string
 	TotalThermicTime string
 	MaxClimbRate     string
+	Link             string
+}
+
+type FlightDetailStatView struct {
+	Title string
+	Value string
+}
+type FlightDetailView struct {
+	FlightView
+	UserView
+	Stats []FlightDetailStatView
 }
 
 type StatView struct {

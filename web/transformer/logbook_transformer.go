@@ -62,7 +62,7 @@ var datasetColors = []string{
 
 type StatExtractor func(stats domain.StatsAggregated) int
 
-func TransformStatsViewModel(statsYearMonth domain.StatsYearMonth, extractor StatExtractor) []viewmodel.ChartDataset {
+func TransformChartViewModel(statsYearMonth domain.StatsYearMonth, extractor StatExtractor) []viewmodel.ChartDataset {
 	datasets := []viewmodel.ChartDataset{}
 
 	// Create a slice of years to sort
@@ -110,6 +110,33 @@ func TransformStatsViewModel(statsYearMonth domain.StatsYearMonth, extractor Sta
 	return datasets
 }
 
+func TransformStatToViewModel(stats domain.FlightStatistic) []viewmodel.FlightDetailStatView {
+	return []viewmodel.FlightDetailStatView{
+		{Title: "Total flight time", Value: prettyDuration(stats.TotalFlightTime, false)},
+		{Title: "Max climb", Value: prettyAltitude(stats.MaxClimb, true)},
+		{Title: "Max altitude", Value: prettyAltitude(stats.MaxAltitude, true)},
+		{Title: "Total climb", Value: prettyAltitude(stats.TotalClimb, false)},
+		{Title: "Average climb rate", Value: prettyRate(stats.AverageClimbRate)},
+		{Title: "Max climb rate", Value: prettyRate(stats.MaxClimbRate)},
+		{Title: "Total thermic time", Value: prettyDuration(stats.TotalThermicTime, false)},
+		{Title: "Number of thermals", Value: strconv.Itoa(stats.NumberOfThermals)},
+		{Title: "Percentage thermic", Value: strconv.FormatFloat(stats.PercentageThermic, 'f', 1, 64) + "%"},
+	}
+}
+
+func TransformFlightToViewModel(flight domain.Flight) viewmodel.FlightView {
+	return viewmodel.FlightView{
+		ID:               strconv.Itoa(flight.ID),
+		Date:             flight.Date.Local().Format("02/01 15:04"),
+		TakeoffLocation:  flight.TakeoffLocation,
+		TotalFlightTime:  prettyDuration(flight.Statistic.TotalFlightTime, true),
+		TotalThermicTime: prettyDuration(flight.Statistic.TotalThermicTime, false),
+		MaxClimbRate:     prettyRate(flight.Statistic.MaxClimbRate),
+		MaxAltitude:      strconv.Itoa(flight.Statistic.MaxAltitude),
+		Link:             fmt.Sprintf("/logbook/log/flight/%d", flight.ID),
+	}
+}
+
 func sortAndConvertToViewModel(flights []domain.Flight) []viewmodel.FlightView {
 	sort.Slice(flights, func(i, j int) bool {
 		return flights[i].Date.After(flights[j].Date)
@@ -120,14 +147,7 @@ func sortAndConvertToViewModel(flights []domain.Flight) []viewmodel.FlightView {
 		if i > 20 {
 			break
 		}
-		flightViews = append(flightViews, viewmodel.FlightView{
-			TakeoffLocation:  f.TakeoffLocation,
-			Date:             f.Date.Local().Format("02/01 15:04"),
-			TotalThermicTime: prettyDuration(f.Statistic.TotalThermicTime, false),
-			TotalFlightTime:  prettyDuration(f.Statistic.TotalFlightTime, true),
-			MaxClimbRate:     strconv.FormatFloat(f.Statistic.MaxClimbRate, 'f', 1, 64),
-			MaxAltitude:      strconv.Itoa(f.Statistic.MaxAltitude),
-		})
+		flightViews = append(flightViews, TransformFlightToViewModel(f))
 	}
 	return flightViews
 }
@@ -192,10 +212,14 @@ func getSecondaryStat(yearStats, allTimeStats domain.StatsAggregated) []viewmode
 
 		{
 			Title:            "Taux de montée maximal",
-			AlltimeValue:     fmt.Sprintf("%.2f", allTimeStats.MaxClimbRate) + " m/s",
-			CurrentYearValue: fmt.Sprintf("%.2f", yearStats.MaxClimbRate) + " m/s",
+			AlltimeValue:     prettyRate(allTimeStats.MaxClimbRate),
+			CurrentYearValue: prettyRate(yearStats.MaxClimbRate),
 		},
 	}
+}
+
+func prettyRate(rate float64) string {
+	return fmt.Sprintf("%.1f m/s", rate)
 }
 
 func prettyDuration(d time.Duration, onlyHour bool) string {

@@ -198,14 +198,22 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					return templ_7745c5c3_Err
 				}
 				for _, flight := range view.Flights {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr class=\"hover\"><td>")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr class=\"hover\" hx-get=\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(flight.Link))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" hx-target=\"#content\" hx-select=\"#content\" hx-swap=\"outerHTML\" hx-push-url=\"true\"><td>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var11 string
 					templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Date)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 60, Col: 25}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 67, Col: 25}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 					if templ_7745c5c3_Err != nil {
@@ -218,7 +226,7 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					var templ_7745c5c3_Var12 string
 					templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TakeoffLocation)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 61, Col: 36}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 68, Col: 36}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 					if templ_7745c5c3_Err != nil {
@@ -231,7 +239,7 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					var templ_7745c5c3_Var13 string
 					templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TotalFlightTime)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 62, Col: 36}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 69, Col: 36}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 					if templ_7745c5c3_Err != nil {
@@ -244,7 +252,7 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					var templ_7745c5c3_Var14 string
 					templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(flight.MaxAltitude)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 63, Col: 32}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 70, Col: 32}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 					if templ_7745c5c3_Err != nil {
@@ -257,7 +265,7 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					var templ_7745c5c3_Var15 string
 					templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(flight.MaxClimbRate)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 64, Col: 33}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 71, Col: 33}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 					if templ_7745c5c3_Err != nil {
@@ -270,7 +278,7 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					var templ_7745c5c3_Var16 string
 					templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TotalThermicTime)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 65, Col: 37}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbookview/tab_log.templ`, Line: 72, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 					if templ_7745c5c3_Err != nil {

@@ -1,8 +1,26 @@
 package logbookview
 
-import "strconv"
-import "github.com/AurelienS/cigare/internal/domain"
+import "github.com/AurelienS/cigare/web/view/layout"
+import "github.com/AurelienS/cigare/web/viewmodel"
 
-templ Flight(f domain.Flight) {
-	<div>flight id { strconv.Itoa(f.ID) }</div>
+templ Flight(view viewmodel.FlightDetailView) {
+	@layout.Base(view.UserView) {
+		<div class="text-sm breadcrumbs">
+			<ul>
+				<li><a href="/">Home</a></li>
+				<li>vol n° { view.ID }</li>
+			</ul>
+		</div>
+		<div class="stats ">
+			for _, s := range view.Stats {
+				<div class="stat">
+					<div class="stat-title text-lg">{ s.Title }</div>
+					<div class="stat-value flex w-full justify-center text-xl font-bold">
+						{ s.Value }
+					</div>
+				</div>
+			}
+		</div>
+		<div class="bg-primary">flight id </div>
+	}
 }

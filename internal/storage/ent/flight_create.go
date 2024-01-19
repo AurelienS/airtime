@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"time"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
@@ -20,6 +21,7 @@ type FlightCreate struct {
 	config
 	mutation *FlightMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetDate sets the "date" field.
@@ -147,6 +149,7 @@ func (fc *FlightCreate) createSpec() (*Flight, *sqlgraph.CreateSpec) {
 		_node = &Flight{config: fc.config}
 		_spec = sqlgraph.NewCreateSpec(flight.Table, sqlgraph.NewFieldSpec(flight.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = fc.conflict
 	if value, ok := fc.mutation.Date(); ok {
 		_spec.SetField(flight.FieldDate, field.TypeTime, value)
 		_node.Date = value
@@ -195,11 +198,212 @@ func (fc *FlightCreate) createSpec() (*Flight, *sqlgraph.CreateSpec) {
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Flight.Create().
+//		SetDate(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.FlightUpsert) {
+//			SetDate(v+v).
+//		}).
+//		Exec(ctx)
+func (fc *FlightCreate) OnConflict(opts ...sql.ConflictOption) *FlightUpsertOne {
+	fc.conflict = opts
+	return &FlightUpsertOne{
+		create: fc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Flight.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (fc *FlightCreate) OnConflictColumns(columns ...string) *FlightUpsertOne {
+	fc.conflict = append(fc.conflict, sql.ConflictColumns(columns...))
+	return &FlightUpsertOne{
+		create: fc,
+	}
+}
+
+type (
+	// FlightUpsertOne is the builder for "upsert"-ing
+	//  one Flight node.
+	FlightUpsertOne struct {
+		create *FlightCreate
+	}
+
+	// FlightUpsert is the "OnConflict" setter.
+	FlightUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetDate sets the "date" field.
+func (u *FlightUpsert) SetDate(v time.Time) *FlightUpsert {
+	u.Set(flight.FieldDate, v)
+	return u
+}
+
+// UpdateDate sets the "date" field to the value that was provided on create.
+func (u *FlightUpsert) UpdateDate() *FlightUpsert {
+	u.SetExcluded(flight.FieldDate)
+	return u
+}
+
+// SetTakeoffLocation sets the "takeoffLocation" field.
+func (u *FlightUpsert) SetTakeoffLocation(v string) *FlightUpsert {
+	u.Set(flight.FieldTakeoffLocation, v)
+	return u
+}
+
+// UpdateTakeoffLocation sets the "takeoffLocation" field to the value that was provided on create.
+func (u *FlightUpsert) UpdateTakeoffLocation() *FlightUpsert {
+	u.SetExcluded(flight.FieldTakeoffLocation)
+	return u
+}
+
+// SetIgcFilePath sets the "igcFilePath" field.
+func (u *FlightUpsert) SetIgcFilePath(v string) *FlightUpsert {
+	u.Set(flight.FieldIgcFilePath, v)
+	return u
+}
+
+// UpdateIgcFilePath sets the "igcFilePath" field to the value that was provided on create.
+func (u *FlightUpsert) UpdateIgcFilePath() *FlightUpsert {
+	u.SetExcluded(flight.FieldIgcFilePath)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.Flight.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *FlightUpsertOne) UpdateNewValues() *FlightUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Flight.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *FlightUpsertOne) Ignore() *FlightUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *FlightUpsertOne) DoNothing() *FlightUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the FlightCreate.OnConflict
+// documentation for more info.
+func (u *FlightUpsertOne) Update(set func(*FlightUpsert)) *FlightUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&FlightUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetDate sets the "date" field.
+func (u *FlightUpsertOne) SetDate(v time.Time) *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetDate(v)
+	})
+}
+
+// UpdateDate sets the "date" field to the value that was provided on create.
+func (u *FlightUpsertOne) UpdateDate() *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateDate()
+	})
+}
+
+// SetTakeoffLocation sets the "takeoffLocation" field.
+func (u *FlightUpsertOne) SetTakeoffLocation(v string) *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetTakeoffLocation(v)
+	})
+}
+
+// UpdateTakeoffLocation sets the "takeoffLocation" field to the value that was provided on create.
+func (u *FlightUpsertOne) UpdateTakeoffLocation() *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateTakeoffLocation()
+	})
+}
+
+// SetIgcFilePath sets the "igcFilePath" field.
+func (u *FlightUpsertOne) SetIgcFilePath(v string) *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetIgcFilePath(v)
+	})
+}
+
+// UpdateIgcFilePath sets the "igcFilePath" field to the value that was provided on create.
+func (u *FlightUpsertOne) UpdateIgcFilePath() *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateIgcFilePath()
+	})
+}
+
+// Exec executes the query.
+func (u *FlightUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for FlightCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *FlightUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *FlightUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *FlightUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // FlightCreateBulk is the builder for creating many Flight entities in bulk.
 type FlightCreateBulk struct {
 	config
 	err      error
 	builders []*FlightCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the Flight entities in the database.
@@ -228,6 +432,7 @@ func (fcb *FlightCreateBulk) Save(ctx context.Context) ([]*Flight, error) {
 					_, err = mutators[i+1].Mutate(root, fcb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = fcb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, fcb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -278,6 +483,152 @@ func (fcb *FlightCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (fcb *FlightCreateBulk) ExecX(ctx context.Context) {
 	if err := fcb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.Flight.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.FlightUpsert) {
+//			SetDate(v+v).
+//		}).
+//		Exec(ctx)
+func (fcb *FlightCreateBulk) OnConflict(opts ...sql.ConflictOption) *FlightUpsertBulk {
+	fcb.conflict = opts
+	return &FlightUpsertBulk{
+		create: fcb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.Flight.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (fcb *FlightCreateBulk) OnConflictColumns(columns ...string) *FlightUpsertBulk {
+	fcb.conflict = append(fcb.conflict, sql.ConflictColumns(columns...))
+	return &FlightUpsertBulk{
+		create: fcb,
+	}
+}
+
+// FlightUpsertBulk is the builder for "upsert"-ing
+// a bulk of Flight nodes.
+type FlightUpsertBulk struct {
+	create *FlightCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.Flight.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *FlightUpsertBulk) UpdateNewValues() *FlightUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.Flight.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *FlightUpsertBulk) Ignore() *FlightUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *FlightUpsertBulk) DoNothing() *FlightUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the FlightCreateBulk.OnConflict
+// documentation for more info.
+func (u *FlightUpsertBulk) Update(set func(*FlightUpsert)) *FlightUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&FlightUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetDate sets the "date" field.
+func (u *FlightUpsertBulk) SetDate(v time.Time) *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetDate(v)
+	})
+}
+
+// UpdateDate sets the "date" field to the value that was provided on create.
+func (u *FlightUpsertBulk) UpdateDate() *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateDate()
+	})
+}
+
+// SetTakeoffLocation sets the "takeoffLocation" field.
+func (u *FlightUpsertBulk) SetTakeoffLocation(v string) *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetTakeoffLocation(v)
+	})
+}
+
+// UpdateTakeoffLocation sets the "takeoffLocation" field to the value that was provided on create.
+func (u *FlightUpsertBulk) UpdateTakeoffLocation() *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateTakeoffLocation()
+	})
+}
+
+// SetIgcFilePath sets the "igcFilePath" field.
+func (u *FlightUpsertBulk) SetIgcFilePath(v string) *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetIgcFilePath(v)
+	})
+}
+
+// UpdateIgcFilePath sets the "igcFilePath" field to the value that was provided on create.
+func (u *FlightUpsertBulk) UpdateIgcFilePath() *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateIgcFilePath()
+	})
+}
+
+// Exec executes the query.
+func (u *FlightUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FlightCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for FlightCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *FlightUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

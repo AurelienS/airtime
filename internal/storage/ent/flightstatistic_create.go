@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 
+	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
@@ -18,6 +19,7 @@ type FlightStatisticCreate struct {
 	config
 	mutation *FlightStatisticMutation
 	hooks    []Hook
+	conflict []sql.ConflictOption
 }
 
 // SetTotalThermicTime sets the "totalThermicTime" field.
@@ -180,6 +182,7 @@ func (fsc *FlightStatisticCreate) createSpec() (*FlightStatistic, *sqlgraph.Crea
 		_node = &FlightStatistic{config: fsc.config}
 		_spec = sqlgraph.NewCreateSpec(flightstatistic.Table, sqlgraph.NewFieldSpec(flightstatistic.FieldID, field.TypeInt))
 	)
+	_spec.OnConflict = fsc.conflict
 	if value, ok := fsc.mutation.TotalThermicTime(); ok {
 		_spec.SetField(flightstatistic.FieldTotalThermicTime, field.TypeInt, value)
 		_node.TotalThermicTime = value
@@ -236,11 +239,485 @@ func (fsc *FlightStatisticCreate) createSpec() (*FlightStatistic, *sqlgraph.Crea
 	return _node, _spec
 }
 
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.FlightStatistic.Create().
+//		SetTotalThermicTime(v).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.FlightStatisticUpsert) {
+//			SetTotalThermicTime(v+v).
+//		}).
+//		Exec(ctx)
+func (fsc *FlightStatisticCreate) OnConflict(opts ...sql.ConflictOption) *FlightStatisticUpsertOne {
+	fsc.conflict = opts
+	return &FlightStatisticUpsertOne{
+		create: fsc,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.FlightStatistic.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (fsc *FlightStatisticCreate) OnConflictColumns(columns ...string) *FlightStatisticUpsertOne {
+	fsc.conflict = append(fsc.conflict, sql.ConflictColumns(columns...))
+	return &FlightStatisticUpsertOne{
+		create: fsc,
+	}
+}
+
+type (
+	// FlightStatisticUpsertOne is the builder for "upsert"-ing
+	//  one FlightStatistic node.
+	FlightStatisticUpsertOne struct {
+		create *FlightStatisticCreate
+	}
+
+	// FlightStatisticUpsert is the "OnConflict" setter.
+	FlightStatisticUpsert struct {
+		*sql.UpdateSet
+	}
+)
+
+// SetTotalThermicTime sets the "totalThermicTime" field.
+func (u *FlightStatisticUpsert) SetTotalThermicTime(v int) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldTotalThermicTime, v)
+	return u
+}
+
+// UpdateTotalThermicTime sets the "totalThermicTime" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateTotalThermicTime() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldTotalThermicTime)
+	return u
+}
+
+// AddTotalThermicTime adds v to the "totalThermicTime" field.
+func (u *FlightStatisticUpsert) AddTotalThermicTime(v int) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldTotalThermicTime, v)
+	return u
+}
+
+// SetTotalFlightTime sets the "totalFlightTime" field.
+func (u *FlightStatisticUpsert) SetTotalFlightTime(v int) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldTotalFlightTime, v)
+	return u
+}
+
+// UpdateTotalFlightTime sets the "totalFlightTime" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateTotalFlightTime() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldTotalFlightTime)
+	return u
+}
+
+// AddTotalFlightTime adds v to the "totalFlightTime" field.
+func (u *FlightStatisticUpsert) AddTotalFlightTime(v int) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldTotalFlightTime, v)
+	return u
+}
+
+// SetMaxClimb sets the "maxClimb" field.
+func (u *FlightStatisticUpsert) SetMaxClimb(v int) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldMaxClimb, v)
+	return u
+}
+
+// UpdateMaxClimb sets the "maxClimb" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateMaxClimb() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldMaxClimb)
+	return u
+}
+
+// AddMaxClimb adds v to the "maxClimb" field.
+func (u *FlightStatisticUpsert) AddMaxClimb(v int) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldMaxClimb, v)
+	return u
+}
+
+// SetMaxClimbRate sets the "maxClimbRate" field.
+func (u *FlightStatisticUpsert) SetMaxClimbRate(v float64) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldMaxClimbRate, v)
+	return u
+}
+
+// UpdateMaxClimbRate sets the "maxClimbRate" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateMaxClimbRate() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldMaxClimbRate)
+	return u
+}
+
+// AddMaxClimbRate adds v to the "maxClimbRate" field.
+func (u *FlightStatisticUpsert) AddMaxClimbRate(v float64) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldMaxClimbRate, v)
+	return u
+}
+
+// SetTotalClimb sets the "totalClimb" field.
+func (u *FlightStatisticUpsert) SetTotalClimb(v int) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldTotalClimb, v)
+	return u
+}
+
+// UpdateTotalClimb sets the "totalClimb" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateTotalClimb() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldTotalClimb)
+	return u
+}
+
+// AddTotalClimb adds v to the "totalClimb" field.
+func (u *FlightStatisticUpsert) AddTotalClimb(v int) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldTotalClimb, v)
+	return u
+}
+
+// SetAverageClimbRate sets the "averageClimbRate" field.
+func (u *FlightStatisticUpsert) SetAverageClimbRate(v float64) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldAverageClimbRate, v)
+	return u
+}
+
+// UpdateAverageClimbRate sets the "averageClimbRate" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateAverageClimbRate() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldAverageClimbRate)
+	return u
+}
+
+// AddAverageClimbRate adds v to the "averageClimbRate" field.
+func (u *FlightStatisticUpsert) AddAverageClimbRate(v float64) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldAverageClimbRate, v)
+	return u
+}
+
+// SetNumberOfThermals sets the "numberOfThermals" field.
+func (u *FlightStatisticUpsert) SetNumberOfThermals(v int) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldNumberOfThermals, v)
+	return u
+}
+
+// UpdateNumberOfThermals sets the "numberOfThermals" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateNumberOfThermals() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldNumberOfThermals)
+	return u
+}
+
+// AddNumberOfThermals adds v to the "numberOfThermals" field.
+func (u *FlightStatisticUpsert) AddNumberOfThermals(v int) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldNumberOfThermals, v)
+	return u
+}
+
+// SetPercentageThermic sets the "percentageThermic" field.
+func (u *FlightStatisticUpsert) SetPercentageThermic(v float64) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldPercentageThermic, v)
+	return u
+}
+
+// UpdatePercentageThermic sets the "percentageThermic" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdatePercentageThermic() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldPercentageThermic)
+	return u
+}
+
+// AddPercentageThermic adds v to the "percentageThermic" field.
+func (u *FlightStatisticUpsert) AddPercentageThermic(v float64) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldPercentageThermic, v)
+	return u
+}
+
+// SetMaxAltitude sets the "maxAltitude" field.
+func (u *FlightStatisticUpsert) SetMaxAltitude(v int) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldMaxAltitude, v)
+	return u
+}
+
+// UpdateMaxAltitude sets the "maxAltitude" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateMaxAltitude() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldMaxAltitude)
+	return u
+}
+
+// AddMaxAltitude adds v to the "maxAltitude" field.
+func (u *FlightStatisticUpsert) AddMaxAltitude(v int) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldMaxAltitude, v)
+	return u
+}
+
+// UpdateNewValues updates the mutable fields using the new values that were set on create.
+// Using this option is equivalent to using:
+//
+//	client.FlightStatistic.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *FlightStatisticUpsertOne) UpdateNewValues() *FlightStatisticUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.FlightStatistic.Create().
+//	    OnConflict(sql.ResolveWithIgnore()).
+//	    Exec(ctx)
+func (u *FlightStatisticUpsertOne) Ignore() *FlightStatisticUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *FlightStatisticUpsertOne) DoNothing() *FlightStatisticUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the FlightStatisticCreate.OnConflict
+// documentation for more info.
+func (u *FlightStatisticUpsertOne) Update(set func(*FlightStatisticUpsert)) *FlightStatisticUpsertOne {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&FlightStatisticUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetTotalThermicTime sets the "totalThermicTime" field.
+func (u *FlightStatisticUpsertOne) SetTotalThermicTime(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetTotalThermicTime(v)
+	})
+}
+
+// AddTotalThermicTime adds v to the "totalThermicTime" field.
+func (u *FlightStatisticUpsertOne) AddTotalThermicTime(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddTotalThermicTime(v)
+	})
+}
+
+// UpdateTotalThermicTime sets the "totalThermicTime" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateTotalThermicTime() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateTotalThermicTime()
+	})
+}
+
+// SetTotalFlightTime sets the "totalFlightTime" field.
+func (u *FlightStatisticUpsertOne) SetTotalFlightTime(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetTotalFlightTime(v)
+	})
+}
+
+// AddTotalFlightTime adds v to the "totalFlightTime" field.
+func (u *FlightStatisticUpsertOne) AddTotalFlightTime(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddTotalFlightTime(v)
+	})
+}
+
+// UpdateTotalFlightTime sets the "totalFlightTime" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateTotalFlightTime() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateTotalFlightTime()
+	})
+}
+
+// SetMaxClimb sets the "maxClimb" field.
+func (u *FlightStatisticUpsertOne) SetMaxClimb(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetMaxClimb(v)
+	})
+}
+
+// AddMaxClimb adds v to the "maxClimb" field.
+func (u *FlightStatisticUpsertOne) AddMaxClimb(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddMaxClimb(v)
+	})
+}
+
+// UpdateMaxClimb sets the "maxClimb" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateMaxClimb() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateMaxClimb()
+	})
+}
+
+// SetMaxClimbRate sets the "maxClimbRate" field.
+func (u *FlightStatisticUpsertOne) SetMaxClimbRate(v float64) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetMaxClimbRate(v)
+	})
+}
+
+// AddMaxClimbRate adds v to the "maxClimbRate" field.
+func (u *FlightStatisticUpsertOne) AddMaxClimbRate(v float64) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddMaxClimbRate(v)
+	})
+}
+
+// UpdateMaxClimbRate sets the "maxClimbRate" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateMaxClimbRate() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateMaxClimbRate()
+	})
+}
+
+// SetTotalClimb sets the "totalClimb" field.
+func (u *FlightStatisticUpsertOne) SetTotalClimb(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetTotalClimb(v)
+	})
+}
+
+// AddTotalClimb adds v to the "totalClimb" field.
+func (u *FlightStatisticUpsertOne) AddTotalClimb(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddTotalClimb(v)
+	})
+}
+
+// UpdateTotalClimb sets the "totalClimb" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateTotalClimb() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateTotalClimb()
+	})
+}
+
+// SetAverageClimbRate sets the "averageClimbRate" field.
+func (u *FlightStatisticUpsertOne) SetAverageClimbRate(v float64) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetAverageClimbRate(v)
+	})
+}
+
+// AddAverageClimbRate adds v to the "averageClimbRate" field.
+func (u *FlightStatisticUpsertOne) AddAverageClimbRate(v float64) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddAverageClimbRate(v)
+	})
+}
+
+// UpdateAverageClimbRate sets the "averageClimbRate" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateAverageClimbRate() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateAverageClimbRate()
+	})
+}
+
+// SetNumberOfThermals sets the "numberOfThermals" field.
+func (u *FlightStatisticUpsertOne) SetNumberOfThermals(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetNumberOfThermals(v)
+	})
+}
+
+// AddNumberOfThermals adds v to the "numberOfThermals" field.
+func (u *FlightStatisticUpsertOne) AddNumberOfThermals(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddNumberOfThermals(v)
+	})
+}
+
+// UpdateNumberOfThermals sets the "numberOfThermals" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateNumberOfThermals() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateNumberOfThermals()
+	})
+}
+
+// SetPercentageThermic sets the "percentageThermic" field.
+func (u *FlightStatisticUpsertOne) SetPercentageThermic(v float64) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetPercentageThermic(v)
+	})
+}
+
+// AddPercentageThermic adds v to the "percentageThermic" field.
+func (u *FlightStatisticUpsertOne) AddPercentageThermic(v float64) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddPercentageThermic(v)
+	})
+}
+
+// UpdatePercentageThermic sets the "percentageThermic" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdatePercentageThermic() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdatePercentageThermic()
+	})
+}
+
+// SetMaxAltitude sets the "maxAltitude" field.
+func (u *FlightStatisticUpsertOne) SetMaxAltitude(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetMaxAltitude(v)
+	})
+}
+
+// AddMaxAltitude adds v to the "maxAltitude" field.
+func (u *FlightStatisticUpsertOne) AddMaxAltitude(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddMaxAltitude(v)
+	})
+}
+
+// UpdateMaxAltitude sets the "maxAltitude" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateMaxAltitude() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateMaxAltitude()
+	})
+}
+
+// Exec executes the query.
+func (u *FlightStatisticUpsertOne) Exec(ctx context.Context) error {
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for FlightStatisticCreate.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *FlightStatisticUpsertOne) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// Exec executes the UPSERT query and returns the inserted/updated ID.
+func (u *FlightStatisticUpsertOne) ID(ctx context.Context) (id int, err error) {
+	node, err := u.create.Save(ctx)
+	if err != nil {
+		return id, err
+	}
+	return node.ID, nil
+}
+
+// IDX is like ID, but panics if an error occurs.
+func (u *FlightStatisticUpsertOne) IDX(ctx context.Context) int {
+	id, err := u.ID(ctx)
+	if err != nil {
+		panic(err)
+	}
+	return id
+}
+
 // FlightStatisticCreateBulk is the builder for creating many FlightStatistic entities in bulk.
 type FlightStatisticCreateBulk struct {
 	config
 	err      error
 	builders []*FlightStatisticCreate
+	conflict []sql.ConflictOption
 }
 
 // Save creates the FlightStatistic entities in the database.
@@ -269,6 +746,7 @@ func (fscb *FlightStatisticCreateBulk) Save(ctx context.Context) ([]*FlightStati
 					_, err = mutators[i+1].Mutate(root, fscb.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
+					spec.OnConflict = fscb.conflict
 					// Invoke the actual operation on the latest mutation in the chain.
 					if err = sqlgraph.BatchCreate(ctx, fscb.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
@@ -319,6 +797,299 @@ func (fscb *FlightStatisticCreateBulk) Exec(ctx context.Context) error {
 // ExecX is like Exec, but panics if an error occurs.
 func (fscb *FlightStatisticCreateBulk) ExecX(ctx context.Context) {
 	if err := fscb.Exec(ctx); err != nil {
+		panic(err)
+	}
+}
+
+// OnConflict allows configuring the `ON CONFLICT` / `ON DUPLICATE KEY` clause
+// of the `INSERT` statement. For example:
+//
+//	client.FlightStatistic.CreateBulk(builders...).
+//		OnConflict(
+//			// Update the row with the new values
+//			// the was proposed for insertion.
+//			sql.ResolveWithNewValues(),
+//		).
+//		// Override some of the fields with custom
+//		// update values.
+//		Update(func(u *ent.FlightStatisticUpsert) {
+//			SetTotalThermicTime(v+v).
+//		}).
+//		Exec(ctx)
+func (fscb *FlightStatisticCreateBulk) OnConflict(opts ...sql.ConflictOption) *FlightStatisticUpsertBulk {
+	fscb.conflict = opts
+	return &FlightStatisticUpsertBulk{
+		create: fscb,
+	}
+}
+
+// OnConflictColumns calls `OnConflict` and configures the columns
+// as conflict target. Using this option is equivalent to using:
+//
+//	client.FlightStatistic.Create().
+//		OnConflict(sql.ConflictColumns(columns...)).
+//		Exec(ctx)
+func (fscb *FlightStatisticCreateBulk) OnConflictColumns(columns ...string) *FlightStatisticUpsertBulk {
+	fscb.conflict = append(fscb.conflict, sql.ConflictColumns(columns...))
+	return &FlightStatisticUpsertBulk{
+		create: fscb,
+	}
+}
+
+// FlightStatisticUpsertBulk is the builder for "upsert"-ing
+// a bulk of FlightStatistic nodes.
+type FlightStatisticUpsertBulk struct {
+	create *FlightStatisticCreateBulk
+}
+
+// UpdateNewValues updates the mutable fields using the new values that
+// were set on create. Using this option is equivalent to using:
+//
+//	client.FlightStatistic.Create().
+//		OnConflict(
+//			sql.ResolveWithNewValues(),
+//		).
+//		Exec(ctx)
+func (u *FlightStatisticUpsertBulk) UpdateNewValues() *FlightStatisticUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithNewValues())
+	return u
+}
+
+// Ignore sets each column to itself in case of conflict.
+// Using this option is equivalent to using:
+//
+//	client.FlightStatistic.Create().
+//		OnConflict(sql.ResolveWithIgnore()).
+//		Exec(ctx)
+func (u *FlightStatisticUpsertBulk) Ignore() *FlightStatisticUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWithIgnore())
+	return u
+}
+
+// DoNothing configures the conflict_action to `DO NOTHING`.
+// Supported only by SQLite and PostgreSQL.
+func (u *FlightStatisticUpsertBulk) DoNothing() *FlightStatisticUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.DoNothing())
+	return u
+}
+
+// Update allows overriding fields `UPDATE` values. See the FlightStatisticCreateBulk.OnConflict
+// documentation for more info.
+func (u *FlightStatisticUpsertBulk) Update(set func(*FlightStatisticUpsert)) *FlightStatisticUpsertBulk {
+	u.create.conflict = append(u.create.conflict, sql.ResolveWith(func(update *sql.UpdateSet) {
+		set(&FlightStatisticUpsert{UpdateSet: update})
+	}))
+	return u
+}
+
+// SetTotalThermicTime sets the "totalThermicTime" field.
+func (u *FlightStatisticUpsertBulk) SetTotalThermicTime(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetTotalThermicTime(v)
+	})
+}
+
+// AddTotalThermicTime adds v to the "totalThermicTime" field.
+func (u *FlightStatisticUpsertBulk) AddTotalThermicTime(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddTotalThermicTime(v)
+	})
+}
+
+// UpdateTotalThermicTime sets the "totalThermicTime" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateTotalThermicTime() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateTotalThermicTime()
+	})
+}
+
+// SetTotalFlightTime sets the "totalFlightTime" field.
+func (u *FlightStatisticUpsertBulk) SetTotalFlightTime(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetTotalFlightTime(v)
+	})
+}
+
+// AddTotalFlightTime adds v to the "totalFlightTime" field.
+func (u *FlightStatisticUpsertBulk) AddTotalFlightTime(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddTotalFlightTime(v)
+	})
+}
+
+// UpdateTotalFlightTime sets the "totalFlightTime" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateTotalFlightTime() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateTotalFlightTime()
+	})
+}
+
+// SetMaxClimb sets the "maxClimb" field.
+func (u *FlightStatisticUpsertBulk) SetMaxClimb(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetMaxClimb(v)
+	})
+}
+
+// AddMaxClimb adds v to the "maxClimb" field.
+func (u *FlightStatisticUpsertBulk) AddMaxClimb(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddMaxClimb(v)
+	})
+}
+
+// UpdateMaxClimb sets the "maxClimb" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateMaxClimb() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateMaxClimb()
+	})
+}
+
+// SetMaxClimbRate sets the "maxClimbRate" field.
+func (u *FlightStatisticUpsertBulk) SetMaxClimbRate(v float64) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetMaxClimbRate(v)
+	})
+}
+
+// AddMaxClimbRate adds v to the "maxClimbRate" field.
+func (u *FlightStatisticUpsertBulk) AddMaxClimbRate(v float64) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddMaxClimbRate(v)
+	})
+}
+
+// UpdateMaxClimbRate sets the "maxClimbRate" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateMaxClimbRate() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateMaxClimbRate()
+	})
+}
+
+// SetTotalClimb sets the "totalClimb" field.
+func (u *FlightStatisticUpsertBulk) SetTotalClimb(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetTotalClimb(v)
+	})
+}
+
+// AddTotalClimb adds v to the "totalClimb" field.
+func (u *FlightStatisticUpsertBulk) AddTotalClimb(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddTotalClimb(v)
+	})
+}
+
+// UpdateTotalClimb sets the "totalClimb" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateTotalClimb() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateTotalClimb()
+	})
+}
+
+// SetAverageClimbRate sets the "averageClimbRate" field.
+func (u *FlightStatisticUpsertBulk) SetAverageClimbRate(v float64) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetAverageClimbRate(v)
+	})
+}
+
+// AddAverageClimbRate adds v to the "averageClimbRate" field.
+func (u *FlightStatisticUpsertBulk) AddAverageClimbRate(v float64) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddAverageClimbRate(v)
+	})
+}
+
+// UpdateAverageClimbRate sets the "averageClimbRate" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateAverageClimbRate() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateAverageClimbRate()
+	})
+}
+
+// SetNumberOfThermals sets the "numberOfThermals" field.
+func (u *FlightStatisticUpsertBulk) SetNumberOfThermals(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetNumberOfThermals(v)
+	})
+}
+
+// AddNumberOfThermals adds v to the "numberOfThermals" field.
+func (u *FlightStatisticUpsertBulk) AddNumberOfThermals(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddNumberOfThermals(v)
+	})
+}
+
+// UpdateNumberOfThermals sets the "numberOfThermals" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateNumberOfThermals() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateNumberOfThermals()
+	})
+}
+
+// SetPercentageThermic sets the "percentageThermic" field.
+func (u *FlightStatisticUpsertBulk) SetPercentageThermic(v float64) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetPercentageThermic(v)
+	})
+}
+
+// AddPercentageThermic adds v to the "percentageThermic" field.
+func (u *FlightStatisticUpsertBulk) AddPercentageThermic(v float64) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddPercentageThermic(v)
+	})
+}
+
+// UpdatePercentageThermic sets the "percentageThermic" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdatePercentageThermic() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdatePercentageThermic()
+	})
+}
+
+// SetMaxAltitude sets the "maxAltitude" field.
+func (u *FlightStatisticUpsertBulk) SetMaxAltitude(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetMaxAltitude(v)
+	})
+}
+
+// AddMaxAltitude adds v to the "maxAltitude" field.
+func (u *FlightStatisticUpsertBulk) AddMaxAltitude(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddMaxAltitude(v)
+	})
+}
+
+// UpdateMaxAltitude sets the "maxAltitude" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateMaxAltitude() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateMaxAltitude()
+	})
+}
+
+// Exec executes the query.
+func (u *FlightStatisticUpsertBulk) Exec(ctx context.Context) error {
+	if u.create.err != nil {
+		return u.create.err
+	}
+	for i, b := range u.create.builders {
+		if len(b.conflict) != 0 {
+			return fmt.Errorf("ent: OnConflict was set for builder %d. Set it on the FlightStatisticCreateBulk instead", i)
+		}
+	}
+	if len(u.create.conflict) == 0 {
+		return errors.New("ent: missing options for FlightStatisticCreateBulk.OnConflict")
+	}
+	return u.create.Exec(ctx)
+}
+
+// ExecX is like Exec, but panics if an error occurs.
+func (u *FlightStatisticUpsertBulk) ExecX(ctx context.Context) {
+	if err := u.create.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

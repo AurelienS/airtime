@@ -57,7 +57,14 @@ templ TabLog(view viewmodel.LogbookView, user viewmodel.UserView) {
 					</thead>
 					<tbody>
 						for _, flight := range view.Flights {
-							<tr class="hover">
+							<tr
+								class="hover"
+								hx-get={ flight.Link }
+								hx-target="#content"
+								hx-select="#content"
+								hx-swap="outerHTML"
+								hx-push-url="true"
+							>
 								<td>{ flight.Date }</td>
 								<th>{ flight.TakeoffLocation }</th>
 								<td>{ flight.TotalFlightTime }</td>
