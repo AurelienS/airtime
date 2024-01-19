@@ -36,82 +36,9 @@ func (s *LogbookService) ProcessAndAddFlight(ctx context.Context, file *multipar
 	defer src.Close()
 
 	if isZipFile(file.Filename) {
-		e := s.processZipFile(ctx, src, file.Size, user)
-		return e
+		return s.processZipFile(ctx, src, file.Size, user)
 	}
 	return s.processSingleFile(ctx, src, file.Filename, user)
-}
-
-func isZipFile(filename string) bool {
-	return strings.HasSuffix(filename, ".zip")
-}
-
-func (s *LogbookService) processSingleFile(ctx context.Context, reader io.Reader, filename string,
-	user domain.User,
-) error {
-	byteContent, err := io.ReadAll(reader)
-	if err != nil {
-		util.Error().Err(err).Str("filename", filename).Msg("Failed to read IGC file")
-		return err
-	}
-	content := string(byteContent)
-	flight, stats, err := s.processIgcFile(content)
-	if err != nil {
-		return err
-	}
-
-	err = s.logbookRepo.InsertFlight(ctx, flight, stats, user)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *LogbookService) processIgcFile(content string) (domain.Flight, domain.FlightStatistic, error) {
-	track, err := igc.Parse(content)
-	if err != nil {
-		return domain.Flight{}, domain.FlightStatistic{}, err
-	}
-
-	flight := TrackToFlight(track)
-	stats := domain.NewFlightStatistics(track.Points)
-
-	return flight, stats, nil
-}
-
-func (s *LogbookService) processFile(
-	file *zip.File,
-	flightChan chan<- domain.Flight,
-	statsChan chan<- domain.FlightStatistic,
-	errChan chan<- error,
-) {
-	rc, err := file.Open()
-	if err != nil {
-		errChan <- err
-		return
-	}
-
-	byteContent, err := io.ReadAll(rc)
-	if err != nil {
-		errChan <- err
-		return
-	}
-
-	err = rc.Close()
-	if err != nil {
-		errChan <- err
-		return
-	}
-
-	content := string(byteContent)
-	flight, stats, err := s.processIgcFile(content)
-	if err != nil {
-		errChan <- err
-		return
-	}
-	flightChan <- flight
-	statsChan <- stats
 }
 
 func (s *LogbookService) processZipFile(
@@ -136,7 +63,7 @@ func (s *LogbookService) processZipFile(
 			wg.Add(1)
 			go func(file *zip.File) {
 				defer wg.Done()
-				s.processFile(file, flightChan, statsChan, errChan)
+				s.processIgcZipFile(file, flightChan, statsChan, errChan)
 			}(f)
 		}
 	}
@@ -194,6 +121,78 @@ func (s *LogbookService) processZipFile(
 		Msg("File processed and flight record created successfully")
 
 	return nil
+}
+
+func (s *LogbookService) processSingleFile(ctx context.Context, reader io.Reader, filename string,
+	user domain.User,
+) error {
+	byteContent, err := io.ReadAll(reader)
+	if err != nil {
+		util.Error().Err(err).Str("filename", filename).Msg("Failed to read IGC file")
+		return err
+	}
+	content := string(byteContent)
+	flight, stats, err := s.processIgcFile(content)
+	if err != nil {
+		return err
+	}
+
+	err = s.logbookRepo.InsertFlight(ctx, flight, stats, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *LogbookService) processIgcFile(content string) (domain.Flight, domain.FlightStatistic, error) {
+	track, err := igc.Parse(content)
+	if err != nil {
+		return domain.Flight{}, domain.FlightStatistic{}, err
+	}
+
+	flight := TrackToFlight(track)
+	stats := domain.NewFlightStatistics(track.Points)
+
+	return flight, stats, nil
+}
+
+func (s *LogbookService) processIgcZipFile(
+	file *zip.File,
+	flightChan chan<- domain.Flight,
+	statsChan chan<- domain.FlightStatistic,
+	errChan chan<- error,
+) {
+	rc, err := file.Open()
+	if err != nil {
+		errChan <- err
+		return
+	}
+
+	byteContent, err := io.ReadAll(rc)
+	if err != nil {
+		errChan <- err
+		return
+	}
+
+	err = rc.Close()
+	if err != nil {
+		errChan <- err
+		return
+	}
+
+	content := string(byteContent)
+	flight, stats, err := s.processIgcFile(content)
+	if err != nil {
+		errChan <- err
+		return
+	}
+	flightChan <- flight
+	statsChan <- stats
+}
+
+func isZipFile(filename string) bool {
+	return strings.HasSuffix(filename, ".zip")
 }
 
 func (s LogbookService) GetStatisticsByYearAndMonth(
