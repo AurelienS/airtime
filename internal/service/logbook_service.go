@@ -58,11 +58,11 @@ func (s *LogbookService) processZipFile(
 	for _, f := range zr.File {
 		if isIgcFile(f.Name) {
 			wg.Add(1)
-			go s.processIgcZipFile(f, flightChan, statsChan, errChan)
+			go s.processIgcZipFile(f, flightChan, statsChan, errChan, &wg)
 		}
 	}
 
-	return s.collectAndInsertFlights(ctx, flightChan, statsChan, errChan, user)
+	return s.collectAndInsertFlights(ctx, flightChan, statsChan, errChan, &wg, user)
 }
 
 func (s *LogbookService) processIgcZipFile(
@@ -70,6 +70,7 @@ func (s *LogbookService) processIgcZipFile(
 	flightChan chan<- domain.Flight,
 	statsChan chan<- domain.FlightStatistic,
 	errChan chan<- error,
+	wg *sync.WaitGroup,
 ) {
 	rc, err := file.Open()
 	if err != nil {
@@ -97,6 +98,8 @@ func (s *LogbookService) processIgcZipFile(
 	}
 	flightChan <- flight
 	statsChan <- stats
+
+	wg.Done()
 }
 
 func (s *LogbookService) processSingleFile(
@@ -159,6 +162,7 @@ func (s *LogbookService) collectAndInsertFlights(
 	flightChan <-chan domain.Flight,
 	statsChan <-chan domain.FlightStatistic,
 	errChan <-chan error,
+	wg *sync.WaitGroup,
 	user domain.User,
 ) error {
 	var flights []domain.Flight
@@ -170,21 +174,21 @@ func (s *LogbookService) collectAndInsertFlights(
 		case flight, ok := <-flightChan:
 			if !ok {
 				flightChan = nil
-			} else {
-				flights = append(flights, flight)
+				continue
 			}
+			flights = append(flights, flight)
 		case stat, ok := <-statsChan:
 			if !ok {
 				statsChan = nil
-			} else {
-				flightStats = append(flightStats, stat)
+				continue
 			}
+			flightStats = append(flightStats, stat)
 		case pErr, ok := <-errChan:
 			if !ok {
 				errChan = nil
-			} else {
-				errors = append(errors, pErr)
+				continue
 			}
+			errors = append(errors, pErr)
 		}
 	}
 
