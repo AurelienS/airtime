@@ -52,109 +52,17 @@ func (s *LogbookService) processZipFile(
 		return err
 	}
 
-	bufferSize := len(zr.File)
-	flightChan := make(chan domain.Flight, bufferSize)
-	statsChan := make(chan domain.FlightStatistic, bufferSize)
-	errChan := make(chan error, bufferSize)
 	var wg sync.WaitGroup
+	flightChan, statsChan, errChan := s.setupChannels(len(zr.File), &wg)
 
 	for _, f := range zr.File {
-		if strings.ToLower(filepath.Ext(f.Name)) == ".igc" {
+		if isIgcFile(f.Name) {
 			wg.Add(1)
-			go func(file *zip.File) {
-				defer wg.Done()
-				s.processIgcZipFile(file, flightChan, statsChan, errChan)
-			}(f)
+			go s.processIgcZipFile(f, flightChan, statsChan, errChan)
 		}
 	}
 
-	go func() {
-		wg.Wait()
-		close(flightChan)
-		close(statsChan)
-		close(errChan)
-	}()
-
-	var flights []domain.Flight
-	var flightStats []domain.FlightStatistic
-	var errors []error
-
-	for {
-		select {
-		case flight, ok := <-flightChan:
-			if !ok {
-				flightChan = nil
-			} else {
-				flights = append(flights, flight)
-			}
-		case stat, ok := <-statsChan:
-			if !ok {
-				statsChan = nil
-			} else {
-				flightStats = append(flightStats, stat)
-			}
-		case pErr, ok := <-errChan:
-			if !ok {
-				errChan = nil
-			} else {
-				errors = append(errors, pErr)
-			}
-		}
-		if flightChan == nil && statsChan == nil && errChan == nil {
-			break
-		}
-	}
-
-	if len(errors) > 0 {
-		util.Warn().Str("user", user.Email).Errs("errors", errors).Msg("Errors during processing files")
-	}
-
-	err = s.logbookRepo.InsertFlights(ctx, flights, flightStats, user)
-	if err != nil {
-		util.Warn().Str("user", user.Email).Err(err).Msg("Errors bulk insertion of flights")
-		return err
-	}
-
-	util.
-		Info().
-		Str("user", user.Email).
-		Msg("File processed and flight record created successfully")
-
-	return nil
-}
-
-func (s *LogbookService) processSingleFile(ctx context.Context, reader io.Reader, filename string,
-	user domain.User,
-) error {
-	byteContent, err := io.ReadAll(reader)
-	if err != nil {
-		util.Error().Err(err).Str("filename", filename).Msg("Failed to read IGC file")
-		return err
-	}
-	content := string(byteContent)
-	flight, stats, err := s.processIgcFile(content)
-	if err != nil {
-		return err
-	}
-
-	err = s.logbookRepo.InsertFlight(ctx, flight, stats, user)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (s *LogbookService) processIgcFile(content string) (domain.Flight, domain.FlightStatistic, error) {
-	track, err := igc.Parse(content)
-	if err != nil {
-		return domain.Flight{}, domain.FlightStatistic{}, err
-	}
-
-	flight := TrackToFlight(track)
-	stats := domain.NewFlightStatistics(track.Points)
-
-	return flight, stats, nil
+	return s.collectAndInsertFlights(ctx, flightChan, statsChan, errChan, user)
 }
 
 func (s *LogbookService) processIgcZipFile(
@@ -191,8 +99,108 @@ func (s *LogbookService) processIgcZipFile(
 	statsChan <- stats
 }
 
+func (s *LogbookService) processSingleFile(
+	ctx context.Context,
+	reader io.Reader,
+	filename string,
+	user domain.User,
+) error {
+	byteContent, err := io.ReadAll(reader)
+	if err != nil {
+		util.Error().Err(err).Str("filename", filename).Msg("Failed to read IGC file")
+		return err
+	}
+	content := string(byteContent)
+	flight, stats, err := s.processIgcFile(content)
+	if err != nil {
+		return err
+	}
+
+	err = s.logbookRepo.InsertFlight(ctx, flight, stats, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (s *LogbookService) processIgcFile(content string) (domain.Flight, domain.FlightStatistic, error) {
+	track, err := igc.Parse(content)
+	if err != nil {
+		return domain.Flight{}, domain.FlightStatistic{}, err
+	}
+
+	flight := TrackToFlight(track)
+	stats := domain.NewFlightStatistics(track.Points)
+
+	return flight, stats, nil
+}
+
+func (s *LogbookService) setupChannels(
+	fileCount int,
+	wg *sync.WaitGroup,
+) (chan domain.Flight, chan domain.FlightStatistic, chan error) {
+	flightChan := make(chan domain.Flight, fileCount)
+	statsChan := make(chan domain.FlightStatistic, fileCount)
+	errChan := make(chan error, fileCount)
+
+	go func() {
+		wg.Wait()
+		close(flightChan)
+		close(statsChan)
+		close(errChan)
+	}()
+
+	return flightChan, statsChan, errChan
+}
+
+func (s *LogbookService) collectAndInsertFlights(
+	ctx context.Context,
+	flightChan <-chan domain.Flight,
+	statsChan <-chan domain.FlightStatistic,
+	errChan <-chan error,
+	user domain.User,
+) error {
+	var flights []domain.Flight
+	var flightStats []domain.FlightStatistic
+	var errors []error
+
+	for flightChan != nil || statsChan != nil || errChan != nil {
+		select {
+		case flight, ok := <-flightChan:
+			if !ok {
+				flightChan = nil
+			} else {
+				flights = append(flights, flight)
+			}
+		case stat, ok := <-statsChan:
+			if !ok {
+				statsChan = nil
+			} else {
+				flightStats = append(flightStats, stat)
+			}
+		case pErr, ok := <-errChan:
+			if !ok {
+				errChan = nil
+			} else {
+				errors = append(errors, pErr)
+			}
+		}
+	}
+
+	if len(errors) > 0 {
+		util.Warn().Str("user", user.Email).Errs("errors", errors).Msg("Errors during processing files")
+	}
+
+	return s.logbookRepo.InsertFlights(ctx, flights, flightStats, user)
+}
+
 func isZipFile(filename string) bool {
 	return strings.HasSuffix(filename, ".zip")
+}
+
+func isIgcFile(filename string) bool {
+	return strings.ToLower(filepath.Ext(filename)) == ".igc"
 }
 
 func (s LogbookService) GetStatisticsByYearAndMonth(
