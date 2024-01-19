@@ -40,7 +40,7 @@ module.exports = {
             "dim",
             "nord",
             "sunset",
-          ],
+        ],
     },
     plugins: [require("daisyui")],
 }

@@ -5,27 +5,14 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 templ TabProgression(view viewmodel.ProgressionView) {
 	@Index(view.User) {
 		@TabList("progression")
-		<div class="grid grid-cols-3 grid-rows-2  gap-4">
-			<div class="max-h-[320px]">
-				Nombre d'heure de vol
+		<div class="grid grid-cols-2 grid-rows-2  gap-4">
+			<div class="max-h-[320px] flex flex-col items-center gap-2">
+				<p>Nombre d'heure de vol</p>
 				@ChartLineMontly(view.FlightTimeMonthlyData, "chart_flight_time_monthly")
 			</div>
-			<div class="max-h-[320px]">
-				Nombre de vol
+			<div class="max-h-[320px] flex flex-col items-center gap-2">
+				<p>Nombre de vol</p>
 				@ChartLineMontly(view.FlightCountMonthlyData, "chart_flight_count_monthly")
-			</div>
-			<div class="max-h-[320px]">
-				Moyenne temps de vol par an
-				@ChartLineMontly(view.FlightCountMonthlyData, "chart_flight_count_monthly")
-			</div>
-			<div class="max-h-[320px]">
-				Evolution thermique / pas thermique
-				<div class="grid grid-cols-2 grid-rows-2 gap-2 w-full h-full">
-					// @ChartThermicRatio(data, "2021")
-					// @ChartThermicRatio(data, "2022")
-					// @ChartThermicRatio(data, "2023")
-					// @ChartThermicRatio(data, "2024")
-				</div>
 			</div>
 		</div>
 	}
