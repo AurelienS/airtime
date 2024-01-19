@@ -34,7 +34,6 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.POST("logbook/log/flight", r.LogbookHandler.PostFlight)
 
 	authGroup.GET("logbook/progression", r.LogbookHandler.GetTabProgression)
-	authGroup.GET("logbook/records", r.LogbookHandler.GetTabRecords)
 
 	authGroup.GET("logout", r.AuthHandler.GetLogout)
 }

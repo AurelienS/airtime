@@ -123,12 +123,6 @@ func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
 	return Render(c, logbookview.TabProgression(view))
 }
 
-func (h *LogbookHandler) GetTabRecords(c echo.Context) error {
-	user := session.GetUserFromContext(c)
-	userview := transformer.TransformUserToViewModel(user)
-	return Render(c, logbookview.TabRecords(userview))
-}
-
 func (h *LogbookHandler) GetFlight(c echo.Context) error {
 	var f model.Flight
 	return Render(c, logbookview.Flight(f))

@@ -15,6 +15,10 @@ templ TabProgression(view viewmodel.ProgressionView) {
 				@ChartLineMontly(view.FlightCountMonthlyData, "chart_flight_count_monthly")
 			</div>
 			<div class="max-h-[320px]">
+				Moyenne temps de vol par an
+				@ChartLineMontly(view.FlightCountMonthlyData, "chart_flight_count_monthly")
+			</div>
+			<div class="max-h-[320px]">
 				Evolution thermique / pas thermique
 				<div class="grid grid-cols-2 grid-rows-2 gap-2 w-full h-full">
 					// @ChartThermicRatio(data, "2021")
