@@ -3,6 +3,7 @@ package logbook
 import (
 	"image/color"
 	"math"
+	"strings"
 	"time"
 
 	"git.sr.ht/~sbinet/gg"
@@ -32,9 +33,16 @@ func TrackToFlight(externalTrack igc.Track) model.Flight {
 		loc,
 	)
 
+	siteName := strings.Split(externalTrack.Site, "_")
+	site := "Inconnu"
+
+	if len(siteName) > 0 {
+		site = siteName[0]
+	}
+
 	flight := model.Flight{
 		Date:            combinedDateTime,
-		TakeoffLocation: externalTrack.Site,
+		TakeoffLocation: site,
 	}
 
 	return flight
