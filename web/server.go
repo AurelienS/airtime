@@ -21,10 +21,12 @@ func NewServer(client *ent.Client, store sessions.Store) *Server {
 	flightRepo := repository.NewFlightRepository(client)
 	userRepo := repository.NewUserRepository(client)
 
-	flightService := service.NewLogbookService(flightRepo)
+	logbookService := service.NewLogbookService(flightRepo)
+	flightService := service.NewFlightService(flightRepo)
+	statisticService := service.NewStatisticService(flightRepo)
 	userService := service.NewUserService(userRepo)
 
-	logbookHandler := handler.NewLogbookHandler(flightService)
+	logbookHandler := handler.NewLogbookHandler(logbookService, statisticService, flightService)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService)
 

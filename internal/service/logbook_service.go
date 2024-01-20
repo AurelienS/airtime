@@ -28,7 +28,7 @@ func NewLogbookService(
 	}
 }
 
-func (s *LogbookService) ProcessAndAddFlight(ctx context.Context, file *multipart.FileHeader, user domain.User) error {
+func (s *LogbookService) AddIGCFlight(ctx context.Context, file *multipart.FileHeader, user domain.User) error {
 	src, err := file.Open()
 	if err != nil {
 		return err
@@ -133,7 +133,7 @@ func (s *LogbookService) processIgcFile(content string) (domain.Flight, domain.F
 		return domain.Flight{}, domain.FlightStatistic{}, err
 	}
 
-	flight := TrackToFlight(track)
+	flight := trackToFlight(track)
 	stats := domain.NewFlightStatistics(track.Points)
 
 	return flight, stats, nil
@@ -207,84 +207,7 @@ func isIgcFile(filename string) bool {
 	return strings.ToLower(filepath.Ext(filename)) == ".igc"
 }
 
-func (s LogbookService) GetStatisticsByYearAndMonth(
-	ctx context.Context,
-	user domain.User,
-) (domain.StatsYearMonth, error) {
-	statsYearMonth := domain.StatsYearMonth{}
-
-	flights, err := s.logbookRepo.GetFlights(ctx, time.Time{}, time.Now(), user)
-	if err != nil {
-		return statsYearMonth, err
-	}
-
-	// Prepare map to hold statistics by year and month
-	flightsStatisticsByYearMonth := make(map[int]map[time.Month][]domain.Flight)
-	for _, flight := range flights {
-		year, month, _ := flight.Date.Date()
-
-		// Initialize year and month if not already present
-		if flightsStatisticsByYearMonth[year] == nil {
-			flightsStatisticsByYearMonth[year] = make(map[time.Month][]domain.Flight)
-			for m := time.January; m <= time.December; m++ {
-				flightsStatisticsByYearMonth[year][m] = []domain.Flight{}
-			}
-		}
-		flightsStatisticsByYearMonth[year][month] = append(flightsStatisticsByYearMonth[year][month], flight)
-	}
-
-	// Flatten the YearMonth stats to aggregated stats
-	for year, monthStats := range flightsStatisticsByYearMonth {
-		if statsYearMonth[year] == nil {
-			statsYearMonth[year] = make(map[time.Month]domain.StatsAggregated)
-		}
-		for month, stats := range monthStats {
-			statsYearMonth[year][month] = domain.ComputeAggregateStatistics(stats)
-		}
-	}
-
-	return statsYearMonth, err
-}
-
-func (s LogbookService) GetStatistics(
-	ctx context.Context,
-	startDate, endDate time.Time,
-	user domain.User,
-) (domain.StatsAggregated, error) {
-	logStats := domain.StatsAggregated{}
-
-	flights, err := s.logbookRepo.GetFlights(ctx, startDate, endDate, user)
-	if err != nil {
-		return logStats, err
-	}
-
-	aggregatedStats := domain.ComputeAggregateStatistics(flights)
-
-	return aggregatedStats, nil
-}
-
-func (s LogbookService) GetFlights(
-	ctx context.Context,
-	start time.Time,
-	end time.Time,
-	user domain.User,
-) ([]domain.Flight, error) {
-	return s.logbookRepo.GetFlights(ctx, start, end, user)
-}
-
-func (s LogbookService) GetFlight(ctx context.Context, flightID int, user domain.User) (domain.Flight, error) {
-	return s.logbookRepo.GetFlight(ctx, flightID, user)
-}
-
-func (s LogbookService) GetFlyingYears(ctx context.Context, user domain.User) ([]int, error) {
-	return s.logbookRepo.GetFlyingYears(ctx, user)
-}
-
-func (s LogbookService) GetLastFlight(ctx context.Context, user domain.User) (*domain.Flight, error) {
-	return s.logbookRepo.GetLastFlight(ctx, user)
-}
-
-func TrackToFlight(externalTrack igc.Track) domain.Flight {
+func trackToFlight(externalTrack igc.Track) domain.Flight {
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
 		util.Warn().Msg("Error loading location Europe/Paris for")

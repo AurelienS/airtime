@@ -7,13 +7,14 @@ import (
 	"time"
 
 	"github.com/AurelienS/cigare/internal/domain"
+	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/web/viewmodel"
 )
 
 func TransformLogbookToViewModel(
 	flights *[]domain.Flight,
-	yearStats domain.StatsAggregated,
-	allTimeStats domain.StatsAggregated,
+	yearStats service.StatsAggregated,
+	allTimeStats service.StatsAggregated,
 	year int,
 	flyingYears []int,
 	isFlightAdded bool,
@@ -30,7 +31,7 @@ func TransformLogbookToViewModel(
 		CurrentYear:    strconv.Itoa(year),
 		AvailableYears: flyingYearsString,
 		Flights:        flightViews,
-		Stats:       statMain,
+		Stats:          statMain,
 		IsFlightAdded:  isFlightAdded,
 	}
 }
@@ -58,9 +59,9 @@ var datasetColors = []string{
 	"rgb(255, 69, 0)",    // Rouge orangé
 }
 
-type StatExtractor func(stats domain.StatsAggregated) int
+type StatExtractor func(stats service.StatsAggregated) int
 
-func TransformChartViewModel(statsYearMonth domain.StatsYearMonth, extractor StatExtractor) []viewmodel.ChartDataset {
+func TransformChartViewModel(statsYearMonth service.StatsYearMonth, extractor StatExtractor) []viewmodel.ChartDataset {
 	datasets := []viewmodel.ChartDataset{}
 
 	// Create a slice of years to sort
@@ -147,7 +148,7 @@ func sortAndConvertToViewModel(flights []domain.Flight) []viewmodel.FlightView {
 	return flightViews
 }
 
-func getMainStat(yearStats, allTimeStats domain.StatsAggregated) []viewmodel.StatView {
+func getMainStat(yearStats, allTimeStats service.StatsAggregated) []viewmodel.StatView {
 	return []viewmodel.StatView{
 		{
 			Title:            "Nombre de vols",

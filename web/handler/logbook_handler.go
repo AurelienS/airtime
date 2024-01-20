@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"context"
 	"fmt"
+	"net/http"
 	"strconv"
 	"time"
 
@@ -16,12 +18,20 @@ import (
 )
 
 type LogbookHandler struct {
-	LogbookService service.LogbookService
+	logbookService   service.LogbookService
+	statisticService service.StatisticService
+	flightService    service.FlightService
 }
 
-func NewLogbookHandler(logbookService service.LogbookService) LogbookHandler {
+func NewLogbookHandler(
+	logbookService service.LogbookService,
+	statisticService service.StatisticService,
+	flightService service.FlightService,
+) LogbookHandler {
 	return LogbookHandler{
-		LogbookService: logbookService,
+		logbookService:   logbookService,
+		statisticService: statisticService,
+		flightService:    flightService,
 	}
 }
 
@@ -29,114 +39,87 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	ctx := c.Request().Context()
 	user := session.GetUserFromContext(c)
 	userview := transformer.TransformUserToViewModel(user)
-	yearParam := c.Param("year")
-	fmt.Println("file: logbook_handler.go ~ line 39 ~ func ~ c.ParamValues() : ", c.ParamValues())
-	fmt.Println("file: logbook_handler.go ~ line 33 ~ func ~ yearParam : ", yearParam)
-	isFlightAdded := c.Get("flight_added") != nil
 
-	flyingYears, err := h.LogbookService.GetFlyingYears(ctx, user)
+	flyingYears, err := h.statisticService.GetFlyingYears(ctx, user)
 	if err != nil {
 		return err
 	}
 
-	numberOfYearFlying := len(flyingYears)
-	if numberOfYearFlying == 0 {
+	year := h.getRequestedYear(c, flyingYears)
+
+	if !yearInSlice(year, flyingYears) {
+		return c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/logbook/log/%d", flyingYears[len(flyingYears)-1]))
+	}
+
+	flights, yearStats, allTimeStats, err := h.getFlightStats(ctx, user, year)
+	if err != nil {
 		return Render(c, logbookview.TabLog(viewmodel.LogbookView{}, userview))
 	}
 
-	if yearParam == "" {
-		if numberOfYearFlying == 1 {
-			yearParam = strconv.Itoa(flyingYears[0])
-		} else {
-			yearParam = strconv.Itoa(flyingYears[numberOfYearFlying-1])
-		}
-	}
+	viewData := transformer.TransformLogbookToViewModel(
+		&flights,
+		yearStats,
+		allTimeStats,
+		year,
+		flyingYears,
+		c.Get("flight_added") != nil,
+	)
 
+	return Render(c, logbookview.TabLog(viewData, userview))
+}
+
+func (h *LogbookHandler) getRequestedYear(c echo.Context, flyingYears []int) int {
+	yearParam := c.Param("year")
 	year, err := strconv.Atoi(yearParam)
-	if err != nil {
-		return err
+	if err != nil || !yearInSlice(year, flyingYears) {
+		return flyingYears[len(flyingYears)-1] // default to the last year if not specified or invalid
 	}
+	return year
+}
 
-	flyingYearIncludeYear := false
-	for _, fy := range flyingYears {
-		if fy == year {
-			flyingYearIncludeYear = true
-			break
-		}
-	}
-
-	if !flyingYearIncludeYear && len(flyingYears) > 0 {
-		lastYear := flyingYears[len(flyingYears)-1]
-		redirectTo := fmt.Sprintf("/logbook/log/%d", lastYear)
-		return c.Redirect(301, redirectTo)
-	}
-
-	allFlights, err := h.LogbookService.GetFlights(
+func (h *LogbookHandler) getFlightStats(
+	ctx context.Context,
+	user domain.User,
+	year int,
+) ([]domain.Flight, service.StatsAggregated, service.StatsAggregated, error) {
+	allFlights, err := h.flightService.GetFlights(
 		ctx,
 		time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC),
 		time.Now(),
 		user,
 	)
 	if err != nil {
-		return err
+		return nil, service.StatsAggregated{}, service.StatsAggregated{}, err
 	}
 
-	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
-	endOfYear := time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC)
-
-	dateRanges := []DateRange{
-		{Start: startOfYear, End: endOfYear},
-	}
-
-	rangedFlights := getFlightsForDateRanges(allFlights, dateRanges)
-	yearFlights := rangedFlights[0]
-	yearStats := domain.ComputeAggregateStatistics(yearFlights)
-	allTimeStats := domain.ComputeAggregateStatistics(allFlights)
-
-	viewData := transformer.TransformLogbookToViewModel(
-		&yearFlights,
-		yearStats,
-		allTimeStats,
-		year,
-		flyingYears,
-		isFlightAdded)
-
-	return Render(c, logbookview.TabLog(viewData, userview))
+	yearFlights := h.flightService.GetFlightsForYear(year, allFlights)
+	yearStats := h.statisticService.ComputeAggregateStatistics(yearFlights)
+	allTimeStats := h.statisticService.ComputeAggregateStatistics(allFlights)
+	return yearFlights, yearStats, allTimeStats, nil
 }
 
-type DateRange struct {
-	Start time.Time
-	End   time.Time
-}
-
-func getFlightsForDateRanges(flights []domain.Flight, dateRanges []DateRange) [][]domain.Flight {
-	flightsForRanges := make([][]domain.Flight, len(dateRanges))
-
-	for _, flight := range flights {
-		for i, dateRange := range dateRanges {
-			if (flight.Date.Equal(dateRange.Start) || flight.Date.After(dateRange.Start)) &&
-				(flight.Date.Equal(dateRange.End) || flight.Date.Before(dateRange.End)) {
-				flightsForRanges[i] = append(flightsForRanges[i], flight)
-			}
+func yearInSlice(year int, slice []int) bool {
+	for _, y := range slice {
+		if y == year {
+			return true
 		}
 	}
-
-	return flightsForRanges
+	return false
 }
 
 func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	statsYearMonth, err := h.LogbookService.GetStatisticsByYearAndMonth(
+	statsYearMonth, err := h.statisticService.GetStatisticsByYearAndMonth(
 		c.Request().Context(),
 		user)
 	if err != nil {
 		return err
 	}
 
-	totalFlightTimeExtractor := func(stats domain.StatsAggregated) int {
+	totalFlightTimeExtractor := func(stats service.StatsAggregated) int {
 		return int(stats.TotalFlightTime.Hours())
 	}
-	flightCountExtractor := func(stats domain.StatsAggregated) int {
+	flightCountExtractor := func(stats service.StatsAggregated) int {
 		return stats.FlightCount
 	}
 
@@ -156,7 +139,7 @@ func (h *LogbookHandler) GetFlight(c echo.Context) error {
 	if err != nil {
 		return err
 	}
-	flight, err := h.LogbookService.GetFlight(c.Request().Context(), flightID, user)
+	flight, err := h.flightService.GetFlight(c.Request().Context(), flightID, user)
 	if err != nil {
 		return err
 	}
@@ -178,7 +161,7 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 
 	user := session.GetUserFromContext(c)
 
-	err = h.LogbookService.ProcessAndAddFlight(c.Request().Context(), file, user)
+	err = h.logbookService.AddIGCFlight(c.Request().Context(), file, user)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to process and insert flight")
 		return err
