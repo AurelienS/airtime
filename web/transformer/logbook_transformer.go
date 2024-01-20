@@ -128,7 +128,7 @@ func TransformFlightToViewModel(flight domain.Flight) viewmodel.FlightView {
 		ID:               strconv.Itoa(flight.ID),
 		Date:             flight.Date.Local().Format("02/01 15:04"),
 		TakeoffLocation:  flight.TakeoffLocation,
-		TotalFlightTime:  prettyDuration(flight.Statistic.TotalFlightTime, true),
+		TotalFlightTime:  prettyDuration(flight.Statistic.TotalFlightTime, false),
 		TotalThermicTime: prettyDuration(flight.Statistic.TotalThermicTime, false),
 		MaxClimbRate:     prettyRate(flight.Statistic.MaxClimbRate),
 		MaxAltitude:      strconv.Itoa(flight.Statistic.MaxAltitude),
