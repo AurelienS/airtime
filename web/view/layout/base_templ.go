@@ -76,7 +76,7 @@ func Base(currentUser viewmodel.UserView) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col h-screen bg-base-200 \"><div class=\"navbar shadow-md fixed top-0 left-0 right-0 z-50\"><div class=\"navbar-start\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"flex flex-col h-screen bg-base-300 overflow-y-scroll\"><div class=\"navbar shadow-md bg-base-200 fixed top-0 left-0 right-0 z-50\"><div class=\"navbar-start\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -101,7 +101,7 @@ func Base(currentUser viewmodel.UserView) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div id=\"content\" class=\"flex-grow mt-16 mb-12 overflow-y-auto hide-scrollbar container mx-auto\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div id=\"content\" class=\"flex-grow mt-16 mb-12 container mx-auto\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -109,7 +109,7 @@ func Base(currentUser viewmodel.UserView) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><footer class=\"h-12 bg-base-300 text-base-content fixed bottom-0 left-0 right-0 flex justify-between\"><a href=\"https://github.com/AurelienS\" class=\"flex items-center text-white  justify-center gap-2  py-2 px-4 rounded \"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"16\" width=\"16\" class=\"fill-current\" viewBox=\"0 0 496 512\"><!--")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><footer class=\"h-12 bg-base-200 text-base-content fixed bottom-0 left-0 right-0 flex justify-between\"><a href=\"https://github.com/AurelienS\" class=\"flex items-center text-white  justify-center gap-2  py-2 px-4 rounded \"><svg xmlns=\"http://www.w3.org/2000/svg\" height=\"16\" width=\"16\" class=\"fill-current\" viewBox=\"0 0 496 512\"><!--")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
