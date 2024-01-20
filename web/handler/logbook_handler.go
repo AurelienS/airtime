@@ -66,10 +66,6 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	}
 
 	if !flyingYearIncludeYear && len(flyingYears) > 0 {
-		fmt.Println(
-			"file: logbook_handler.go ~ line 69 ~ if!flyingYearIncludeYear&&len ~ flyingYearIncludeYear : ",
-			flyingYearIncludeYear,
-		)
 		lastYear := flyingYears[len(flyingYears)-1]
 		redirectTo := fmt.Sprintf("/logbook/log/%d", lastYear)
 		return c.Redirect(301, redirectTo)
@@ -93,12 +89,12 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	}
 
 	rangedFlights := getFlightsForDateRanges(allFlights, dateRanges)
-
-	yearStats := domain.ComputeAggregateStatistics(rangedFlights[0])
+	yearFlights := rangedFlights[0]
+	yearStats := domain.ComputeAggregateStatistics(yearFlights)
 	allTimeStats := domain.ComputeAggregateStatistics(allFlights)
 
 	viewData := transformer.TransformLogbookToViewModel(
-		&allFlights,
+		&yearFlights,
 		yearStats,
 		allTimeStats,
 		year,

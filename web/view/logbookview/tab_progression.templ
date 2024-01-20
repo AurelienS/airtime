@@ -4,15 +4,22 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 
 templ TabProgression(view viewmodel.ProgressionView) {
 	@Index(view.User) {
-		@TabList("progression")
 		<div class="grid grid-cols-2 grid-rows-2  gap-4">
 			<div class="max-h-[320px] flex flex-col items-center gap-2">
-				<p>Nombre d'heure de vol</p>
+				<p>Nombre d'heure de vol par an</p>
 				@ChartLineMontly(view.FlightTimeMonthlyData, "chart_flight_time_monthly")
 			</div>
 			<div class="max-h-[320px] flex flex-col items-center gap-2">
-				<p>Nombre de vol</p>
+				<p>Nombre de vol par an</p>
 				@ChartLineMontly(view.FlightCountMonthlyData, "chart_flight_count_monthly")
+			</div>
+			<div class="max-h-[320px] flex flex-col items-center gap-2">
+				<p>Nombre d'heure de vol cumulé par an</p>
+				@ChartLineMontly(view.FlightTimeMonthlyData, "chart_flight_time_monthly2")
+			</div>
+			<div class="max-h-[320px] flex flex-col items-center gap-2">
+				<p>Nombre de vol cumulé par an</p>
+				@ChartLineMontly(view.FlightTimeMonthlyData, "chart_flight_time_monthly3")
 			</div>
 		</div>
 	}

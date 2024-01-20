@@ -1,7 +1,7 @@
-package logbookview
+package layout
 
 templ TabList(active string) {
-	<div role="tablist" class="tabs tabs-bordered w-full">
+	<div role="tablist" class="tabs tabs-bordered w-full bg-base-100">
 		<a
 			role="tab"
 			class={ "tab", templ.KV("tab-active", active == "log") }

@@ -5,7 +5,7 @@ import "github.com/AurelienS/cigare/web/view/layout"
 
 templ Index( user viewmodel.UserView) {
 	@layout.Base(user) {
-		<div id="logbook_page" class="flex flex-col gap-8 w-full my-4">
+		<div id="logbook_page" class="w-full my-4">
 			{ children... }
 		</div>
 	}

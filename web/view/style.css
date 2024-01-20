@@ -3,14 +3,6 @@
 
 @tailwind utilities;
 
-.hide-scrollbar::-webkit-scrollbar {
-    display: none;
-    /* Hide scrollbar for Webkit browsers like Chrome and Safari */
-}
-
-.hide-scrollbar {
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
+.stat-grid {
+    grid-template-columns: auto min-content;
 }

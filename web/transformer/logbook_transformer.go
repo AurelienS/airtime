@@ -20,7 +20,6 @@ func TransformLogbookToViewModel(
 ) viewmodel.LogbookView {
 	flightViews := sortAndConvertToViewModel(*flights)
 	statMain := getMainStat(yearStats, allTimeStats)
-	statSecondary := getSecondaryStat(yearStats, allTimeStats)
 
 	flyingYearsString := make([]string, 0, len(flyingYears))
 	for _, y := range flyingYears {
@@ -31,8 +30,7 @@ func TransformLogbookToViewModel(
 		CurrentYear:    strconv.Itoa(year),
 		AvailableYears: flyingYearsString,
 		Flights:        flightViews,
-		StatMain:       statMain,
-		StatSecondary:  statSecondary,
+		Stats:       statMain,
 		IsFlightAdded:  isFlightAdded,
 	}
 }
@@ -143,10 +141,7 @@ func sortAndConvertToViewModel(flights []domain.Flight) []viewmodel.FlightView {
 	})
 
 	var flightViews []viewmodel.FlightView
-	for i, f := range flights {
-		if i > 20 {
-			break
-		}
+	for _, f := range flights {
 		flightViews = append(flightViews, TransformFlightToViewModel(f))
 	}
 	return flightViews
@@ -165,25 +160,10 @@ func getMainStat(yearStats, allTimeStats domain.StatsAggregated) []viewmodel.Sta
 			CurrentYearValue: prettyDuration(yearStats.TotalFlightTime, false),
 		},
 		{
-			Title:            "Montée totale",
-			AlltimeValue:     prettyAltitude(allTimeStats.TotalClimb, false),
-			CurrentYearValue: prettyAltitude(yearStats.TotalClimb, false),
-		},
-		{
 			Title:            "Temps total en thermique",
 			AlltimeValue:     prettyDuration(allTimeStats.TotalThermicTime, true),
 			CurrentYearValue: prettyDuration(yearStats.TotalThermicTime, false),
 		},
-		{
-			Title:            "Nombre total de thermiques",
-			AlltimeValue:     strconv.Itoa(allTimeStats.TotalNumberOfThermals),
-			CurrentYearValue: strconv.Itoa(yearStats.TotalNumberOfThermals),
-		},
-	}
-}
-
-func getSecondaryStat(yearStats, allTimeStats domain.StatsAggregated) []viewmodel.StatView {
-	return []viewmodel.StatView{
 		{
 			Title:            "Durée moyenne de vol",
 			AlltimeValue:     prettyDuration(allTimeStats.AverageFlightLength, false),
@@ -195,25 +175,9 @@ func getSecondaryStat(yearStats, allTimeStats domain.StatsAggregated) []viewmode
 			CurrentYearValue: prettyDuration(yearStats.MaxFlightLength, false),
 		},
 		{
-			Title:            "Durée minimale de vol",
-			AlltimeValue:     prettyDuration(allTimeStats.MinFlightLength, false),
-			CurrentYearValue: prettyDuration(yearStats.MinFlightLength, false),
-		},
-		{
 			Title:            "Altitude maximale",
 			AlltimeValue:     prettyAltitude(allTimeStats.MaxAltitude, true),
 			CurrentYearValue: prettyAltitude(yearStats.MaxAltitude, true),
-		},
-		{
-			Title:            "Plus grand thermique",
-			AlltimeValue:     prettyAltitude(allTimeStats.MaxClimb, true),
-			CurrentYearValue: prettyAltitude(yearStats.MaxClimb, true),
-		},
-
-		{
-			Title:            "Taux de montée maximal",
-			AlltimeValue:     prettyRate(allTimeStats.MaxClimbRate),
-			CurrentYearValue: prettyRate(yearStats.MaxClimbRate),
 		},
 	}
 }
