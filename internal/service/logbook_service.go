@@ -62,7 +62,7 @@ func (s *LogbookService) processZipFile(
 		}
 	}
 
-	return s.collectAndInsertFlights(ctx, flightChan, statsChan, errChan, &wg, user)
+	return s.collectAndInsertFlights(ctx, flightChan, statsChan, errChan, user)
 }
 
 func (s *LogbookService) processIgcZipFile(
@@ -143,6 +143,7 @@ func (s *LogbookService) setupChannels(
 	fileCount int,
 	wg *sync.WaitGroup,
 ) (chan domain.Flight, chan domain.FlightStatistic, chan error) {
+	util.Debug().Int("fileCount", fileCount).Msg("Setting up channels")
 	flightChan := make(chan domain.Flight, fileCount)
 	statsChan := make(chan domain.FlightStatistic, fileCount)
 	errChan := make(chan error, fileCount)
@@ -162,7 +163,6 @@ func (s *LogbookService) collectAndInsertFlights(
 	flightChan <-chan domain.Flight,
 	statsChan <-chan domain.FlightStatistic,
 	errChan <-chan error,
-	wg *sync.WaitGroup,
 	user domain.User,
 ) error {
 	var flights []domain.Flight
@@ -263,11 +263,13 @@ func (s LogbookService) GetStatistics(
 	return aggregatedStats, nil
 }
 
-func (s LogbookService) GetFlights(ctx context.Context, year int, user domain.User) ([]domain.Flight, error) {
-	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
-	endOfYear := time.Date(year, time.December, 31, 23, 59, 59, 999999999, time.UTC)
-
-	return s.logbookRepo.GetFlights(ctx, startOfYear, endOfYear, user)
+func (s LogbookService) GetFlights(
+	ctx context.Context,
+	start time.Time,
+	end time.Time,
+	user domain.User,
+) ([]domain.Flight, error) {
+	return s.logbookRepo.GetFlights(ctx, start, end, user)
 }
 
 func (s LogbookService) GetFlight(ctx context.Context, flightID int, user domain.User) (domain.Flight, error) {

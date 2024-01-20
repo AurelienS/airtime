@@ -168,7 +168,7 @@ func (r *FlightRepository) GetFlights(
 	endDate time.Time,
 	user domain.User,
 ) ([]domain.Flight, error) {
-	util.Info().Str("user", user.Email).Msg("Getting user flights")
+	util.Info().Str("user", user.Email).Times("dates", []time.Time{startDate, endDate}).Msg("Getting user flights")
 
 	flightsDB, err := r.client.User.
 		Query().

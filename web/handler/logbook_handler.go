@@ -30,6 +30,8 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 	userview := transformer.TransformUserToViewModel(user)
 	yearParam := c.Param("year")
+	fmt.Println("file: logbook_handler.go ~ line 39 ~ func ~ c.ParamValues() : ", c.ParamValues())
+	fmt.Println("file: logbook_handler.go ~ line 33 ~ func ~ yearParam : ", yearParam)
 	isFlightAdded := c.Get("flight_added") != nil
 
 	flyingYears, err := h.LogbookService.GetFlyingYears(ctx, user)
@@ -64,17 +66,16 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	}
 
 	if !flyingYearIncludeYear && len(flyingYears) > 0 {
+		fmt.Println(
+			"file: logbook_handler.go ~ line 69 ~ if!flyingYearIncludeYear&&len ~ flyingYearIncludeYear : ",
+			flyingYearIncludeYear,
+		)
 		lastYear := flyingYears[len(flyingYears)-1]
 		redirectTo := fmt.Sprintf("/logbook/log/%d", lastYear)
 		return c.Redirect(301, redirectTo)
 	}
 
-	flights, err := h.LogbookService.GetFlights(ctx, year, user)
-	if err != nil {
-		return err
-	}
-
-	allTimeStats, err := h.LogbookService.GetStatistics(
+	allFlights, err := h.LogbookService.GetFlights(
 		ctx,
 		time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC),
 		time.Now(),
@@ -84,18 +85,20 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 		return err
 	}
 
-	yearStats, err := h.LogbookService.GetStatistics(
-		ctx,
-		time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC),
-		time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC),
-		user,
-	)
-	if err != nil {
-		return err
+	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	endOfYear := time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC)
+
+	dateRanges := []DateRange{
+		{Start: startOfYear, End: endOfYear},
 	}
 
+	rangedFlights := getFlightsForDateRanges(allFlights, dateRanges)
+
+	yearStats := domain.ComputeAggregateStatistics(rangedFlights[0])
+	allTimeStats := domain.ComputeAggregateStatistics(allFlights)
+
 	viewData := transformer.TransformLogbookToViewModel(
-		&flights,
+		&allFlights,
 		yearStats,
 		allTimeStats,
 		year,
@@ -103,6 +106,26 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 		isFlightAdded)
 
 	return Render(c, logbookview.TabLog(viewData, userview))
+}
+
+type DateRange struct {
+	Start time.Time
+	End   time.Time
+}
+
+func getFlightsForDateRanges(flights []domain.Flight, dateRanges []DateRange) [][]domain.Flight {
+	flightsForRanges := make([][]domain.Flight, len(dateRanges))
+
+	for _, flight := range flights {
+		for i, dateRange := range dateRanges {
+			if (flight.Date.Equal(dateRange.Start) || flight.Date.After(dateRange.Start)) &&
+				(flight.Date.Equal(dateRange.End) || flight.Date.Before(dateRange.End)) {
+				flightsForRanges[i] = append(flightsForRanges[i], flight)
+			}
+		}
+	}
+
+	return flightsForRanges
 }
 
 func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
