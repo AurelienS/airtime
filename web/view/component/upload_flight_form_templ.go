@@ -38,7 +38,7 @@ func UploadFlightForm() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"/log/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"outerHTML\" hx-target=\"#logbook_page\" hx-select=\"#logbook_page\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc, .zip\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> <button class=\"btn btn-outline\" type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"/logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"outerHTML\" hx-target=\"#logbook_page\" hx-select=\"#logbook_page\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc, .zip\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> <button class=\"btn btn-outline\" type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

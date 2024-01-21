@@ -48,7 +48,7 @@ func (h *LogbookHandler) GetLogbook(c echo.Context) error {
 	year := h.getRequestedYear(c, flyingYears)
 
 	if !yearInSlice(year, flyingYears) {
-		return c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/log/%d", flyingYears[len(flyingYears)-1]))
+		return c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/logbook/%d", flyingYears[len(flyingYears)-1]))
 	}
 
 	flights, yearStats, allTimeStats, err := h.getFlightStats(ctx, user, year)

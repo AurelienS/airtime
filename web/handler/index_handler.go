@@ -14,7 +14,7 @@ func NewIndexHandler() IndexHandler {
 }
 
 func (h IndexHandler) Get(c echo.Context) error {
-	return c.Redirect(http.StatusFound, "/log/0")
+	return c.Redirect(http.StatusFound, "/logbook/0")
 }
 
 func (h IndexHandler) Dummy(c echo.Context) error {

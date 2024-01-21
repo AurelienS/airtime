@@ -35,7 +35,7 @@ templ TabLog(view viewmodel.LogbookView, user viewmodel.UserView) {
 								aria-label={ y }
 								value={ y }
 								checked?={ view.CurrentYear == y }
-								hx-get={ fmt.Sprintf("/log/%s", y) }
+								hx-get={ fmt.Sprintf("/logbook/%s", y) }
 								hx-trigger="change"
 								hx-target="#logbook_page"
 								hx-select="#logbook_page"
