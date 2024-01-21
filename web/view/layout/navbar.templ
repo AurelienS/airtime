@@ -1,0 +1,40 @@
+package layout
+
+import "github.com/AurelienS/cigare/web/view/component"
+import "github.com/AurelienS/cigare/web/view/userview"
+import "github.com/AurelienS/cigare/web/viewmodel"
+
+templ Navbar(currentUser viewmodel.UserView) {
+	<div class="navbar shadow bg-base-100 fixed top-0 left-0 right-0 z-50">
+		<div class="navbar-start">
+			@component.UploadFlightForm()
+		</div>
+		<div class="navbar-center">
+			<div role="tablist" class="tabs tabs-bordered w-full bg-base-100">
+				<a
+					role="tab"
+					class="tab"
+					hx-get="/logbook"
+					hx-target="#content"
+					hx-select="#content"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+				>
+					Carnet de vol
+				</a>
+				<a
+					role="tab"
+					class="tab"
+					hx-get="/progression"
+					hx-target="#content"
+					hx-select="#content"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+				>Progression</a>
+			</div>
+		</div>
+		<div class="navbar-end gap-4">
+			@userview.ProfilButton(currentUser)
+		</div>
+	</div>
+}
