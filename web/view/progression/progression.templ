@@ -1,9 +1,10 @@
-package logbookview
+package progression
 
 import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/layout"
 
-templ TabProgression(view viewmodel.ProgressionView) {
-	@Index(view.User) {
+templ Index(view viewmodel.ProgressionView) {
+	@layout.Base(view.User, true) {
 		<div class="grid grid-cols-2 grid-rows-2  gap-4">
 			<div class="max-h-[320px] flex flex-col items-center gap-2">
 				<p>Nombre d'heure de vol par an</p>

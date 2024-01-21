@@ -1,0 +1,110 @@
+package logbook
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/layout"
+import "github.com/AurelienS/cigare/web/view/component"
+import "fmt"
+
+templ Index(view viewmodel.LogbookView, user viewmodel.UserView) {
+	@layout.Base(user, true) {
+		<div id="logbook_page" class="w-full my-4">
+			if view.IsFlightAdded {
+				@component.Toast("flight added")
+			}
+			<div tabindex="0" class="collapse collapse-arrow w-max mx-auto border border-base-300 bg-base-100">
+				<input type="checkbox" class="peer"/>
+				<div class="collapse-title text-xl font-medium flex justify-between">
+					<div>Statistiques</div>
+					<span class="font-light">39h14 sur 83 vols</span>
+				</div>
+				<div class="collapse-content">
+					<div class="flex flex-col md:flex-row gap-4">
+						@GeneralStatisticCard("General", view.CurrentYear, view.Stats)
+						@GeneralStatisticCard("Top sites", view.CurrentYear, view.Stats)
+					</div>
+				</div>
+			</div>
+			<div class="flex flex-col items-center mt-4">
+				<div id="flights" class="flex flex-col w-full md:max-w-[1200px] rounded-lg ">
+					if len(view.Flights) < 1 {
+						<div>No flight yet</div>
+					} else {
+						<div class="self-end flex flex-wrap gap-1 mb-1">
+							for _,y := range view.AvailableYears {
+								<input
+									class="join-item btn btn-square bg-base-100"
+									type="radio"
+									aria-label={ y }
+									value={ y }
+									checked?={ view.CurrentYear == y }
+									hx-get={ fmt.Sprintf("/logbook/%s", y) }
+									hx-trigger="change"
+									hx-target="#logbook_page"
+									hx-select="#logbook_page"
+									hx-swap="outerHTML"
+									hx-push-url="true"
+								/>
+							}
+						</div>
+						<table class="table table-pin-rows overflow-hidden bg-base-100 ">
+							<!-- head -->
+							<thead>
+								<tr class="text-lg">
+									<th>Date</th>
+									<th>Lieu</th>
+									<th>Durée</th>
+									<th>Altitude max</th>
+									<th>Vario max</th>
+									<th>temps de thermique</th>
+								</tr>
+							</thead>
+							<tbody>
+								for _, flight := range view.Flights {
+									<tr
+										class="hover"
+										hx-get={ flight.Link }
+									>
+										<td>{ flight.Date }</td>
+										<th>{ flight.TakeoffLocation }</th>
+										<td>{ flight.TotalFlightTime }</td>
+										<td>{ flight.MaxAltitude }</td>
+										<td>{ flight.MaxClimbRate }</td>
+										<td>{ flight.TotalThermicTime }</td>
+									</tr>
+								}
+							</tbody>
+						</table>
+					}
+				</div>
+			</div>
+		</div>
+	}
+}
+
+
+templ GeneralStatisticCard(title string, year string, stats []viewmodel.StatView) {
+	<div class="p-4 rounded-xl bg-base-200 h-max">
+		<div class="text-lg pb-2">{ title }</div>
+		<div class="grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] gap-4 ">
+			<div>
+				<!-- Placeholder for alignment -->
+				<div class="invisible font-bold mb-2">invisible</div>
+				for _, s := range stats {
+					<div class="py-1">{ s.Title }</div>
+				}
+			</div>
+			<div>
+				<div class="font-bold mb-2">{ year }</div>
+				for _, s := range stats {
+					<div class="py-1">{ s.CurrentYearValue }</div>
+				}
+			</div>
+			<div>
+				<div class="font-bold mb-2">All time</div>
+				for _, s := range stats {
+					<div class="py-1">{ s.AlltimeValue }</div>
+				}
+			</div>
+		</div>
+	</div>
+}

@@ -192,3 +192,74 @@ func UpdateRateOfClimbHistory(history []float64, rateOfClimb float64, period int
 	}
 	return history
 }
+
+type StatsAggregated struct {
+	FlightCount           int
+	MaxAltitude           int
+	MaxClimb              int
+	TotalClimb            int
+	TotalNumberOfThermals int
+	MaxClimbRate          float64
+	MaxFlightLength       time.Duration
+	MinFlightLength       time.Duration
+	AverageFlightLength   time.Duration
+	TotalFlightTime       time.Duration
+	TotalThermicTime      time.Duration
+}
+
+func ComputeAggregateStatistics(flights []Flight) StatsAggregated {
+	var maxAltitude int
+	var maxVario float64
+	var maxFlightLength time.Duration
+	minFlightLength := time.Duration(0)
+	averageFlightLength := time.Duration(0)
+	var totalFlightTime time.Duration
+
+	var totalThermicTime time.Duration
+	var maxClimb int
+	var totalClimb int
+	var totalNumberOfThermals int
+
+	flightCount := len(flights)
+
+	for _, f := range flights {
+		if f.Statistic.MaxAltitude > maxAltitude {
+			maxAltitude = f.Statistic.MaxAltitude
+		}
+		if f.Statistic.MaxClimbRate > maxVario {
+			maxVario = f.Statistic.MaxClimbRate
+		}
+		if f.Statistic.TotalFlightTime > maxFlightLength {
+			maxFlightLength = f.Statistic.TotalFlightTime
+		}
+		if f.Statistic.TotalFlightTime < minFlightLength {
+			minFlightLength = f.Statistic.TotalFlightTime
+		}
+		if f.Statistic.MaxClimb > maxClimb {
+			maxClimb = f.Statistic.MaxClimb
+		}
+		totalClimb += f.Statistic.TotalClimb
+		totalNumberOfThermals += f.Statistic.NumberOfThermals
+		totalThermicTime += f.Statistic.TotalThermicTime
+		totalFlightTime += f.Statistic.TotalFlightTime
+	}
+
+	if flightCount > 0 {
+		averageFlightLength = totalFlightTime / time.Duration(flightCount)
+	}
+
+	aggregatedStats := StatsAggregated{
+		FlightCount:           flightCount,
+		MaxAltitude:           maxAltitude,
+		MaxClimb:              maxClimb,
+		TotalClimb:            totalClimb,
+		TotalNumberOfThermals: totalNumberOfThermals,
+		MaxClimbRate:          maxVario,
+		MaxFlightLength:       maxFlightLength,
+		MinFlightLength:       minFlightLength,
+		AverageFlightLength:   averageFlightLength,
+		TotalFlightTime:       totalFlightTime,
+		TotalThermicTime:      totalThermicTime,
+	}
+	return aggregatedStats
+}

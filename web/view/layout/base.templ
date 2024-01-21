@@ -2,12 +2,12 @@ package layout
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-templ Base(currentUser viewmodel.UserView) {
+templ Base(currentUser viewmodel.UserView, showNavigation bool ) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme="dark">
 		@Head()
 		<body class=" min-h-screen bg-base-200 overflow-y-scroll">
-			@Navbar(currentUser)
+			@Navbar(currentUser, showNavigation)
 			<div id="content" class="py-4 mt-16 container mx-auto">
 				{ children... }
 			</div>

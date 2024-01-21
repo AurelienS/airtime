@@ -23,16 +23,24 @@ func NewServer(client *ent.Client, store sessions.Store) *Server {
 
 	logbookService := service.NewLogbookService(flightRepo)
 	flightService := service.NewFlightService(flightRepo)
-	statisticService := service.NewStatisticService(flightRepo)
+	statisticService := service.NewStatisticService(flightRepo, flightService)
 	userService := service.NewUserService(userRepo)
 
-	indexHandler := handler.NewIndexHandler()
+	indexHandler := handler.NewIndexHandler(flightService)
 	logbookHandler := handler.NewLogbookHandler(logbookService, statisticService, flightService)
 	progressionHandler := handler.NewProgressionHandler(statisticService)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService)
+	onboardingHandler := handler.NewOnboardingHandler(flightService)
 
-	router := NewRouter(authHandler, logbookHandler, progressionHandler, userHandler, indexHandler)
+	router := NewRouter(
+		authHandler,
+		logbookHandler,
+		progressionHandler,
+		userHandler,
+		indexHandler,
+		onboardingHandler,
+	)
 	router.Initialize(e)
 
 	return &Server{Echo: e, Store: store}

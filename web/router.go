@@ -12,6 +12,7 @@ type Router struct {
 	progressionHandler handler.ProgressionHandler
 	userHandler        handler.UserHandler
 	indexHandler       handler.IndexHandler
+	onboardingHandler  handler.OnboardingHandler
 }
 
 func NewRouter(
@@ -20,6 +21,7 @@ func NewRouter(
 	progressionHandler handler.ProgressionHandler,
 	userHandler handler.UserHandler,
 	indexHandler handler.IndexHandler,
+	onboardingHandler handler.OnboardingHandler,
 ) Router {
 	return Router{
 		authHandler:        authHandler,
@@ -27,6 +29,7 @@ func NewRouter(
 		progressionHandler: progressionHandler,
 		userHandler:        userHandler,
 		indexHandler:       indexHandler,
+		onboardingHandler:  onboardingHandler,
 	}
 }
 
@@ -45,6 +48,7 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.Use(middleware.AuthMiddleware)
 	authGroup.GET("", r.indexHandler.Get)
 
+	authGroup.GET("onboarding", r.onboardingHandler.Get)
 	authGroup.GET("logbook", r.logbookHandler.GetLogbook)
 	authGroup.GET("logbook/:year", r.logbookHandler.GetLogbook)
 	authGroup.GET("logbook/flight/:flight", r.logbookHandler.GetFlight)

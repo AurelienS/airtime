@@ -1,0 +1,13 @@
+package onboarding
+
+import "github.com/AurelienS/cigare/web/view/layout"
+import "github.com/AurelienS/cigare/web/viewmodel"
+
+templ Index(user viewmodel.UserView) {
+	@layout.Base(user, false) {
+		<div class="w-full my-4">
+			<h1>Welcome to Onboarding</h1>
+			<p>start by uploading a file</p>
+		</div>
+	}
+}

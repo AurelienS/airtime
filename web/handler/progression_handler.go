@@ -1,10 +1,11 @@
 package handler
 
 import (
+	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/transformer"
-	"github.com/AurelienS/cigare/web/view/logbookview"
+	"github.com/AurelienS/cigare/web/view/progression"
 	"github.com/AurelienS/cigare/web/viewmodel"
 	"github.com/labstack/echo/v4"
 )
@@ -26,10 +27,10 @@ func (h *ProgressionHandler) GetProgression(c echo.Context) error {
 		return err
 	}
 
-	totalFlightTimeExtractor := func(stats service.StatsAggregated) int {
+	totalFlightTimeExtractor := func(stats domain.StatsAggregated) int {
 		return int(stats.TotalFlightTime.Hours())
 	}
-	flightCountExtractor := func(stats service.StatsAggregated) int {
+	flightCountExtractor := func(stats domain.StatsAggregated) int {
 		return stats.FlightCount
 	}
 
@@ -38,5 +39,5 @@ func (h *ProgressionHandler) GetProgression(c echo.Context) error {
 		FlightTimeMonthlyData:  transformer.TransformChartViewModel(statsYearMonth, totalFlightTimeExtractor),
 		FlightCountMonthlyData: transformer.TransformChartViewModel(statsYearMonth, flightCountExtractor),
 	}
-	return Render(c, logbookview.TabProgression(view))
+	return Render(c, progression.Index(view))
 }

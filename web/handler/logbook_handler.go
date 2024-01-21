@@ -1,18 +1,14 @@
 package handler
 
 import (
-	"context"
 	"fmt"
-	"net/http"
 	"strconv"
-	"time"
 
-	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/internal/util"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/transformer"
-	"github.com/AurelienS/cigare/web/view/logbookview"
+	"github.com/AurelienS/cigare/web/view/logbook"
 	"github.com/AurelienS/cigare/web/viewmodel"
 	"github.com/labstack/echo/v4"
 )
@@ -45,15 +41,14 @@ func (h *LogbookHandler) GetLogbook(c echo.Context) error {
 		return err
 	}
 
-	year := h.getRequestedYear(c, flyingYears)
-
-	if !yearInSlice(year, flyingYears) {
-		return c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/logbook/%d", flyingYears[len(flyingYears)-1]))
+	year, err := h.getRequestedYear(c, flyingYears)
+	if err != nil {
+		return err
 	}
 
-	flights, yearStats, allTimeStats, err := h.getFlightStats(ctx, user, year)
+	flights, yearStats, allTimeStats, err := h.statisticService.GetFlightStats(ctx, user, year)
 	if err != nil {
-		return Render(c, logbookview.TabLog(viewmodel.LogbookView{}, userview))
+		return Render(c, logbook.Index(viewmodel.LogbookView{}, userview))
 	}
 
 	viewData := transformer.TransformLogbookToViewModel(
@@ -65,7 +60,7 @@ func (h *LogbookHandler) GetLogbook(c echo.Context) error {
 		c.Get("flight_added") != nil,
 	)
 
-	return Render(c, logbookview.TabLog(viewData, userview))
+	return Render(c, logbook.Index(viewData, userview))
 }
 
 func (h *LogbookHandler) GetFlight(c echo.Context) error {
@@ -86,7 +81,7 @@ func (h *LogbookHandler) GetFlight(c echo.Context) error {
 		FlightView: transformer.TransformFlightToViewModel(flight),
 		Stats:      transformer.TransformStatToViewModel(flight.Statistic),
 	}
-	return Render(c, logbookview.Flight(view))
+	return Render(c, logbook.Flight(view))
 }
 
 func (h *LogbookHandler) PostFlight(c echo.Context) error {
@@ -105,38 +100,17 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 	}
 
 	c.Set("flight_added", "Flight processed and added successfully")
-
-	return h.GetLogbook(c)
+	c.Response().Header().Set("HX-Redirect", "/")
+	return nil
 }
 
-func (h *LogbookHandler) getRequestedYear(c echo.Context, flyingYears []int) int {
+func (h *LogbookHandler) getRequestedYear(c echo.Context, flyingYears []int) (int, error) {
 	yearParam := c.Param("year")
 	year, err := strconv.Atoi(yearParam)
 	if err != nil || !yearInSlice(year, flyingYears) {
-		return flyingYears[len(flyingYears)-1] // default to the last year if not specified or invalid
+		return 0, fmt.Errorf("invalid year: %s", yearParam) // default to the last year if not specified or invalid
 	}
-	return year
-}
-
-func (h *LogbookHandler) getFlightStats(
-	ctx context.Context,
-	user domain.User,
-	year int,
-) ([]domain.Flight, service.StatsAggregated, service.StatsAggregated, error) {
-	allFlights, err := h.flightService.GetFlights(
-		ctx,
-		time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC),
-		time.Now(),
-		user,
-	)
-	if err != nil {
-		return nil, service.StatsAggregated{}, service.StatsAggregated{}, err
-	}
-
-	yearFlights := h.flightService.GetFlightsForYear(year, allFlights)
-	yearStats := h.statisticService.ComputeAggregateStatistics(yearFlights)
-	allTimeStats := h.statisticService.ComputeAggregateStatistics(allFlights)
-	return yearFlights, yearStats, allTimeStats, nil
+	return year, nil
 }
 
 func yearInSlice(year int, slice []int) bool {

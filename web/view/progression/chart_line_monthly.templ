@@ -1,29 +1,6 @@
-package logbookview
+package progression
 
 import "github.com/AurelienS/cigare/web/viewmodel"
-
-// colors := []string{
-// 	"rgb(255, 99, 132)",  // Rouge clair
-// 	"rgb(54, 162, 235)",  // Bleu clair
-// 	"rgb(255, 206, 86)",  // Jaune
-// 	"rgb(75, 192, 192)",  // Turquoise
-// 	"rgb(153, 102, 255)", // Violet
-// 	"rgb(255, 159, 64)",  // Orange
-// 	"rgb(199, 199, 199)", // Gris
-// 	"rgb(83, 109, 254)",  // Bleu foncé
-// 	"rgb(255, 99, 71)",   // Corail
-// 	"rgb(144, 238, 144)", // Vert clair
-// 	"rgb(255, 215, 0)",   // Or
-// 	"rgb(218, 165, 32)",  // Bronze
-// 	"rgb(106, 90, 205)",  // Ardoise
-// 	"rgb(255, 127, 80)",  // Saumon
-// 	"rgb(0, 128, 128)",   // Sarcelle
-// 	"rgb(0, 255, 127)",   // Vert printemps
-// 	"rgb(255, 182, 193)", // Rose clair
-// 	"rgb(107, 142, 35)",  // Olive
-// 	"rgb(75, 0, 130)",    // Indigo
-// 	"rgb(255, 69, 0)",    // Rouge orangé
-// }
 
 script setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string) {
     console.log("ds",datasets);
@@ -66,6 +43,6 @@ script setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string)
 }
 
 templ ChartLineMontly(datasets []viewmodel.ChartDataset, id string) {
-	<canvas id={id}></canvas>
+	<canvas id={ id }></canvas>
 	@setUpChartFlightTimeMonthly(datasets, id)
 }
