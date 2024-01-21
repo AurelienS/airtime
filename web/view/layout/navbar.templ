@@ -15,7 +15,7 @@ templ Navbar(currentUser viewmodel.UserView, showNavigation bool) {
 					<a
 						role="tab"
 						class="tab"
-						hx-get="/logbook"
+						hx-get="/"
 						hx-target="#content"
 						hx-select="#content"
 						hx-swap="outerHTML"
@@ -34,8 +34,8 @@ templ Navbar(currentUser viewmodel.UserView, showNavigation bool) {
 					>Progression</a>
 				</div>
 			} else {
-                <div class="text-2xl font-semibold">SoarSquad</div>
-            }
+				<div class="text-2xl font-semibold">SoarSquad</div>
+			}
 		</div>
 		<div class="navbar-end gap-4">
 			@userview.ProfilButton(currentUser)

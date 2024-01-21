@@ -15,7 +15,7 @@ templ Index(view viewmodel.LogbookView, user viewmodel.UserView) {
 				<input type="checkbox" class="peer"/>
 				<div class="collapse-title text-xl font-medium flex justify-between">
 					<div>Statistiques</div>
-					<span class="font-light">39h14 sur 83 vols</span>
+					<span class="font-light">{ view.StatsHeadling }</span>
 				</div>
 				<div class="collapse-content">
 					<div class="flex flex-col md:flex-row gap-4">
@@ -80,7 +80,6 @@ templ Index(view viewmodel.LogbookView, user viewmodel.UserView) {
 		</div>
 	}
 }
-
 
 templ GeneralStatisticCard(title string, year string, stats []viewmodel.StatView) {
 	<div class="p-4 rounded-xl bg-base-200 h-max">

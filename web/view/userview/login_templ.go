@@ -69,52 +69,43 @@ func Login() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"h-screen flex items-center justify-center bg-cover\"><div class=\"bg-white/70 rounded-lg shadow-lg p-10 blur-bg\"><div class=\"mb-4 text-center\"><img src=\"/static/logo.png\" alt=\"Logo\" class=\"mx-auto h-20 w-auto\"></div><h2 class=\"text-center text-3xl font-semibold text-gray-800 mb-6\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"h-screen flex items-center justify-center bg-cover\"><div class=\"hero min-h-screen bg-base-200 bg-transparent \"><div class=\"hero-content flex-col lg:flex-row-reverse\"><div class=\"text-center lg:text-left text-black\"><h1 class=\"text-5xl font-bold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var6 := `Welcome to SoarSquad`
+		templ_7745c5c3_Var6 := `Login now!`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h2><div class=\"flex justify-center mb-6\"><a href=\"/auth/google\" class=\"flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full shadow transition duration-300 ease-in-out\"><svg class=\"w-6 h-6 mr-3\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M21.35 11.1h-8.9v3.25h5.3c-.55 2.85-3.05 4.9-5.8 4.9-3.45 0-6.25-2.8-6.25-6.25s2.8-6.25 6.25-6.25c1.55 0 2.95.6 4.05 1.6l2.75-2.75C18.2 5.55 16.25 4.6 14 4.6c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7c5.05 0 8.55-3.55 8.55-8.7 0-.6-.05-1.1-.15-1.65z\"></path></svg> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h1><p class=\"py-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var7 := `Sign in with Google`
+		templ_7745c5c3_Var7 := `Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div><div class=\"text-center text-sm\"><a href=\"#\" class=\"underline text-gray-600 hover:text-gray-900\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</p></div><div class=\"card shrink-0 w-full max-w-sm shadow-2xl bg-base-100\"><form class=\"card-body\"><div class=\"form-control\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var8 := `Register`
+		templ_7745c5c3_Var8 := `Google ONLY for now`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"form-control mt-6\"><a href=\"/auth/google\" class=\"flex items-center justify-center bg-base-300 text-white font-bold py-2 px-4 rounded-full shadow transition duration-300 ease-in-out\"><svg class=\"w-6 h-6 mr-3\" xmlns=\"http://www.w3.org/2000/svg\" fill=\"currentColor\" viewBox=\"0 0 24 24\"><path d=\"M21.35 11.1h-8.9v3.25h5.3c-.55 2.85-3.05 4.9-5.8 4.9-3.45 0-6.25-2.8-6.25-6.25s2.8-6.25 6.25-6.25c1.55 0 2.95.6 4.05 1.6l2.75-2.75C18.2 5.55 16.25 4.6 14 4.6c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7c5.05 0 8.55-3.55 8.55-8.7 0-.6-.05-1.1-.15-1.65z\"></path></svg> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var9 := `|`
+		templ_7745c5c3_Var9 := `Sign in with Google`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <a href=\"#\" class=\"underline text-gray-600 hover:text-gray-900\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var10 := `Lost your password?`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></div></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></div></form></div></div></div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

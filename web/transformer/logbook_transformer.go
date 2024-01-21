@@ -27,12 +27,19 @@ func TransformLogbookToViewModel(
 		flyingYearsString = append(flyingYearsString, strconv.Itoa(y))
 	}
 
+	statsHeadling := fmt.Sprintf(
+		"%s sur %d vols",
+		prettyDuration(yearStats.TotalFlightTime, false),
+		yearStats.FlightCount,
+	)
+
 	return viewmodel.LogbookView{
 		CurrentYear:    strconv.Itoa(year),
 		AvailableYears: flyingYearsString,
 		Flights:        flightViews,
 		Stats:          statMain,
 		IsFlightAdded:  isFlightAdded,
+		StatsHeadling:  statsHeadling,
 	}
 }
 

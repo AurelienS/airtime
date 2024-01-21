@@ -40,7 +40,7 @@ func Navbar(currentUser viewmodel.UserView, showNavigation bool) templ.Component
 			return templ_7745c5c3_Err
 		}
 		if showNavigation {
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div role=\"tablist\" class=\"tabs tabs-bordered w-full bg-base-100\"><a role=\"tab\" class=\"tab\" hx-get=\"/logbook\" hx-target=\"#content\" hx-select=\"#content\" hx-swap=\"outerHTML\" hx-push-url=\"true\">")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div role=\"tablist\" class=\"tabs tabs-bordered w-full bg-base-100\"><a role=\"tab\" class=\"tab\" hx-get=\"/\" hx-target=\"#content\" hx-select=\"#content\" hx-swap=\"outerHTML\" hx-push-url=\"true\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

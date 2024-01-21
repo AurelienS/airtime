@@ -2,12 +2,18 @@ package onboarding
 
 import "github.com/AurelienS/cigare/web/view/layout"
 import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/component"
 
 templ Index(user viewmodel.UserView) {
 	@layout.Base(user, false) {
-		<div class="w-full my-4">
-			<h1>Welcome to Onboarding</h1>
-			<p>start by uploading a file</p>
+		<div class="hero min-h-screen  bg-base-200">
+			<div class="hero-content text-center">
+				<div class="max-w-md">
+					<h1 class="text-5xl font-bold">Salut, { user.Name }</h1>
+					<p class="py-6">Pour commencer il te suffit de mettre un fichier IGC ou un zip contenant des fichiers IGC</p>
+					@component.UploadFlightForm()
+				</div>
+			</div>
 		</div>
 	}
 }

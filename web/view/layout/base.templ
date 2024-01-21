@@ -6,9 +6,9 @@ templ Base(currentUser viewmodel.UserView, showNavigation bool ) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme="dark">
 		@Head()
-		<body class=" min-h-screen bg-base-200 overflow-y-scroll">
+		<body class="flex flex-col min-h-screen bg-base-200 overflow-y-scroll">
 			@Navbar(currentUser, showNavigation)
-			<div id="content" class="py-4 mt-16 container mx-auto">
+			<div id="content" class="flex-grow py-4 mt-16 container mx-auto">
 				{ children... }
 			</div>
 		</body>

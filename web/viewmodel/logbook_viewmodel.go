@@ -2,6 +2,7 @@ package viewmodel
 
 type LogbookView struct {
 	Stats          []StatView
+	StatsHeadling  string
 	Flights        []FlightView
 	CurrentYear    string
 	AvailableYears []string
