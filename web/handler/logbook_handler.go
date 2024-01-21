@@ -35,7 +35,7 @@ func NewLogbookHandler(
 	}
 }
 
-func (h *LogbookHandler) GetTabLog(c echo.Context) error {
+func (h *LogbookHandler) GetLogbook(c echo.Context) error {
 	ctx := c.Request().Context()
 	user := session.GetUserFromContext(c)
 	userview := transformer.TransformUserToViewModel(user)
@@ -48,7 +48,7 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	year := h.getRequestedYear(c, flyingYears)
 
 	if !yearInSlice(year, flyingYears) {
-		return c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/logbook/log/%d", flyingYears[len(flyingYears)-1]))
+		return c.Redirect(http.StatusMovedPermanently, fmt.Sprintf("/log/%d", flyingYears[len(flyingYears)-1]))
 	}
 
 	flights, yearStats, allTimeStats, err := h.getFlightStats(ctx, user, year)
@@ -66,69 +66,6 @@ func (h *LogbookHandler) GetTabLog(c echo.Context) error {
 	)
 
 	return Render(c, logbookview.TabLog(viewData, userview))
-}
-
-func (h *LogbookHandler) getRequestedYear(c echo.Context, flyingYears []int) int {
-	yearParam := c.Param("year")
-	year, err := strconv.Atoi(yearParam)
-	if err != nil || !yearInSlice(year, flyingYears) {
-		return flyingYears[len(flyingYears)-1] // default to the last year if not specified or invalid
-	}
-	return year
-}
-
-func (h *LogbookHandler) getFlightStats(
-	ctx context.Context,
-	user domain.User,
-	year int,
-) ([]domain.Flight, service.StatsAggregated, service.StatsAggregated, error) {
-	allFlights, err := h.flightService.GetFlights(
-		ctx,
-		time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC),
-		time.Now(),
-		user,
-	)
-	if err != nil {
-		return nil, service.StatsAggregated{}, service.StatsAggregated{}, err
-	}
-
-	yearFlights := h.flightService.GetFlightsForYear(year, allFlights)
-	yearStats := h.statisticService.ComputeAggregateStatistics(yearFlights)
-	allTimeStats := h.statisticService.ComputeAggregateStatistics(allFlights)
-	return yearFlights, yearStats, allTimeStats, nil
-}
-
-func yearInSlice(year int, slice []int) bool {
-	for _, y := range slice {
-		if y == year {
-			return true
-		}
-	}
-	return false
-}
-
-func (h *LogbookHandler) GetTabProgression(c echo.Context) error {
-	user := session.GetUserFromContext(c)
-	statsYearMonth, err := h.statisticService.GetStatisticsByYearAndMonth(
-		c.Request().Context(),
-		user)
-	if err != nil {
-		return err
-	}
-
-	totalFlightTimeExtractor := func(stats service.StatsAggregated) int {
-		return int(stats.TotalFlightTime.Hours())
-	}
-	flightCountExtractor := func(stats service.StatsAggregated) int {
-		return stats.FlightCount
-	}
-
-	view := viewmodel.ProgressionView{
-		User:                   transformer.TransformUserToViewModel(user),
-		FlightTimeMonthlyData:  transformer.TransformChartViewModel(statsYearMonth, totalFlightTimeExtractor),
-		FlightCountMonthlyData: transformer.TransformChartViewModel(statsYearMonth, flightCountExtractor),
-	}
-	return Render(c, logbookview.TabProgression(view))
 }
 
 func (h *LogbookHandler) GetFlight(c echo.Context) error {
@@ -169,5 +106,44 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 
 	c.Set("flight_added", "Flight processed and added successfully")
 
-	return h.GetTabLog(c)
+	return h.GetLogbook(c)
+}
+
+func (h *LogbookHandler) getRequestedYear(c echo.Context, flyingYears []int) int {
+	yearParam := c.Param("year")
+	year, err := strconv.Atoi(yearParam)
+	if err != nil || !yearInSlice(year, flyingYears) {
+		return flyingYears[len(flyingYears)-1] // default to the last year if not specified or invalid
+	}
+	return year
+}
+
+func (h *LogbookHandler) getFlightStats(
+	ctx context.Context,
+	user domain.User,
+	year int,
+) ([]domain.Flight, service.StatsAggregated, service.StatsAggregated, error) {
+	allFlights, err := h.flightService.GetFlights(
+		ctx,
+		time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC),
+		time.Now(),
+		user,
+	)
+	if err != nil {
+		return nil, service.StatsAggregated{}, service.StatsAggregated{}, err
+	}
+
+	yearFlights := h.flightService.GetFlightsForYear(year, allFlights)
+	yearStats := h.statisticService.ComputeAggregateStatistics(yearFlights)
+	allTimeStats := h.statisticService.ComputeAggregateStatistics(allFlights)
+	return yearFlights, yearStats, allTimeStats, nil
+}
+
+func yearInSlice(year int, slice []int) bool {
+	for _, y := range slice {
+		if y == year {
+			return true
+		}
+	}
+	return false
 }

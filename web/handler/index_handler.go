@@ -9,8 +9,12 @@ import (
 
 type IndexHandler struct{}
 
+func NewIndexHandler() IndexHandler {
+	return IndexHandler{}
+}
+
 func (h IndexHandler) Get(c echo.Context) error {
-	return c.Redirect(http.StatusFound, "/logbook/log/0")
+	return c.Redirect(http.StatusFound, "/log/0")
 }
 
 func (h IndexHandler) Dummy(c echo.Context) error {

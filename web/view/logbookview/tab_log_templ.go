@@ -123,7 +123,7 @@ func TabLog(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fmt.Sprintf("/logbook/log/%s", y)))
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(fmt.Sprintf("/log/%s", y)))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

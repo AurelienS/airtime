@@ -5,7 +5,7 @@ templ TabList(active string) {
 		<a
 			role="tab"
 			class={ "tab", templ.KV("tab-active", active == "log") }
-			hx-get="/logbook/log"
+			hx-get="/log"
 			hx-target="#logbook_page"
 			hx-select="#logbook_page"
 			hx-swap="outerHTML"
@@ -16,7 +16,7 @@ templ TabList(active string) {
 		<a
 			role="tab"
 			class={ "tab", templ.KV("tab-active", active == "progression") }
-			hx-get="/logbook/progression"
+			hx-get="/progression"
 			hx-target="#logbook_page"
 			hx-select="#logbook_page"
 			hx-swap="outerHTML"
