@@ -69,6 +69,7 @@ func Head() templ.Component {
                 }
 				body {
 					font-family: 'Roboto', sans-serif;
+					font-weight: 300;
 				}
             `
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
