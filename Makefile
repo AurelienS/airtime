@@ -1,8 +1,11 @@
 .ONESHELL:
 
-.PHONY: run serve gen watch build trigger-refresh browser-refresh zip ent
+.PHONY: watch build trigger-refresh browser-refresh zip ent dev
 
 watch: templ build trigger-refresh
+
+dev:
+	./dev.sh
 
 build:
 	@go build -o ./tmp/main ./cmd/server/main.go
