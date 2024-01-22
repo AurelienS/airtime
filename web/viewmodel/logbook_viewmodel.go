@@ -1,12 +1,9 @@
 package viewmodel
 
 type LogbookView struct {
-	Stats          []StatView
-	StatsHeadling  string
 	Flights        []FlightView
-	CurrentYear    string
 	AvailableYears []string
-	IsFlightAdded  bool
+	CurrentYear    string
 }
 
 type FlightView struct {
@@ -27,7 +24,6 @@ type FlightDetailStatView struct {
 type FlightDetailView struct {
 	FlightView
 	UserView
-	Stats []FlightDetailStatView
 }
 
 type StatView struct {

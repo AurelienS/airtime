@@ -12,34 +12,24 @@ import (
 )
 
 func TransformLogbookToViewModel(
-	flights *[]domain.Flight,
-	yearStats domain.StatsAggregated,
-	allTimeStats domain.StatsAggregated,
-	year int,
+	flights []domain.Flight,
 	flyingYears []int,
-	isFlightAdded bool,
+	year int,
 ) viewmodel.LogbookView {
-	flightViews := sortAndConvertToViewModel(*flights)
-	statMain := getMainStat(yearStats, allTimeStats)
+	var flightViews []viewmodel.FlightView
+	for _, f := range flights {
+		flightViews = append(flightViews, TransformFlightToViewModel(f))
+	}
 
 	flyingYearsString := make([]string, 0, len(flyingYears))
 	for _, y := range flyingYears {
 		flyingYearsString = append(flyingYearsString, strconv.Itoa(y))
 	}
 
-	statsHeadling := fmt.Sprintf(
-		"%s sur %d vols",
-		prettyDuration(yearStats.TotalFlightTime, false),
-		yearStats.FlightCount,
-	)
-
 	return viewmodel.LogbookView{
 		CurrentYear:    strconv.Itoa(year),
 		AvailableYears: flyingYearsString,
 		Flights:        flightViews,
-		Stats:          statMain,
-		IsFlightAdded:  isFlightAdded,
-		StatsHeadling:  statsHeadling,
 	}
 }
 
@@ -116,107 +106,15 @@ func TransformChartViewModel(statsYearMonth service.StatsYearMonth, extractor St
 	return datasets
 }
 
-func TransformStatToViewModel(stats domain.FlightStatistic) []viewmodel.FlightDetailStatView {
-	return []viewmodel.FlightDetailStatView{
-		{Title: "Total flight time", Value: prettyDuration(stats.TotalFlightTime, false)},
-		{Title: "Max climb", Value: prettyAltitude(stats.MaxClimb, true)},
-		{Title: "Max altitude", Value: prettyAltitude(stats.MaxAltitude, true)},
-		{Title: "Total climb", Value: prettyAltitude(stats.TotalClimb, false)},
-		{Title: "Average climb rate", Value: prettyRate(stats.AverageClimbRate)},
-		{Title: "Max climb rate", Value: prettyRate(stats.MaxClimbRate)},
-		{Title: "Total thermic time", Value: prettyDuration(stats.TotalThermicTime, false)},
-		{Title: "Number of thermals", Value: strconv.Itoa(stats.NumberOfThermals)},
-		{Title: "Percentage thermic", Value: strconv.FormatFloat(stats.PercentageThermic, 'f', 1, 64) + "%"},
-	}
-}
-
 func TransformFlightToViewModel(flight domain.Flight) viewmodel.FlightView {
 	return viewmodel.FlightView{
 		ID:               strconv.Itoa(flight.ID),
 		Date:             flight.Date.Local().Format("02/01 15:04"),
 		TakeoffLocation:  flight.TakeoffLocation,
-		TotalFlightTime:  prettyDuration(flight.Statistic.TotalFlightTime, false),
-		TotalThermicTime: prettyDuration(flight.Statistic.TotalThermicTime, false),
-		MaxClimbRate:     prettyRate(flight.Statistic.MaxClimbRate),
+		TotalFlightTime:  PrettyDuration(flight.Statistic.TotalFlightTime),
+		TotalThermicTime: PrettyDuration(flight.Statistic.TotalThermicTime),
+		MaxClimbRate:     PrettyRate(flight.Statistic.MaxClimbRate),
 		MaxAltitude:      strconv.Itoa(flight.Statistic.MaxAltitude),
 		Link:             fmt.Sprintf("/logbook/flight/%d", flight.ID),
 	}
-}
-
-func sortAndConvertToViewModel(flights []domain.Flight) []viewmodel.FlightView {
-	sort.Slice(flights, func(i, j int) bool {
-		return flights[i].Date.After(flights[j].Date)
-	})
-
-	var flightViews []viewmodel.FlightView
-	for _, f := range flights {
-		flightViews = append(flightViews, TransformFlightToViewModel(f))
-	}
-	return flightViews
-}
-
-func getMainStat(yearStats, allTimeStats domain.StatsAggregated) []viewmodel.StatView {
-	return []viewmodel.StatView{
-		{
-			Title:            "Nombre de vols",
-			AlltimeValue:     strconv.Itoa(allTimeStats.FlightCount),
-			CurrentYearValue: strconv.Itoa(yearStats.FlightCount),
-		},
-		{
-			Title:            "Temps de vol total",
-			AlltimeValue:     prettyDuration(allTimeStats.TotalFlightTime, true),
-			CurrentYearValue: prettyDuration(yearStats.TotalFlightTime, false),
-		},
-		{
-			Title:            "Temps total en thermique",
-			AlltimeValue:     prettyDuration(allTimeStats.TotalThermicTime, true),
-			CurrentYearValue: prettyDuration(yearStats.TotalThermicTime, false),
-		},
-		{
-			Title:            "Durée moyenne de vol",
-			AlltimeValue:     prettyDuration(allTimeStats.AverageFlightLength, false),
-			CurrentYearValue: prettyDuration(yearStats.AverageFlightLength, false),
-		},
-		{
-			Title:            "Durée maximale de vol",
-			AlltimeValue:     prettyDuration(allTimeStats.MaxFlightLength, false),
-			CurrentYearValue: prettyDuration(yearStats.MaxFlightLength, false),
-		},
-		{
-			Title:            "Altitude maximale",
-			AlltimeValue:     prettyAltitude(allTimeStats.MaxAltitude, true),
-			CurrentYearValue: prettyAltitude(yearStats.MaxAltitude, true),
-		},
-	}
-}
-
-func prettyRate(rate float64) string {
-	return fmt.Sprintf("%.1f m/s", rate)
-}
-
-func prettyDuration(d time.Duration, onlyHour bool) string {
-	hours := int(d.Hours())
-	minutes := int(d.Minutes()) % 60
-
-	if onlyHour && hours > 0 {
-		return fmt.Sprintf("%d h", hours)
-	}
-
-	if hours > 0 {
-		return fmt.Sprintf("%dh%02d", hours, minutes)
-	}
-	return fmt.Sprintf("%d min", minutes)
-}
-
-func prettyAltitude(alt int, forceMeter bool) string {
-	if forceMeter {
-		return strconv.Itoa(alt) + " m"
-	}
-	km := alt / 1000
-	m := alt % 1000
-
-	if km > 0 {
-		return fmt.Sprintf("%d km", km)
-	}
-	return fmt.Sprintf("%d m", m)
 }

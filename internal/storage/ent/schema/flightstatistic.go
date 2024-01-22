@@ -23,6 +23,7 @@ func (FlightStatistic) Fields() []ent.Field {
 		field.Int("numberOfThermals"),
 		field.Float("percentageThermic"),
 		field.Int("maxAltitude"),
+		field.Int("totalDistance"),
 	}
 }
 

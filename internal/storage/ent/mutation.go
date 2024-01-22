@@ -615,6 +615,8 @@ type FlightStatisticMutation struct {
 	addpercentageThermic *float64
 	maxAltitude          *int
 	addmaxAltitude       *int
+	totalDistance        *int
+	addtotalDistance     *int
 	clearedFields        map[string]struct{}
 	flight               *int
 	clearedflight        bool
@@ -1225,6 +1227,62 @@ func (m *FlightStatisticMutation) ResetMaxAltitude() {
 	m.addmaxAltitude = nil
 }
 
+// SetTotalDistance sets the "totalDistance" field.
+func (m *FlightStatisticMutation) SetTotalDistance(i int) {
+	m.totalDistance = &i
+	m.addtotalDistance = nil
+}
+
+// TotalDistance returns the value of the "totalDistance" field in the mutation.
+func (m *FlightStatisticMutation) TotalDistance() (r int, exists bool) {
+	v := m.totalDistance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTotalDistance returns the old "totalDistance" field's value of the FlightStatistic entity.
+// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FlightStatisticMutation) OldTotalDistance(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTotalDistance is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTotalDistance requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTotalDistance: %w", err)
+	}
+	return oldValue.TotalDistance, nil
+}
+
+// AddTotalDistance adds i to the "totalDistance" field.
+func (m *FlightStatisticMutation) AddTotalDistance(i int) {
+	if m.addtotalDistance != nil {
+		*m.addtotalDistance += i
+	} else {
+		m.addtotalDistance = &i
+	}
+}
+
+// AddedTotalDistance returns the value that was added to the "totalDistance" field in this mutation.
+func (m *FlightStatisticMutation) AddedTotalDistance() (r int, exists bool) {
+	v := m.addtotalDistance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetTotalDistance resets all changes to the "totalDistance" field.
+func (m *FlightStatisticMutation) ResetTotalDistance() {
+	m.totalDistance = nil
+	m.addtotalDistance = nil
+}
+
 // SetFlightID sets the "flight" edge to the Flight entity by id.
 func (m *FlightStatisticMutation) SetFlightID(id int) {
 	m.flight = &id
@@ -1298,7 +1356,7 @@ func (m *FlightStatisticMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FlightStatisticMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.totalThermicTime != nil {
 		fields = append(fields, flightstatistic.FieldTotalThermicTime)
 	}
@@ -1326,6 +1384,9 @@ func (m *FlightStatisticMutation) Fields() []string {
 	if m.maxAltitude != nil {
 		fields = append(fields, flightstatistic.FieldMaxAltitude)
 	}
+	if m.totalDistance != nil {
+		fields = append(fields, flightstatistic.FieldTotalDistance)
+	}
 	return fields
 }
 
@@ -1352,6 +1413,8 @@ func (m *FlightStatisticMutation) Field(name string) (ent.Value, bool) {
 		return m.PercentageThermic()
 	case flightstatistic.FieldMaxAltitude:
 		return m.MaxAltitude()
+	case flightstatistic.FieldTotalDistance:
+		return m.TotalDistance()
 	}
 	return nil, false
 }
@@ -1379,6 +1442,8 @@ func (m *FlightStatisticMutation) OldField(ctx context.Context, name string) (en
 		return m.OldPercentageThermic(ctx)
 	case flightstatistic.FieldMaxAltitude:
 		return m.OldMaxAltitude(ctx)
+	case flightstatistic.FieldTotalDistance:
+		return m.OldTotalDistance(ctx)
 	}
 	return nil, fmt.Errorf("unknown FlightStatistic field %s", name)
 }
@@ -1451,6 +1516,13 @@ func (m *FlightStatisticMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetMaxAltitude(v)
 		return nil
+	case flightstatistic.FieldTotalDistance:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTotalDistance(v)
+		return nil
 	}
 	return fmt.Errorf("unknown FlightStatistic field %s", name)
 }
@@ -1486,6 +1558,9 @@ func (m *FlightStatisticMutation) AddedFields() []string {
 	if m.addmaxAltitude != nil {
 		fields = append(fields, flightstatistic.FieldMaxAltitude)
 	}
+	if m.addtotalDistance != nil {
+		fields = append(fields, flightstatistic.FieldTotalDistance)
+	}
 	return fields
 }
 
@@ -1512,6 +1587,8 @@ func (m *FlightStatisticMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedPercentageThermic()
 	case flightstatistic.FieldMaxAltitude:
 		return m.AddedMaxAltitude()
+	case flightstatistic.FieldTotalDistance:
+		return m.AddedTotalDistance()
 	}
 	return nil, false
 }
@@ -1584,6 +1661,13 @@ func (m *FlightStatisticMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddMaxAltitude(v)
 		return nil
+	case flightstatistic.FieldTotalDistance:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddTotalDistance(v)
+		return nil
 	}
 	return fmt.Errorf("unknown FlightStatistic numeric field %s", name)
 }
@@ -1637,6 +1721,9 @@ func (m *FlightStatisticMutation) ResetField(name string) error {
 		return nil
 	case flightstatistic.FieldMaxAltitude:
 		m.ResetMaxAltitude()
+		return nil
+	case flightstatistic.FieldTotalDistance:
+		m.ResetTotalDistance()
 		return nil
 	}
 	return fmt.Errorf("unknown FlightStatistic field %s", name)

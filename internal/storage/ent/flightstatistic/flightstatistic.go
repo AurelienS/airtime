@@ -30,6 +30,8 @@ const (
 	FieldPercentageThermic = "percentage_thermic"
 	// FieldMaxAltitude holds the string denoting the maxaltitude field in the database.
 	FieldMaxAltitude = "max_altitude"
+	// FieldTotalDistance holds the string denoting the totaldistance field in the database.
+	FieldTotalDistance = "total_distance"
 	// EdgeFlight holds the string denoting the flight edge name in mutations.
 	EdgeFlight = "flight"
 	// Table holds the table name of the flightstatistic in the database.
@@ -55,6 +57,7 @@ var Columns = []string{
 	FieldNumberOfThermals,
 	FieldPercentageThermic,
 	FieldMaxAltitude,
+	FieldTotalDistance,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "flight_statistics"
@@ -129,6 +132,11 @@ func ByPercentageThermic(opts ...sql.OrderTermOption) OrderOption {
 // ByMaxAltitude orders the results by the maxAltitude field.
 func ByMaxAltitude(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldMaxAltitude, opts...).ToFunc()
+}
+
+// ByTotalDistance orders the results by the totalDistance field.
+func ByTotalDistance(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTotalDistance, opts...).ToFunc()
 }
 
 // ByFlightField orders the results by flight field.

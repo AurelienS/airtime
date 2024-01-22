@@ -217,6 +217,27 @@ func (fsu *FlightStatisticUpdate) AddMaxAltitude(i int) *FlightStatisticUpdate {
 	return fsu
 }
 
+// SetTotalDistance sets the "totalDistance" field.
+func (fsu *FlightStatisticUpdate) SetTotalDistance(i int) *FlightStatisticUpdate {
+	fsu.mutation.ResetTotalDistance()
+	fsu.mutation.SetTotalDistance(i)
+	return fsu
+}
+
+// SetNillableTotalDistance sets the "totalDistance" field if the given value is not nil.
+func (fsu *FlightStatisticUpdate) SetNillableTotalDistance(i *int) *FlightStatisticUpdate {
+	if i != nil {
+		fsu.SetTotalDistance(*i)
+	}
+	return fsu
+}
+
+// AddTotalDistance adds i to the "totalDistance" field.
+func (fsu *FlightStatisticUpdate) AddTotalDistance(i int) *FlightStatisticUpdate {
+	fsu.mutation.AddTotalDistance(i)
+	return fsu
+}
+
 // SetFlightID sets the "flight" edge to the Flight entity by ID.
 func (fsu *FlightStatisticUpdate) SetFlightID(id int) *FlightStatisticUpdate {
 	fsu.mutation.SetFlightID(id)
@@ -336,6 +357,12 @@ func (fsu *FlightStatisticUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if value, ok := fsu.mutation.AddedMaxAltitude(); ok {
 		_spec.AddField(flightstatistic.FieldMaxAltitude, field.TypeInt, value)
+	}
+	if value, ok := fsu.mutation.TotalDistance(); ok {
+		_spec.SetField(flightstatistic.FieldTotalDistance, field.TypeInt, value)
+	}
+	if value, ok := fsu.mutation.AddedTotalDistance(); ok {
+		_spec.AddField(flightstatistic.FieldTotalDistance, field.TypeInt, value)
 	}
 	if fsu.mutation.FlightCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -575,6 +602,27 @@ func (fsuo *FlightStatisticUpdateOne) AddMaxAltitude(i int) *FlightStatisticUpda
 	return fsuo
 }
 
+// SetTotalDistance sets the "totalDistance" field.
+func (fsuo *FlightStatisticUpdateOne) SetTotalDistance(i int) *FlightStatisticUpdateOne {
+	fsuo.mutation.ResetTotalDistance()
+	fsuo.mutation.SetTotalDistance(i)
+	return fsuo
+}
+
+// SetNillableTotalDistance sets the "totalDistance" field if the given value is not nil.
+func (fsuo *FlightStatisticUpdateOne) SetNillableTotalDistance(i *int) *FlightStatisticUpdateOne {
+	if i != nil {
+		fsuo.SetTotalDistance(*i)
+	}
+	return fsuo
+}
+
+// AddTotalDistance adds i to the "totalDistance" field.
+func (fsuo *FlightStatisticUpdateOne) AddTotalDistance(i int) *FlightStatisticUpdateOne {
+	fsuo.mutation.AddTotalDistance(i)
+	return fsuo
+}
+
 // SetFlightID sets the "flight" edge to the Flight entity by ID.
 func (fsuo *FlightStatisticUpdateOne) SetFlightID(id int) *FlightStatisticUpdateOne {
 	fsuo.mutation.SetFlightID(id)
@@ -724,6 +772,12 @@ func (fsuo *FlightStatisticUpdateOne) sqlSave(ctx context.Context) (_node *Fligh
 	}
 	if value, ok := fsuo.mutation.AddedMaxAltitude(); ok {
 		_spec.AddField(flightstatistic.FieldMaxAltitude, field.TypeInt, value)
+	}
+	if value, ok := fsuo.mutation.TotalDistance(); ok {
+		_spec.SetField(flightstatistic.FieldTotalDistance, field.TypeInt, value)
+	}
+	if value, ok := fsuo.mutation.AddedTotalDistance(); ok {
+		_spec.AddField(flightstatistic.FieldTotalDistance, field.TypeInt, value)
 	}
 	if fsuo.mutation.FlightCleared() {
 		edge := &sqlgraph.EdgeSpec{

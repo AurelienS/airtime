@@ -15,3 +15,12 @@ func DBToDomainFlight(flightDB *ent.Flight) domain.Flight {
 		Statistic:       DBToDomainFlightStatistic(flightDB.Edges.Statistic),
 	}
 }
+
+func DBToDomainFlights(flightDBs []*ent.Flight) []domain.Flight {
+	var flights []domain.Flight
+	for _, f := range flightDBs {
+		flights = append(flights, DBToDomainFlight(f))
+	}
+
+	return flights
+}

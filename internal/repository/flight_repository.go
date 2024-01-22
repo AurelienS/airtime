@@ -45,6 +45,7 @@ func (r FlightRepository) InsertFlight(
 		SetNumberOfThermals(flightStats.NumberOfThermals).
 		SetPercentageThermic(flightStats.PercentageThermic).
 		SetMaxAltitude(flightStats.MaxAltitude).
+		SetTotalDistance(int(flightStats.TotalDistance)).
 		Save(ctx)
 	if err != nil {
 		r := tx.Rollback()
@@ -109,7 +110,8 @@ func (r FlightRepository) InsertFlights(
 			SetAverageClimbRate(flightStat.AverageClimbRate).
 			SetNumberOfThermals(flightStat.NumberOfThermals).
 			SetPercentageThermic(flightStat.PercentageThermic).
-			SetMaxAltitude(flightStat.MaxAltitude)
+			SetMaxAltitude(flightStat.MaxAltitude).
+			SetTotalDistance(int(flightStat.TotalDistance))
 	}
 	stats, err := tx.FlightStatistic.
 		CreateBulk(bulkStats...).Save(ctx)
@@ -142,7 +144,7 @@ func (r FlightRepository) InsertFlights(
 	return tx.Commit()
 }
 
-func (r *FlightRepository) GetFlight(
+func (r FlightRepository) GetFlight(
 	ctx context.Context,
 	flightID int,
 	user domain.User,
@@ -162,7 +164,7 @@ func (r *FlightRepository) GetFlight(
 	return converter.DBToDomainFlight(flightDB), nil
 }
 
-func (r *FlightRepository) GetFlights(
+func (r FlightRepository) GetFlights(
 	ctx context.Context,
 	startDate time.Time,
 	endDate time.Time,
@@ -170,29 +172,24 @@ func (r *FlightRepository) GetFlights(
 ) ([]domain.Flight, error) {
 	util.Info().Str("user", user.Email).Times("dates", []time.Time{startDate, endDate}).Msg("Getting user flights")
 
-	flightsDB, err := r.client.User.
+	flightsDB, err := r.client.Flight.
 		Query().
-		Where(userDB.IDEQ(user.ID)).
-		QueryFlights().
+		Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).
 		Where(flight.DateGTE(startDate), flight.DateLTE(endDate)).
-		WithStatistic().
 		WithPilot().
+		WithStatistic().
+		Order(ent.Desc(flight.FieldDate)).
 		All(ctx)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get flights")
 		return nil, err
 	}
 
-	var flights []domain.Flight
-	for _, f := range flightsDB {
-		flights = append(flights, converter.DBToDomainFlight(f))
-	}
-
-	return flights, nil
+	return converter.DBToDomainFlights(flightsDB), nil
 }
 
 // If there is no last flight, it return nil without an error.
-func (r *FlightRepository) GetLastFlight(ctx context.Context, user domain.User) (*domain.Flight, error) {
+func (r FlightRepository) GetLastFlight(ctx context.Context, user domain.User) (*domain.Flight, error) {
 	util.Info().Str("user", user.Email).Msg("Getting last flight")
 
 	flt, err := r.client.Flight.
@@ -213,6 +210,24 @@ func (r *FlightRepository) GetLastFlight(ctx context.Context, user domain.User) 
 
 	domainModel := converter.DBToDomainFlight(flt)
 	return &domainModel, nil
+}
+
+func (r FlightRepository) GetLastFlights(ctx context.Context, count int, user domain.User) ([]domain.Flight, error) {
+	util.Info().Str("user", user.Email).Int("flight count", count).Msg("Getting lasts flight")
+	lastFlights, err := r.client.Flight.
+		Query().
+		Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).
+		Order(ent.Desc(flight.FieldDate)).
+		WithPilot().
+		WithStatistic().
+		Limit(count).
+		All(ctx)
+	if err != nil {
+		util.Error().Err(err).Str("user", user.Email).Msg("Failed getting lasts flights")
+		return nil, err
+	}
+
+	return converter.DBToDomainFlights(lastFlights), nil
 }
 
 func (r FlightRepository) GetFlyingYears(ctx context.Context, user domain.User) ([]int, error) {

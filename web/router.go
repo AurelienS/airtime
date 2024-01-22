@@ -13,12 +13,14 @@ type Router struct {
 	userHandler        handler.UserHandler
 	indexHandler       handler.IndexHandler
 	onboardingHandler  handler.OnboardingHandler
+	dashboardHandler   handler.DashboardHandler
 }
 
 func NewRouter(
 	authHandler handler.AuthHandler,
 	logbookHandler handler.LogbookHandler,
 	progressionHandler handler.ProgressionHandler,
+	dashboardHandler handler.DashboardHandler,
 	userHandler handler.UserHandler,
 	indexHandler handler.IndexHandler,
 	onboardingHandler handler.OnboardingHandler,
@@ -27,6 +29,7 @@ func NewRouter(
 		authHandler:        authHandler,
 		logbookHandler:     logbookHandler,
 		progressionHandler: progressionHandler,
+		dashboardHandler:   dashboardHandler,
 		userHandler:        userHandler,
 		indexHandler:       indexHandler,
 		onboardingHandler:  onboardingHandler,
@@ -49,10 +52,13 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.GET("", r.indexHandler.Get)
 
 	authGroup.GET("onboarding", r.onboardingHandler.Get)
+
 	authGroup.GET("logbook", r.logbookHandler.GetLogbook)
 	authGroup.GET("logbook/:year", r.logbookHandler.GetLogbook)
 	authGroup.GET("logbook/flight/:flight", r.logbookHandler.GetFlight)
 	authGroup.POST("logbook/flight", r.logbookHandler.PostFlight)
+
+	authGroup.GET("dashboard", r.dashboardHandler.GetIndex)
 
 	authGroup.GET("progression", r.progressionHandler.GetProgression)
 

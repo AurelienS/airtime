@@ -11,16 +11,10 @@ templ Flight(view viewmodel.FlightDetailView) {
 				<li>vol n° { view.ID }</li>
 			</ul>
 		</div>
-		<div class="stats ">
-			for _, s := range view.Stats {
-				<div class="stat">
-					<div class="stat-title text-lg">{ s.Title }</div>
-					<div class="stat-value flex w-full justify-center text-xl font-bold">
-						{ s.Value }
-					</div>
-				</div>
-			}
+		<div class="rounded-2xl p-4 shadow bg-base-100">
+			<p>Décollage de { view.TakeoffLocation }</p>
+			<p>{ view.TotalFlightTime } de vol</p>
+			<p>{ view.Link } de vol</p>
 		</div>
-		<div class="bg-primary">flight id </div>
 	}
 }

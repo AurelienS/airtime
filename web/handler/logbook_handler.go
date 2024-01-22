@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/internal/util"
@@ -34,31 +34,36 @@ func NewLogbookHandler(
 func (h *LogbookHandler) GetLogbook(c echo.Context) error {
 	ctx := c.Request().Context()
 	user := session.GetUserFromContext(c)
-	userview := transformer.TransformUserToViewModel(user)
+
+	yearParam := c.Param("year")
+	year, err := strconv.Atoi(yearParam)
+	if err != nil {
+		return err
+	}
 
 	flyingYears, err := h.statisticService.GetFlyingYears(ctx, user)
 	if err != nil {
 		return err
 	}
 
-	year, err := h.getRequestedYear(c, flyingYears)
+	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	endOfYear := time.Date(year, time.December, 31, 23, 59, 0, 0, time.UTC)
+	yearFlights, err := h.flightService.GetFlights(
+		ctx,
+		startOfYear,
+		endOfYear,
+		user,
+	)
 	if err != nil {
 		return err
 	}
 
-	flights, yearStats, allTimeStats, err := h.statisticService.GetFlightStats(ctx, user, year)
-	if err != nil {
-		return Render(c, logbook.Index(viewmodel.LogbookView{}, userview))
-	}
-
 	viewData := transformer.TransformLogbookToViewModel(
-		&flights,
-		yearStats,
-		allTimeStats,
-		year,
+		yearFlights,
 		flyingYears,
-		c.Get("flight_added") != nil,
+		year,
 	)
+	userview := transformer.TransformUserToViewModel(user)
 
 	return Render(c, logbook.Index(viewData, userview))
 }
@@ -79,7 +84,6 @@ func (h *LogbookHandler) GetFlight(c echo.Context) error {
 	view := viewmodel.FlightDetailView{
 		UserView:   transformer.TransformUserToViewModel(user),
 		FlightView: transformer.TransformFlightToViewModel(flight),
-		Stats:      transformer.TransformStatToViewModel(flight.Statistic),
 	}
 	return Render(c, logbook.Flight(view))
 }
@@ -102,22 +106,4 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 	c.Set("flight_added", "Flight processed and added successfully")
 	c.Response().Header().Set("HX-Redirect", "/")
 	return nil
-}
-
-func (h *LogbookHandler) getRequestedYear(c echo.Context, flyingYears []int) (int, error) {
-	yearParam := c.Param("year")
-	year, err := strconv.Atoi(yearParam)
-	if err != nil || !yearInSlice(year, flyingYears) {
-		return 0, fmt.Errorf("invalid year: %s", yearParam) // default to the last year if not specified or invalid
-	}
-	return year, nil
-}
-
-func yearInSlice(year int, slice []int) bool {
-	for _, y := range slice {
-		if y == year {
-			return true
-		}
-	}
-	return false
 }

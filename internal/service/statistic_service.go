@@ -74,20 +74,14 @@ type (
 func (s StatisticService) GetFlightStats(
 	ctx context.Context,
 	user domain.User,
-	year int,
-) ([]domain.Flight, domain.StatsAggregated, domain.StatsAggregated, error) {
-	allFlights, err := s.flightService.GetFlights(
-		ctx,
-		time.Date(1900, time.January, 1, 0, 0, 0, 0, time.UTC),
-		time.Now(),
-		user,
-	)
+	start time.Time,
+	end time.Time,
+) (domain.StatsAggregated, error) {
+	flights, err := s.flightService.GetFlights(ctx, start, end, user)
+	var stats domain.StatsAggregated
 	if err != nil {
-		return nil, domain.StatsAggregated{}, domain.StatsAggregated{}, err
+		return stats, err
 	}
-
-	yearFlights := s.flightService.GetFlightsForYear(year, allFlights)
-	yearStats := domain.ComputeAggregateStatistics(yearFlights)
-	allTimeStats := domain.ComputeAggregateStatistics(allFlights)
-	return yearFlights, yearStats, allTimeStats, nil
+	stats = domain.ComputeAggregateStatistics(flights)
+	return stats, nil
 }

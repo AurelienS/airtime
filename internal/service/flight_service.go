@@ -37,6 +37,10 @@ func (s FlightService) GetLastFlight(ctx context.Context, user domain.User) (*do
 	return s.flightRepo.GetLastFlight(ctx, user)
 }
 
+func (s FlightService) GetLastFlights(ctx context.Context, count int, user domain.User) ([]domain.Flight, error) {
+	return s.flightRepo.GetLastFlights(ctx, count, user)
+}
+
 func (s FlightService) GetFlightsForDateRanges(
 	flights []domain.Flight,
 	dateRanges []domain.DateRange,

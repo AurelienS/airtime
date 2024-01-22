@@ -16,6 +16,7 @@ type FlightStatistic struct {
 	MaxClimb          int
 	MaxClimbRate      float64
 	TotalClimb        int
+	TotalDistance     int
 	AverageClimbRate  float64
 	NumberOfThermals  int
 	PercentageThermic float64
@@ -52,31 +53,57 @@ func (fs *FlightStatistic) Compute() {
 		climbRateIntegrationPeriod = 10               // Number of seconds to smooth the climbRate
 		minThermalDuration         = 20 * time.Second // Minimum duration to consider a sustained climb as thermal
 		allowedDownwardPoints      = 4                // Number of consecutive downward Points allowed in a thermal
+		earthRadius                = 6371e3           // Earth's radius in meters
 	)
 
 	var current *Thermal
 	var rateOfClimbHistory []float64
+	var lastPoint *Point
 
-	for i, point := range fs.Points {
+	for i := range fs.Points {
+		point := &fs.Points[i]
 		if i == 0 {
+			lastPoint = point
 			continue
 		}
 
 		// flight related
 		fs.MaxAltitude = int(math.Max(float64(fs.MaxAltitude), float64(point.GNSSAltitude)))
 
+		// distance calculation
+		if i > 0 {
+			fs.TotalDistance += haversineDistance(
+				lastPoint.Lat.Degrees(), lastPoint.Lng.Degrees(),
+				point.Lat.Degrees(), point.Lng.Degrees(), earthRadius,
+			)
+		}
+		lastPoint = point
+
 		// thermal related
 		smoothedRateOfClimb := fs.calculateSmoothedRateOfClimb(i, climbRateIntegrationPeriod, rateOfClimbHistory)
 		if current == nil {
-			current = fs.maybeStartNewThermal(smoothedRateOfClimb, minClimbRate, climbRateIntegrationPeriod, point, i)
+			current = fs.maybeStartNewThermal(smoothedRateOfClimb, minClimbRate, climbRateIntegrationPeriod, *point, i)
 		} else {
-			current.Update(point, smoothedRateOfClimb)
+			current.Update(*point, smoothedRateOfClimb)
 			current = fs.checkAndFinalizeThermal(current, allowedDownwardPoints, minThermalDuration, i)
 		}
 	}
 
 	fs.finalizeLastThermal(current, minThermalDuration)
 	fs.Finalize()
+}
+
+func haversineDistance(lat1, lon1, lat2, lon2, radius float64) int {
+	dLat := (lat2 - lat1) * math.Pi / 180.0
+	dLon := (lon2 - lon1) * math.Pi / 180.0
+
+	lat1 = lat1 * math.Pi / 180.0
+	lat2 = lat2 * math.Pi / 180.0
+
+	a := math.Sin(dLat/2)*math.Sin(dLat/2) + math.Sin(dLon/2)*math.Sin(dLon/2)*math.Cos(lat1)*math.Cos(lat2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+
+	return int(radius * c)
 }
 
 func (fs *FlightStatistic) calculateSmoothedRateOfClimb(i, period int, rateOfClimbHistory []float64) float64 {
@@ -198,6 +225,8 @@ type StatsAggregated struct {
 	MaxAltitude           int
 	MaxClimb              int
 	TotalClimb            int
+	TotalDistance         int
+	MaxDistance           int
 	TotalNumberOfThermals int
 	MaxClimbRate          float64
 	MaxFlightLength       time.Duration
@@ -219,6 +248,8 @@ func ComputeAggregateStatistics(flights []Flight) StatsAggregated {
 	var maxClimb int
 	var totalClimb int
 	var totalNumberOfThermals int
+	var totalDistance int
+	var maxDistance int
 
 	flightCount := len(flights)
 
@@ -238,10 +269,14 @@ func ComputeAggregateStatistics(flights []Flight) StatsAggregated {
 		if f.Statistic.MaxClimb > maxClimb {
 			maxClimb = f.Statistic.MaxClimb
 		}
+		if int(f.Statistic.TotalDistance) > maxDistance {
+			maxDistance = int(f.Statistic.TotalDistance)
+		}
 		totalClimb += f.Statistic.TotalClimb
 		totalNumberOfThermals += f.Statistic.NumberOfThermals
 		totalThermicTime += f.Statistic.TotalThermicTime
 		totalFlightTime += f.Statistic.TotalFlightTime
+		totalDistance += int(f.Statistic.TotalDistance)
 	}
 
 	if flightCount > 0 {
@@ -260,6 +295,8 @@ func ComputeAggregateStatistics(flights []Flight) StatsAggregated {
 		AverageFlightLength:   averageFlightLength,
 		TotalFlightTime:       totalFlightTime,
 		TotalThermicTime:      totalThermicTime,
+		TotalDistance:         totalDistance,
+		MaxDistance:           maxDistance,
 	}
 	return aggregatedStats
 }

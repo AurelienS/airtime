@@ -76,6 +76,12 @@ func (fsc *FlightStatisticCreate) SetMaxAltitude(i int) *FlightStatisticCreate {
 	return fsc
 }
 
+// SetTotalDistance sets the "totalDistance" field.
+func (fsc *FlightStatisticCreate) SetTotalDistance(i int) *FlightStatisticCreate {
+	fsc.mutation.SetTotalDistance(i)
+	return fsc
+}
+
 // SetFlightID sets the "flight" edge to the Flight entity by ID.
 func (fsc *FlightStatisticCreate) SetFlightID(id int) *FlightStatisticCreate {
 	fsc.mutation.SetFlightID(id)
@@ -156,6 +162,9 @@ func (fsc *FlightStatisticCreate) check() error {
 	if _, ok := fsc.mutation.MaxAltitude(); !ok {
 		return &ValidationError{Name: "maxAltitude", err: errors.New(`ent: missing required field "FlightStatistic.maxAltitude"`)}
 	}
+	if _, ok := fsc.mutation.TotalDistance(); !ok {
+		return &ValidationError{Name: "totalDistance", err: errors.New(`ent: missing required field "FlightStatistic.totalDistance"`)}
+	}
 	return nil
 }
 
@@ -218,6 +227,10 @@ func (fsc *FlightStatisticCreate) createSpec() (*FlightStatistic, *sqlgraph.Crea
 	if value, ok := fsc.mutation.MaxAltitude(); ok {
 		_spec.SetField(flightstatistic.FieldMaxAltitude, field.TypeInt, value)
 		_node.MaxAltitude = value
+	}
+	if value, ok := fsc.mutation.TotalDistance(); ok {
+		_spec.SetField(flightstatistic.FieldTotalDistance, field.TypeInt, value)
+		_node.TotalDistance = value
 	}
 	if nodes := fsc.mutation.FlightIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -450,6 +463,24 @@ func (u *FlightStatisticUpsert) AddMaxAltitude(v int) *FlightStatisticUpsert {
 	return u
 }
 
+// SetTotalDistance sets the "totalDistance" field.
+func (u *FlightStatisticUpsert) SetTotalDistance(v int) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldTotalDistance, v)
+	return u
+}
+
+// UpdateTotalDistance sets the "totalDistance" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateTotalDistance() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldTotalDistance)
+	return u
+}
+
+// AddTotalDistance adds v to the "totalDistance" field.
+func (u *FlightStatisticUpsert) AddTotalDistance(v int) *FlightStatisticUpsert {
+	u.Add(flightstatistic.FieldTotalDistance, v)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -676,6 +707,27 @@ func (u *FlightStatisticUpsertOne) AddMaxAltitude(v int) *FlightStatisticUpsertO
 func (u *FlightStatisticUpsertOne) UpdateMaxAltitude() *FlightStatisticUpsertOne {
 	return u.Update(func(s *FlightStatisticUpsert) {
 		s.UpdateMaxAltitude()
+	})
+}
+
+// SetTotalDistance sets the "totalDistance" field.
+func (u *FlightStatisticUpsertOne) SetTotalDistance(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetTotalDistance(v)
+	})
+}
+
+// AddTotalDistance adds v to the "totalDistance" field.
+func (u *FlightStatisticUpsertOne) AddTotalDistance(v int) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddTotalDistance(v)
+	})
+}
+
+// UpdateTotalDistance sets the "totalDistance" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateTotalDistance() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateTotalDistance()
 	})
 }
 
@@ -1068,6 +1120,27 @@ func (u *FlightStatisticUpsertBulk) AddMaxAltitude(v int) *FlightStatisticUpsert
 func (u *FlightStatisticUpsertBulk) UpdateMaxAltitude() *FlightStatisticUpsertBulk {
 	return u.Update(func(s *FlightStatisticUpsert) {
 		s.UpdateMaxAltitude()
+	})
+}
+
+// SetTotalDistance sets the "totalDistance" field.
+func (u *FlightStatisticUpsertBulk) SetTotalDistance(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetTotalDistance(v)
+	})
+}
+
+// AddTotalDistance adds v to the "totalDistance" field.
+func (u *FlightStatisticUpsertBulk) AddTotalDistance(v int) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.AddTotalDistance(v)
+	})
+}
+
+// UpdateTotalDistance sets the "totalDistance" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateTotalDistance() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateTotalDistance()
 	})
 }
 

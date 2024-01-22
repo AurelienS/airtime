@@ -98,6 +98,11 @@ func MaxAltitude(v int) predicate.FlightStatistic {
 	return predicate.FlightStatistic(sql.FieldEQ(FieldMaxAltitude, v))
 }
 
+// TotalDistance applies equality check predicate on the "totalDistance" field. It's identical to TotalDistanceEQ.
+func TotalDistance(v int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldEQ(FieldTotalDistance, v))
+}
+
 // TotalThermicTimeEQ applies the EQ predicate on the "totalThermicTime" field.
 func TotalThermicTimeEQ(v int) predicate.FlightStatistic {
 	return predicate.FlightStatistic(sql.FieldEQ(FieldTotalThermicTime, v))
@@ -456,6 +461,46 @@ func MaxAltitudeLT(v int) predicate.FlightStatistic {
 // MaxAltitudeLTE applies the LTE predicate on the "maxAltitude" field.
 func MaxAltitudeLTE(v int) predicate.FlightStatistic {
 	return predicate.FlightStatistic(sql.FieldLTE(FieldMaxAltitude, v))
+}
+
+// TotalDistanceEQ applies the EQ predicate on the "totalDistance" field.
+func TotalDistanceEQ(v int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldEQ(FieldTotalDistance, v))
+}
+
+// TotalDistanceNEQ applies the NEQ predicate on the "totalDistance" field.
+func TotalDistanceNEQ(v int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldNEQ(FieldTotalDistance, v))
+}
+
+// TotalDistanceIn applies the In predicate on the "totalDistance" field.
+func TotalDistanceIn(vs ...int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldIn(FieldTotalDistance, vs...))
+}
+
+// TotalDistanceNotIn applies the NotIn predicate on the "totalDistance" field.
+func TotalDistanceNotIn(vs ...int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldNotIn(FieldTotalDistance, vs...))
+}
+
+// TotalDistanceGT applies the GT predicate on the "totalDistance" field.
+func TotalDistanceGT(v int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldGT(FieldTotalDistance, v))
+}
+
+// TotalDistanceGTE applies the GTE predicate on the "totalDistance" field.
+func TotalDistanceGTE(v int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldGTE(FieldTotalDistance, v))
+}
+
+// TotalDistanceLT applies the LT predicate on the "totalDistance" field.
+func TotalDistanceLT(v int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldLT(FieldTotalDistance, v))
+}
+
+// TotalDistanceLTE applies the LTE predicate on the "totalDistance" field.
+func TotalDistanceLTE(v int) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldLTE(FieldTotalDistance, v))
 }
 
 // HasFlight applies the HasEdge predicate on the "flight" edge.
