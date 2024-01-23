@@ -2,76 +2,92 @@ package dashboard
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 import "github.com/AurelienS/cigare/web/view/layout"
+import "github.com/AurelienS/cigare/web/view/component"
 
 templ Index(view viewmodel.DashboardView) {
 	@layout.Base(view.User, true) {
-		<div class="flex gap-12">
-			<div class="flex flex-col w-max gap-4">
-				<div class="flex flex-col rounded-2xl p-4 shadow bg-base-100 min-w-64">
-					<div class="text-2xl font-medium">2019 - 2024 </div>
-					<div>
-						{ view.AllTimeStats.FlightCount } vols - { view.AllTimeStats.TotalFlightTime }
-					</div>
-					<div class="flex flex-col gap-y-2 mt-4">
-						<div class="mt-3 font-normal text-xl">Records</div>
-						<div>{ view.AllTimeStats.MaxDistance } le <a class="link" href="">18/10/9999</a></div>
-						<div>{ view.AllTimeStats.MaxFlightTime } le <a class="link" href="">13/07/9999</a></div>
-						<div class="mt-3 font-normal text-xl">En moyenne</div>
-						<div>{ view.AllTimeStats.AverageFlightTime }</div>
-					</div>
-					<div class="flex justify-end mt-4">
-						<a class="btn btn-xs" href="/progression">plus de statistiques</a>
+		if view.AllTimeStats.FlightCount == "0" {
+			@EmptyDashboard()
+		} else {
+			<div class="flex gap-12">
+				<div class="flex flex-col w-max gap-4">
+					<div class="flex flex-col rounded-2xl p-4 shadow bg-base-100 min-w-64">
+						<div class="text-2xl font-medium">2019 - 2024 </div>
+						<div>
+							{ view.AllTimeStats.FlightCount } vols - { view.AllTimeStats.TotalFlightTime }
+						</div>
+						<div class="flex flex-col gap-y-2 mt-4">
+							<div class="mt-3 font-normal text-xl">Records</div>
+							<div>{ view.AllTimeStats.MaxDistance } le <a class="link" href="">18/10/9999</a></div>
+							<div>{ view.AllTimeStats.MaxFlightTime } le <a class="link" href="">13/07/9999</a></div>
+							<div class="mt-3 font-normal text-xl">En moyenne</div>
+							<div>{ view.AllTimeStats.AverageFlightTime }</div>
+						</div>
+						<div class="flex justify-end mt-4">
+							<a class="btn btn-xs" href="/progression">plus de statistiques</a>
+						</div>
 					</div>
 				</div>
-			</div>
-			<div class="flex flex-col flex-grow gap-4">
-				<div class="rounded-2xl p-4 shadow bg-base-100">
-					if view.CurrentYearStat.FlightCount == "0" {
-						<div class="text-2xl font-medium">
-							En 2024 <span class="text-xl font-light ml-4">vous n'avez pas encore volé</span>
-						</div>
-					} else {
-						<div class="text-2xl font-medium">
-							En 2024 <span class="text-xl font-light ml-4">{ view.CurrentYearStat.FlightCount } vols - { view.CurrentYearStat.TotalFlightTime }</span>
-						</div>
-						<div class="flex gap-4 mt-4">
-							<div>
-								{ view.CurrentYearStat.MaxDistance } le <a class="link" href="">18/10/9999</a>
+				<div class="flex flex-col flex-grow gap-4">
+					<div class="rounded-2xl p-4 shadow bg-base-100">
+						if view.CurrentYearStat.FlightCount == "0" {
+							<div class="text-2xl font-medium">
+								En 2024 <span class="text-xl font-light ml-2">vous n'avez pas encore volé</span>
 							</div>
-							<div>record de durée { view.CurrentYearStat.MaxFlightTime }</div>
-							<div>Durée moyenne de { view.CurrentYearStat.AverageFlightTime }</div>
-						</div>
-					}
-				</div>
-				<div class="rounded-2xl p-4 bg-base-100">
-					<div class="text-2xl font-medium">Mes derniers vols</div>
-					<table class="table table-pin-rows overflow-hidden bg-base-100 mt-4">
-						<thead>
-							<tr class="text-lg font-normal">
-								<th>Date</th>
-								<th>Lieu</th>
-								<th>Durée</th>
-								<th>Distance</th>
-								<th>Link</th>
-							</tr>
-						</thead>
-						<tbody>
-							for _, flight := range view.LastFlights {
-								<tr class="hover">
-									<td>{ flight.Date }</td>
-									<th>{ flight.TakeoffLocation }</th>
-									<td>{ flight.TotalFlightTime }</td>
-									<td>{ flight.TotalDistance }</td>
-									<td><a href={ templ.SafeURL(flight.Link) }>ouvrir</a></td>
+						} else {
+							<div class="text-2xl font-medium">
+								En 2024 <span class="text-xl font-light ml-4">{ view.CurrentYearStat.FlightCount } vols - { view.CurrentYearStat.TotalFlightTime }</span>
+							</div>
+							<div class="flex gap-4 mt-4">
+								<div>
+									{ view.CurrentYearStat.MaxDistance } le <a class="link" href="">18/10/9999</a>
+								</div>
+								<div>record de durée { view.CurrentYearStat.MaxFlightTime }</div>
+								<div>Durée moyenne de { view.CurrentYearStat.AverageFlightTime }</div>
+							</div>
+						}
+					</div>
+					<div class="rounded-2xl p-4 bg-base-100">
+						<div class="text-2xl font-medium">Mes derniers vols</div>
+						<table class="table table-pin-rows overflow-hidden bg-base-100 mt-4">
+							<thead>
+								<tr class="text-lg font-normal">
+									<th>Date</th>
+									<th>Lieu</th>
+									<th>Durée</th>
+									<th>Distance</th>
+									<th>Link</th>
 								</tr>
-							}
-						</tbody>
-					</table>
-					<div class="flex justify-end">
-						<a class="btn btn-xs" href="/logbook/2023">voir tous mes vols</a>
+							</thead>
+							<tbody>
+								for _, flight := range view.LastFlights {
+									<tr class="hover">
+										<td>{ flight.Date }</td>
+										<td>{ flight.TakeoffLocation }</td>
+										<td>{ flight.TotalFlightTime }</td>
+										<td>{ flight.TotalDistance }</td>
+										<td><a href={ templ.SafeURL(flight.Link) }>ouvrir</a></td>
+									</tr>
+								}
+							</tbody>
+						</table>
+						<div class="flex justify-end">
+							<a class="btn btn-xs" href="/logbook/2023">voir tous mes vols</a>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+		}
 	}
+}
+
+templ EmptyDashboard() {
+	<div class="flex-grow flex justify-center items-center">
+		<div class="text-center mt-[-12rem]">
+			<h1 class="text-4xl font-bold mb-4">Upload tes vols</h1>
+			<p class="text-lg mb-6">Clique sur le bouton ci-dessous pour uploader tes premiers vols</p>
+			<p class="text-lg mb-6">Tu peux choisir un fichier IGC ou un zip de fichier IGC</p>
+			@component.UploadFlightForm("btn btn-active btn-accent")
+		</div>
+	</div>
 }

@@ -1,6 +1,6 @@
 package component
 
-templ UploadFlightForm() {
+templ UploadFlightForm(style string) {
 	<script>
 		function triggerUpload(input) {
 			var event = new CustomEvent('fileSelected', {bubbles: true});
@@ -17,7 +17,7 @@ templ UploadFlightForm() {
 	>
 		<input id="igcfile" type="file" name="igcfile" accept=".igc, .zip" style="display:none;" onchange="triggerUpload(this)"/>
 		<button
-			class="btn btn-outline"
+			class={ style }
 			type="button"
 			onclick="document.getElementById('igcfile').click();"
 		>

@@ -10,7 +10,7 @@ import "context"
 import "io"
 import "bytes"
 
-func UploadFlightForm() templ.Component {
+func UploadFlightForm(style string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -38,12 +38,29 @@ func UploadFlightForm() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"/logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"none\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc, .zip\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> <button class=\"btn btn-outline\" type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"/logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"none\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc, .zip\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var3 := `Enregistrer un vol`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
+		var templ_7745c5c3_Var3 = []any{style}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var3).String()))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Var4 := `Enregistrer un vol`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -11,7 +11,7 @@ templ Index(user viewmodel.UserView) {
 				<div class="max-w-md">
 					<h1 class="text-5xl font-bold">Salut, { user.Name }</h1>
 					<p class="py-6">Pour commencer il te suffit de mettre un fichier IGC ou un zip contenant des fichiers IGC</p>
-					@component.UploadFlightForm()
+					@component.UploadFlightForm("btn")
 				</div>
 			</div>
 		</div>
