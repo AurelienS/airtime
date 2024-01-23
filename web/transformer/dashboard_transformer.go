@@ -30,6 +30,8 @@ func TransformDashboardToViewModel(
 		MaxDurationFlight: TransformFlightToDashboardViewmodel(currentYearStats.MaxDurationFLight),
 		MaxDistance:       PrettyDistance(currentYearStats.MaxDurationFLight.Statistic.TotalDistance, false),
 		MaxDistanceFlight: TransformFlightToDashboardViewmodel(currentYearStats.MaxDurationFLight),
+		MaxAltitude:       PrettyDistance(currentYearStats.MaxAltitudeFlight.Statistic.MaxAltitude, true),
+		MaxAltitudeFlight: TransformFlightToDashboardViewmodel(currentYearStats.MaxAltitudeFlight),
 	}
 
 	allTimeStatsView := viewmodel.DashboardStatsView{
@@ -41,6 +43,8 @@ func TransformDashboardToViewModel(
 		MaxDurationFlight: TransformFlightToDashboardViewmodel(allTimeStats.MaxDurationFLight),
 		MaxDistance:       PrettyDistance(allTimeStats.MaxDurationFLight.Statistic.TotalDistance, false),
 		MaxDistanceFlight: TransformFlightToDashboardViewmodel(allTimeStats.MaxDurationFLight),
+		MaxAltitude:       PrettyDistance(allTimeStats.MaxAltitudeFlight.Statistic.MaxAltitude, true),
+		MaxAltitudeFlight: TransformFlightToDashboardViewmodel(allTimeStats.MaxAltitudeFlight),
 	}
 
 	return viewmodel.DashboardView{
@@ -61,6 +65,7 @@ func TransformFlightToDashboardViewmodel(flight domain.Flight) viewmodel.Dashboa
 		TakeoffLocation: flight.TakeoffLocation,
 		TotalFlightTime: PrettyDuration(flight.Statistic.TotalFlightTime),
 		TotalDistance:   PrettyDistance(flight.Statistic.TotalDistance, false),
+		MaxAltitude:     PrettyDistance(flight.Statistic.MaxAltitude, true),
 		FlightNumber:    "-1",
 		Link:            fmt.Sprintf("/logbook/flight/%d", flight.ID),
 	}
