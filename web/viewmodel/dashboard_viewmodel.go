@@ -5,16 +5,20 @@ type DashboardStatsView struct {
 	TotalFlightTime   string
 	TotalDistance     string
 	AverageFlightTime string
-	MaxFlightTime     string
+	MaxDuration       string
+	MaxDurationFlight DashboardFlightView
 	MaxDistance       string
+	MaxDistanceFlight DashboardFlightView
 }
 type DashboardCurrentYearStatsView struct {
 	FlightCount       string
 	TotalFlightTime   string
 	TotalDistance     string
 	AverageFlightTime string
-	MaxFlightTime     string
+	MaxDuration       string
+	MaxDurationFlight DashboardFlightView
 	MaxDistance       string
+	MaxDistanceFlight DashboardFlightView
 }
 
 type DashboardSitesStatsView struct {
@@ -35,6 +39,9 @@ type DashboardFlightView struct {
 type DashboardView struct {
 	User            UserView
 	CurrentYearStat DashboardCurrentYearStatsView
+	CurrentYear     string
+	FirstYear       string
+	LastYear        string
 	LastFlights     []DashboardFlightView
 	AllTimeStats    DashboardStatsView
 	SitesStats      DashboardSitesStatsView

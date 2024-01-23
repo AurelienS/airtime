@@ -254,55 +254,64 @@ func UpdateRateOfClimbHistory(history []float64, rateOfClimb float64, period int
 
 type StatsAggregated struct {
 	FlightCount           int
-	MaxAltitude           int
-	MaxClimb              int
+	MaxAltitudeFlight     Flight
+	MaxClimbFlight        Flight
 	TotalClimb            int
 	TotalDistance         int
-	MaxDistance           int
+	MaxDistanceFlight     Flight
 	TotalNumberOfThermals int
-	MaxClimbRate          float64
-	MaxFlightLength       time.Duration
+	MaxClimbRateFlight    Flight
+	MaxDurationFLight     Flight
 	MinFlightLength       time.Duration
 	AverageFlightLength   time.Duration
 	TotalFlightTime       time.Duration
 	TotalThermicTime      time.Duration
+	FirstFlight           Flight
+	LastFlight            Flight
 }
 
 func ComputeAggregateStatistics(flights []Flight) StatsAggregated {
-	var maxAltitude int
-	var maxVario float64
-	var maxFlightLength time.Duration
+	var maxAltitude Flight
+	var maxVario Flight
+	var firstFlight Flight
+	var lastFlight Flight
+	var maxFlightLength Flight
 	minFlightLength := time.Duration(0)
 	averageFlightLength := time.Duration(0)
 	var totalFlightTime time.Duration
+	flightCount := len(flights)
+	if flightCount > 0 {
+		firstFlight = flights[flightCount-1]
+	}
+	if flightCount > 1 {
+		lastFlight = flights[0]
+	}
 
 	var totalThermicTime time.Duration
-	var maxClimb int
+	var maxClimb Flight
 	var totalClimb int
 	var totalNumberOfThermals int
 	var totalDistance int
-	var maxDistance int
-
-	flightCount := len(flights)
+	var maxDistance Flight
 
 	for _, f := range flights {
-		if f.Statistic.MaxAltitude > maxAltitude {
-			maxAltitude = f.Statistic.MaxAltitude
+		if f.Statistic.MaxAltitude > maxAltitude.Statistic.MaxAltitude {
+			maxAltitude = f
 		}
-		if f.Statistic.MaxClimbRate > maxVario {
-			maxVario = f.Statistic.MaxClimbRate
+		if f.Statistic.MaxClimbRate > maxVario.Statistic.MaxClimbRate {
+			maxVario = f
 		}
-		if f.Statistic.TotalFlightTime > maxFlightLength {
-			maxFlightLength = f.Statistic.TotalFlightTime
+		if f.Statistic.TotalFlightTime > maxFlightLength.Statistic.TotalFlightTime {
+			maxFlightLength = f
 		}
 		if f.Statistic.TotalFlightTime < minFlightLength {
 			minFlightLength = f.Statistic.TotalFlightTime
 		}
-		if f.Statistic.MaxClimb > maxClimb {
-			maxClimb = f.Statistic.MaxClimb
+		if f.Statistic.MaxClimb > maxClimb.Statistic.MaxClimb {
+			maxClimb = f
 		}
-		if int(f.Statistic.TotalDistance) > maxDistance {
-			maxDistance = int(f.Statistic.TotalDistance)
+		if f.Statistic.TotalDistance > maxDistance.Statistic.TotalDistance {
+			maxDistance = f
 		}
 		totalClimb += f.Statistic.TotalClimb
 		totalNumberOfThermals += f.Statistic.NumberOfThermals
@@ -317,18 +326,20 @@ func ComputeAggregateStatistics(flights []Flight) StatsAggregated {
 
 	aggregatedStats := StatsAggregated{
 		FlightCount:           flightCount,
-		MaxAltitude:           maxAltitude,
-		MaxClimb:              maxClimb,
+		MaxAltitudeFlight:     maxAltitude,
+		MaxClimbFlight:        maxClimb,
 		TotalClimb:            totalClimb,
 		TotalNumberOfThermals: totalNumberOfThermals,
-		MaxClimbRate:          maxVario,
-		MaxFlightLength:       maxFlightLength,
+		MaxClimbRateFlight:    maxVario,
+		MaxDurationFLight:     maxFlightLength,
 		MinFlightLength:       minFlightLength,
 		AverageFlightLength:   averageFlightLength,
 		TotalFlightTime:       totalFlightTime,
 		TotalThermicTime:      totalThermicTime,
 		TotalDistance:         totalDistance,
-		MaxDistance:           maxDistance,
+		MaxDistanceFlight:     maxDistance,
+		FirstFlight:           firstFlight,
+		LastFlight:            lastFlight,
 	}
 	return aggregatedStats
 }

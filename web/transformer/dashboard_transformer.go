@@ -3,6 +3,7 @@ package transformer
 import (
 	"fmt"
 	"strconv"
+	"time"
 
 	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/web/viewmodel"
@@ -17,14 +18,7 @@ func TransformDashboardToViewModel(
 ) viewmodel.DashboardView {
 	var lastFlightsView []viewmodel.DashboardFlightView
 	for _, f := range lastFlights {
-		lastFlightsView = append(lastFlightsView, viewmodel.DashboardFlightView{
-			Date:            f.Date.Format("02/01/2006 15h04"),
-			TakeoffLocation: f.TakeoffLocation,
-			TotalFlightTime: PrettyDuration(f.Statistic.TotalFlightTime),
-			TotalDistance:   PrettyDistance(f.Statistic.TotalDistance, false),
-			FlightNumber:    "-1",
-			Link:            fmt.Sprintf("/logbook/flight/%d", f.ID),
-		})
+		lastFlightsView = append(lastFlightsView, TransformFlightToDashboardViewmodel(f))
 	}
 
 	currentYearStatsView := viewmodel.DashboardCurrentYearStatsView{
@@ -32,8 +26,10 @@ func TransformDashboardToViewModel(
 		TotalFlightTime:   PrettyDuration(currentYearStats.TotalFlightTime),
 		TotalDistance:     "-1 m",
 		AverageFlightTime: PrettyDuration(currentYearStats.AverageFlightLength),
-		MaxFlightTime:     PrettyDuration(currentYearStats.MaxFlightLength),
-		MaxDistance:       "-1 m",
+		MaxDuration:       PrettyDuration(currentYearStats.MaxDurationFLight.Statistic.TotalFlightTime),
+		MaxDurationFlight: TransformFlightToDashboardViewmodel(currentYearStats.MaxDurationFLight),
+		MaxDistance:       PrettyDistance(currentYearStats.MaxDurationFLight.Statistic.TotalDistance, false),
+		MaxDistanceFlight: TransformFlightToDashboardViewmodel(currentYearStats.MaxDurationFLight),
 	}
 
 	allTimeStatsView := viewmodel.DashboardStatsView{
@@ -41,8 +37,10 @@ func TransformDashboardToViewModel(
 		TotalFlightTime:   PrettyDuration(allTimeStats.TotalFlightTime),
 		TotalDistance:     PrettyDistance(allTimeStats.TotalDistance, false),
 		AverageFlightTime: PrettyDuration(allTimeStats.AverageFlightLength),
-		MaxFlightTime:     PrettyDuration(allTimeStats.MaxFlightLength),
-		MaxDistance:       PrettyDistance(allTimeStats.MaxDistance, false),
+		MaxDuration:       PrettyDuration(allTimeStats.MaxDurationFLight.Statistic.TotalFlightTime),
+		MaxDurationFlight: TransformFlightToDashboardViewmodel(allTimeStats.MaxDurationFLight),
+		MaxDistance:       PrettyDistance(allTimeStats.MaxDurationFLight.Statistic.TotalDistance, false),
+		MaxDistanceFlight: TransformFlightToDashboardViewmodel(allTimeStats.MaxDurationFLight),
 	}
 
 	return viewmodel.DashboardView{
@@ -50,6 +48,20 @@ func TransformDashboardToViewModel(
 		SitesStats:      viewmodel.DashboardSitesStatsView{},
 		User:            TransformUserToViewModel(user),
 		CurrentYearStat: currentYearStatsView,
+		CurrentYear:     strconv.Itoa(time.Now().Year()),
+		FirstYear:       strconv.Itoa(allTimeStats.FirstFlight.Date.Year()),
+		LastYear:        strconv.Itoa(allTimeStats.LastFlight.Date.Year()),
 		AllTimeStats:    allTimeStatsView,
+	}
+}
+
+func TransformFlightToDashboardViewmodel(flight domain.Flight) viewmodel.DashboardFlightView {
+	return viewmodel.DashboardFlightView{
+		Date:            flight.Date.Format("02/01/2006 15h04"),
+		TakeoffLocation: flight.TakeoffLocation,
+		TotalFlightTime: PrettyDuration(flight.Statistic.TotalFlightTime),
+		TotalDistance:   PrettyDistance(flight.Statistic.TotalDistance, false),
+		FlightNumber:    "-1",
+		Link:            fmt.Sprintf("/logbook/flight/%d", flight.ID),
 	}
 }

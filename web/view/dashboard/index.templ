@@ -12,14 +12,30 @@ templ Index(view viewmodel.DashboardView) {
 			<div class="flex gap-12">
 				<div class="flex flex-col w-max gap-4">
 					<div class="flex flex-col rounded-2xl p-4 shadow bg-base-100 min-w-64">
-						<div class="text-2xl font-medium">2019 - 2024 </div>
+						<div class="text-2xl font-medium">{ view.FirstYear } - { view.LastYear } </div>
 						<div>
 							{ view.AllTimeStats.FlightCount } vols - { view.AllTimeStats.TotalFlightTime }
 						</div>
 						<div class="flex flex-col gap-y-2 mt-4">
 							<div class="mt-3 font-normal text-xl">Records</div>
-							<div>{ view.AllTimeStats.MaxDistance } le <a class="link" href="">18/10/9999</a></div>
-							<div>{ view.AllTimeStats.MaxFlightTime } le <a class="link" href="">13/07/9999</a></div>
+							<div>
+								{ view.AllTimeStats.MaxDistance } le
+								<a
+									class="link"
+									href={ templ.SafeURL(view.AllTimeStats.MaxDistanceFlight.Link) }
+								>
+									{ view.AllTimeStats.MaxDistanceFlight.Date }
+								</a>
+							</div>
+							<div>
+								{ view.AllTimeStats.MaxDuration } le
+								<a
+									class="link"
+									href={ templ.SafeURL(view.AllTimeStats.MaxDurationFlight.Link) }
+								>
+									{ view.AllTimeStats.MaxDurationFlight.Date }
+								</a>
+							</div>
 							<div class="mt-3 font-normal text-xl">En moyenne</div>
 							<div>{ view.AllTimeStats.AverageFlightTime }</div>
 						</div>
@@ -32,18 +48,31 @@ templ Index(view viewmodel.DashboardView) {
 					<div class="rounded-2xl p-4 shadow bg-base-100">
 						if view.CurrentYearStat.FlightCount == "0" {
 							<div class="text-2xl font-medium">
-								En 2024 <span class="text-xl font-light ml-2">vous n'avez pas encore volé</span>
+								En { view.CurrentYear } <span class="text-xl font-light ml-2">vous n'avez pas encore volé</span>
 							</div>
 						} else {
 							<div class="text-2xl font-medium">
-								En 2024 <span class="text-xl font-light ml-4">{ view.CurrentYearStat.FlightCount } vols - { view.CurrentYearStat.TotalFlightTime }</span>
+								En { view.CurrentYear } <span class="text-xl font-light ml-2">{ view.CurrentYearStat.FlightCount } vols - { view.CurrentYearStat.TotalFlightTime }</span>
 							</div>
 							<div class="flex gap-4 mt-4">
 								<div>
-									{ view.CurrentYearStat.MaxDistance } le <a class="link" href="">18/10/9999</a>
+									{ view.CurrentYearStat.MaxDistance } le
+									<a
+										class="link"
+										href={ templ.SafeURL(view.CurrentYearStat.MaxDistanceFlight.Link) }
+									>
+										{ view.CurrentYearStat.MaxDistanceFlight.Date }
+									</a>
 								</div>
-								<div>record de durée { view.CurrentYearStat.MaxFlightTime }</div>
-								<div>Durée moyenne de { view.CurrentYearStat.AverageFlightTime }</div>
+								<div>
+									{ view.CurrentYearStat.MaxDuration } le
+									<a
+										class="link"
+										href={ templ.SafeURL(view.CurrentYearStat.MaxDurationFlight.Link) }
+									>
+										{ view.CurrentYearStat.MaxDurationFlight.Date }
+									</a>
+								</div>
 							</div>
 						}
 					</div>
