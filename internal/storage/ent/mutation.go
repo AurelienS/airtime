@@ -1867,6 +1867,7 @@ type UserMutation struct {
 	email          *string
 	name           *string
 	pictureURL     *string
+	theme          *string
 	createdAt      *time.Time
 	clearedFields  map[string]struct{}
 	flights        map[int]struct{}
@@ -2119,6 +2120,42 @@ func (m *UserMutation) ResetPictureURL() {
 	m.pictureURL = nil
 }
 
+// SetTheme sets the "theme" field.
+func (m *UserMutation) SetTheme(s string) {
+	m.theme = &s
+}
+
+// Theme returns the value of the "theme" field in the mutation.
+func (m *UserMutation) Theme() (r string, exists bool) {
+	v := m.theme
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldTheme returns the old "theme" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldTheme(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldTheme is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldTheme requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldTheme: %w", err)
+	}
+	return oldValue.Theme, nil
+}
+
+// ResetTheme resets all changes to the "theme" field.
+func (m *UserMutation) ResetTheme() {
+	m.theme = nil
+}
+
 // SetCreatedAt sets the "createdAt" field.
 func (m *UserMutation) SetCreatedAt(t time.Time) {
 	m.createdAt = &t
@@ -2243,7 +2280,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.googleID != nil {
 		fields = append(fields, user.FieldGoogleID)
 	}
@@ -2255,6 +2292,9 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.pictureURL != nil {
 		fields = append(fields, user.FieldPictureURL)
+	}
+	if m.theme != nil {
+		fields = append(fields, user.FieldTheme)
 	}
 	if m.createdAt != nil {
 		fields = append(fields, user.FieldCreatedAt)
@@ -2275,6 +2315,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Name()
 	case user.FieldPictureURL:
 		return m.PictureURL()
+	case user.FieldTheme:
+		return m.Theme()
 	case user.FieldCreatedAt:
 		return m.CreatedAt()
 	}
@@ -2294,6 +2336,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldName(ctx)
 	case user.FieldPictureURL:
 		return m.OldPictureURL(ctx)
+	case user.FieldTheme:
+		return m.OldTheme(ctx)
 	case user.FieldCreatedAt:
 		return m.OldCreatedAt(ctx)
 	}
@@ -2332,6 +2376,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetPictureURL(v)
+		return nil
+	case user.FieldTheme:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetTheme(v)
 		return nil
 	case user.FieldCreatedAt:
 		v, ok := value.(time.Time)
@@ -2400,6 +2451,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldPictureURL:
 		m.ResetPictureURL()
+		return nil
+	case user.FieldTheme:
+		m.ResetTheme()
 		return nil
 	case user.FieldCreatedAt:
 		m.ResetCreatedAt()

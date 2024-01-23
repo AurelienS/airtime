@@ -5,5 +5,6 @@ type User struct {
 	GoogleID   string
 	Email      string
 	Name       string
+	Theme      string
 	PictureURL string
 }

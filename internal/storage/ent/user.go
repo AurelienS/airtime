@@ -25,6 +25,8 @@ type User struct {
 	Name string `json:"name,omitempty"`
 	// PictureURL holds the value of the "pictureURL" field.
 	PictureURL string `json:"pictureURL,omitempty"`
+	// Theme holds the value of the "theme" field.
+	Theme string `json:"theme,omitempty"`
 	// CreatedAt holds the value of the "createdAt" field.
 	CreatedAt time.Time `json:"createdAt,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -58,7 +60,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldGoogleID, user.FieldEmail, user.FieldName, user.FieldPictureURL:
+		case user.FieldGoogleID, user.FieldEmail, user.FieldName, user.FieldPictureURL, user.FieldTheme:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
@@ -106,6 +108,12 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field pictureURL", values[i])
 			} else if value.Valid {
 				u.PictureURL = value.String
+			}
+		case user.FieldTheme:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field theme", values[i])
+			} else if value.Valid {
+				u.Theme = value.String
 			}
 		case user.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
@@ -165,6 +173,9 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("pictureURL=")
 	builder.WriteString(u.PictureURL)
+	builder.WriteString(", ")
+	builder.WriteString("theme=")
+	builder.WriteString(u.Theme)
 	builder.WriteString(", ")
 	builder.WriteString("createdAt=")
 	builder.WriteString(u.CreatedAt.Format(time.ANSIC))

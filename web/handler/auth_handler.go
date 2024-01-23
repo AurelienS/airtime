@@ -2,6 +2,7 @@ package handler
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 
 	"github.com/AurelienS/cigare/internal/domain"
@@ -49,14 +50,15 @@ func (h *AuthHandler) GetAuthCallback(c echo.Context) error {
 		Email:      googleUser.Email,
 		Name:       googleUser.Name,
 		PictureURL: googleUser.AvatarURL,
+		Theme:      "light",
 	}
 
-	// aFIX INSERT  AND CASE WHERE ALREADY EXIST SHOULDNT BE ERROR BUT DB WILL THROW UNIQUE CONSTRAINT
 	user, err = h.userService.UpsertUser(c.Request().Context(), user)
 	if err != nil {
 		return err
 	}
 
+	fmt.Println("file: auth_handler.go ~ line 61 ~ func ~ user : ", user)
 	err = session.SaveUserInSession(c, user)
 	if err != nil {
 		return err

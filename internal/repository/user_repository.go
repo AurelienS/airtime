@@ -27,6 +27,7 @@ func (r *UserRepository) InsertUser(ctx context.Context, user domain.User) (doma
 		SetEmail(user.Email).
 		SetName(user.Name).
 		SetPictureURL(user.PictureURL).
+		SetTheme(user.Theme).
 		Save(ctx)
 	if err != nil {
 		util.Error().Msgf("Failed to insert user %v", user)
@@ -51,6 +52,7 @@ func (r *UserRepository) UpdateUser(ctx context.Context, incomingUser domain.Use
 		SetEmail(incomingUser.Email).
 		SetName(incomingUser.Name).
 		SetPictureURL(incomingUser.PictureURL).
+		SetTheme(incomingUser.Theme).
 		Save(ctx)
 	if err != nil {
 		util.Error().Msgf("Failed to update user %v", incomingUser)

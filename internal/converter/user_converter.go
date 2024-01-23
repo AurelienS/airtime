@@ -12,6 +12,7 @@ func DBToDomainUser(userDB *ent.User) domain.User {
 		Email:      userDB.Email,
 		Name:       userDB.Name,
 		PictureURL: userDB.PictureURL,
+		Theme:      userDB.Theme,
 	}
 }
 

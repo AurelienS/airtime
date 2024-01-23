@@ -20,6 +20,7 @@ func (User) Fields() []ent.Field {
 		field.String("email").Unique(),
 		field.String("name"),
 		field.String("pictureURL"),
+		field.String("theme").Default("light"),
 		field.Time("createdAt").
 			Default(time.Now),
 	}

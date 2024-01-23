@@ -85,6 +85,20 @@ func (uu *UserUpdate) SetNillablePictureURL(s *string) *UserUpdate {
 	return uu
 }
 
+// SetTheme sets the "theme" field.
+func (uu *UserUpdate) SetTheme(s string) *UserUpdate {
+	uu.mutation.SetTheme(s)
+	return uu
+}
+
+// SetNillableTheme sets the "theme" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableTheme(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetTheme(*s)
+	}
+	return uu
+}
+
 // SetCreatedAt sets the "createdAt" field.
 func (uu *UserUpdate) SetCreatedAt(t time.Time) *UserUpdate {
 	uu.mutation.SetCreatedAt(t)
@@ -187,6 +201,9 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.PictureURL(); ok {
 		_spec.SetField(user.FieldPictureURL, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.Theme(); ok {
+		_spec.SetField(user.FieldTheme, field.TypeString, value)
 	}
 	if value, ok := uu.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
@@ -308,6 +325,20 @@ func (uuo *UserUpdateOne) SetPictureURL(s string) *UserUpdateOne {
 func (uuo *UserUpdateOne) SetNillablePictureURL(s *string) *UserUpdateOne {
 	if s != nil {
 		uuo.SetPictureURL(*s)
+	}
+	return uuo
+}
+
+// SetTheme sets the "theme" field.
+func (uuo *UserUpdateOne) SetTheme(s string) *UserUpdateOne {
+	uuo.mutation.SetTheme(s)
+	return uuo
+}
+
+// SetNillableTheme sets the "theme" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableTheme(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetTheme(*s)
 	}
 	return uuo
 }
@@ -444,6 +475,9 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.PictureURL(); ok {
 		_spec.SetField(user.FieldPictureURL, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.Theme(); ok {
+		_spec.SetField(user.FieldTheme, field.TypeString, value)
 	}
 	if value, ok := uuo.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)

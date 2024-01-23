@@ -22,6 +22,8 @@ const (
 	FieldName = "name"
 	// FieldPictureURL holds the string denoting the pictureurl field in the database.
 	FieldPictureURL = "picture_url"
+	// FieldTheme holds the string denoting the theme field in the database.
+	FieldTheme = "theme"
 	// FieldCreatedAt holds the string denoting the createdat field in the database.
 	FieldCreatedAt = "created_at"
 	// EdgeFlights holds the string denoting the flights edge name in mutations.
@@ -44,6 +46,7 @@ var Columns = []string{
 	FieldEmail,
 	FieldName,
 	FieldPictureURL,
+	FieldTheme,
 	FieldCreatedAt,
 }
 
@@ -88,6 +91,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByPictureURL orders the results by the pictureURL field.
 func ByPictureURL(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPictureURL, opts...).ToFunc()
+}
+
+// ByTheme orders the results by the theme field.
+func ByTheme(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldTheme, opts...).ToFunc()
 }
 
 // ByCreatedAt orders the results by the createdAt field.

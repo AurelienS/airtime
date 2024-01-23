@@ -74,6 +74,7 @@ var (
 		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "picture_url", Type: field.TypeString},
+		{Name: "theme", Type: field.TypeString},
 		{Name: "created_at", Type: field.TypeTime},
 	}
 	// UsersTable holds the schema information for the "users" table.

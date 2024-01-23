@@ -9,5 +9,6 @@ func TransformUserToViewModel(user domain.User) viewmodel.UserView {
 	return viewmodel.UserView{
 		Name:       user.Name,
 		PictureURL: user.PictureURL,
+		Theme:      user.Theme,
 	}
 }

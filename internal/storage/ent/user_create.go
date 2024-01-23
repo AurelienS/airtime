@@ -47,6 +47,12 @@ func (uc *UserCreate) SetPictureURL(s string) *UserCreate {
 	return uc
 }
 
+// SetTheme sets the "theme" field.
+func (uc *UserCreate) SetTheme(s string) *UserCreate {
+	uc.mutation.SetTheme(s)
+	return uc
+}
+
 // SetCreatedAt sets the "createdAt" field.
 func (uc *UserCreate) SetCreatedAt(t time.Time) *UserCreate {
 	uc.mutation.SetCreatedAt(t)
@@ -131,6 +137,9 @@ func (uc *UserCreate) check() error {
 	if _, ok := uc.mutation.PictureURL(); !ok {
 		return &ValidationError{Name: "pictureURL", err: errors.New(`ent: missing required field "User.pictureURL"`)}
 	}
+	if _, ok := uc.mutation.Theme(); !ok {
+		return &ValidationError{Name: "theme", err: errors.New(`ent: missing required field "User.theme"`)}
+	}
 	if _, ok := uc.mutation.CreatedAt(); !ok {
 		return &ValidationError{Name: "createdAt", err: errors.New(`ent: missing required field "User.createdAt"`)}
 	}
@@ -176,6 +185,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.PictureURL(); ok {
 		_spec.SetField(user.FieldPictureURL, field.TypeString, value)
 		_node.PictureURL = value
+	}
+	if value, ok := uc.mutation.Theme(); ok {
+		_spec.SetField(user.FieldTheme, field.TypeString, value)
+		_node.Theme = value
 	}
 	if value, ok := uc.mutation.CreatedAt(); ok {
 		_spec.SetField(user.FieldCreatedAt, field.TypeTime, value)
@@ -297,6 +310,18 @@ func (u *UserUpsert) UpdatePictureURL() *UserUpsert {
 	return u
 }
 
+// SetTheme sets the "theme" field.
+func (u *UserUpsert) SetTheme(v string) *UserUpsert {
+	u.Set(user.FieldTheme, v)
+	return u
+}
+
+// UpdateTheme sets the "theme" field to the value that was provided on create.
+func (u *UserUpsert) UpdateTheme() *UserUpsert {
+	u.SetExcluded(user.FieldTheme)
+	return u
+}
+
 // SetCreatedAt sets the "createdAt" field.
 func (u *UserUpsert) SetCreatedAt(v time.Time) *UserUpsert {
 	u.Set(user.FieldCreatedAt, v)
@@ -402,6 +427,20 @@ func (u *UserUpsertOne) SetPictureURL(v string) *UserUpsertOne {
 func (u *UserUpsertOne) UpdatePictureURL() *UserUpsertOne {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdatePictureURL()
+	})
+}
+
+// SetTheme sets the "theme" field.
+func (u *UserUpsertOne) SetTheme(v string) *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.SetTheme(v)
+	})
+}
+
+// UpdateTheme sets the "theme" field to the value that was provided on create.
+func (u *UserUpsertOne) UpdateTheme() *UserUpsertOne {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateTheme()
 	})
 }
 
@@ -676,6 +715,20 @@ func (u *UserUpsertBulk) SetPictureURL(v string) *UserUpsertBulk {
 func (u *UserUpsertBulk) UpdatePictureURL() *UserUpsertBulk {
 	return u.Update(func(s *UserUpsert) {
 		s.UpdatePictureURL()
+	})
+}
+
+// SetTheme sets the "theme" field.
+func (u *UserUpsertBulk) SetTheme(v string) *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.SetTheme(v)
+	})
+}
+
+// UpdateTheme sets the "theme" field to the value that was provided on create.
+func (u *UserUpsertBulk) UpdateTheme() *UserUpsertBulk {
+	return u.Update(func(s *UserUpsert) {
+		s.UpdateTheme()
 	})
 }
 

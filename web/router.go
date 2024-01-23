@@ -53,6 +53,8 @@ func (r *Router) Initialize(e *echo.Echo) {
 
 	authGroup.GET("onboarding", r.onboardingHandler.Get)
 
+	authGroup.PUT("user/theme", r.userHandler.PutTheme)
+
 	authGroup.GET("logbook", r.logbookHandler.GetLogbook)
 	authGroup.GET("logbook/:year", r.logbookHandler.GetLogbook)
 	authGroup.GET("logbook/flight/:flight", r.logbookHandler.GetFlight)
