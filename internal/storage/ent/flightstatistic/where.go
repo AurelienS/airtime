@@ -103,6 +103,11 @@ func TotalDistance(v int) predicate.FlightStatistic {
 	return predicate.FlightStatistic(sql.FieldEQ(FieldTotalDistance, v))
 }
 
+// GeoJSON applies equality check predicate on the "geoJSON" field. It's identical to GeoJSONEQ.
+func GeoJSON(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldEQ(FieldGeoJSON, v))
+}
+
 // TotalThermicTimeEQ applies the EQ predicate on the "totalThermicTime" field.
 func TotalThermicTimeEQ(v int) predicate.FlightStatistic {
 	return predicate.FlightStatistic(sql.FieldEQ(FieldTotalThermicTime, v))
@@ -501,6 +506,71 @@ func TotalDistanceLT(v int) predicate.FlightStatistic {
 // TotalDistanceLTE applies the LTE predicate on the "totalDistance" field.
 func TotalDistanceLTE(v int) predicate.FlightStatistic {
 	return predicate.FlightStatistic(sql.FieldLTE(FieldTotalDistance, v))
+}
+
+// GeoJSONEQ applies the EQ predicate on the "geoJSON" field.
+func GeoJSONEQ(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldEQ(FieldGeoJSON, v))
+}
+
+// GeoJSONNEQ applies the NEQ predicate on the "geoJSON" field.
+func GeoJSONNEQ(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldNEQ(FieldGeoJSON, v))
+}
+
+// GeoJSONIn applies the In predicate on the "geoJSON" field.
+func GeoJSONIn(vs ...string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldIn(FieldGeoJSON, vs...))
+}
+
+// GeoJSONNotIn applies the NotIn predicate on the "geoJSON" field.
+func GeoJSONNotIn(vs ...string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldNotIn(FieldGeoJSON, vs...))
+}
+
+// GeoJSONGT applies the GT predicate on the "geoJSON" field.
+func GeoJSONGT(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldGT(FieldGeoJSON, v))
+}
+
+// GeoJSONGTE applies the GTE predicate on the "geoJSON" field.
+func GeoJSONGTE(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldGTE(FieldGeoJSON, v))
+}
+
+// GeoJSONLT applies the LT predicate on the "geoJSON" field.
+func GeoJSONLT(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldLT(FieldGeoJSON, v))
+}
+
+// GeoJSONLTE applies the LTE predicate on the "geoJSON" field.
+func GeoJSONLTE(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldLTE(FieldGeoJSON, v))
+}
+
+// GeoJSONContains applies the Contains predicate on the "geoJSON" field.
+func GeoJSONContains(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldContains(FieldGeoJSON, v))
+}
+
+// GeoJSONHasPrefix applies the HasPrefix predicate on the "geoJSON" field.
+func GeoJSONHasPrefix(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldHasPrefix(FieldGeoJSON, v))
+}
+
+// GeoJSONHasSuffix applies the HasSuffix predicate on the "geoJSON" field.
+func GeoJSONHasSuffix(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldHasSuffix(FieldGeoJSON, v))
+}
+
+// GeoJSONEqualFold applies the EqualFold predicate on the "geoJSON" field.
+func GeoJSONEqualFold(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldEqualFold(FieldGeoJSON, v))
+}
+
+// GeoJSONContainsFold applies the ContainsFold predicate on the "geoJSON" field.
+func GeoJSONContainsFold(v string) predicate.FlightStatistic {
+	return predicate.FlightStatistic(sql.FieldContainsFold(FieldGeoJSON, v))
 }
 
 // HasFlight applies the HasEdge predicate on the "flight" edge.

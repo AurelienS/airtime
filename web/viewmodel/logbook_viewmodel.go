@@ -12,6 +12,7 @@ type FlightView struct {
 	TakeoffLocation  string
 	TotalFlightTime  string
 	MaxAltitude      string
+	TotalDistance    string
 	TotalThermicTime string
 	MaxClimbRate     string
 	Link             string
@@ -24,6 +25,7 @@ type FlightDetailStatView struct {
 type FlightDetailView struct {
 	FlightView
 	UserView
+	FlightGeoJSON string
 }
 
 type StatView struct {

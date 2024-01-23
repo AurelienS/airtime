@@ -82,6 +82,12 @@ func (fsc *FlightStatisticCreate) SetTotalDistance(i int) *FlightStatisticCreate
 	return fsc
 }
 
+// SetGeoJSON sets the "geoJSON" field.
+func (fsc *FlightStatisticCreate) SetGeoJSON(s string) *FlightStatisticCreate {
+	fsc.mutation.SetGeoJSON(s)
+	return fsc
+}
+
 // SetFlightID sets the "flight" edge to the Flight entity by ID.
 func (fsc *FlightStatisticCreate) SetFlightID(id int) *FlightStatisticCreate {
 	fsc.mutation.SetFlightID(id)
@@ -165,6 +171,9 @@ func (fsc *FlightStatisticCreate) check() error {
 	if _, ok := fsc.mutation.TotalDistance(); !ok {
 		return &ValidationError{Name: "totalDistance", err: errors.New(`ent: missing required field "FlightStatistic.totalDistance"`)}
 	}
+	if _, ok := fsc.mutation.GeoJSON(); !ok {
+		return &ValidationError{Name: "geoJSON", err: errors.New(`ent: missing required field "FlightStatistic.geoJSON"`)}
+	}
 	return nil
 }
 
@@ -231,6 +240,10 @@ func (fsc *FlightStatisticCreate) createSpec() (*FlightStatistic, *sqlgraph.Crea
 	if value, ok := fsc.mutation.TotalDistance(); ok {
 		_spec.SetField(flightstatistic.FieldTotalDistance, field.TypeInt, value)
 		_node.TotalDistance = value
+	}
+	if value, ok := fsc.mutation.GeoJSON(); ok {
+		_spec.SetField(flightstatistic.FieldGeoJSON, field.TypeString, value)
+		_node.GeoJSON = value
 	}
 	if nodes := fsc.mutation.FlightIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -481,6 +494,18 @@ func (u *FlightStatisticUpsert) AddTotalDistance(v int) *FlightStatisticUpsert {
 	return u
 }
 
+// SetGeoJSON sets the "geoJSON" field.
+func (u *FlightStatisticUpsert) SetGeoJSON(v string) *FlightStatisticUpsert {
+	u.Set(flightstatistic.FieldGeoJSON, v)
+	return u
+}
+
+// UpdateGeoJSON sets the "geoJSON" field to the value that was provided on create.
+func (u *FlightStatisticUpsert) UpdateGeoJSON() *FlightStatisticUpsert {
+	u.SetExcluded(flightstatistic.FieldGeoJSON)
+	return u
+}
+
 // UpdateNewValues updates the mutable fields using the new values that were set on create.
 // Using this option is equivalent to using:
 //
@@ -728,6 +753,20 @@ func (u *FlightStatisticUpsertOne) AddTotalDistance(v int) *FlightStatisticUpser
 func (u *FlightStatisticUpsertOne) UpdateTotalDistance() *FlightStatisticUpsertOne {
 	return u.Update(func(s *FlightStatisticUpsert) {
 		s.UpdateTotalDistance()
+	})
+}
+
+// SetGeoJSON sets the "geoJSON" field.
+func (u *FlightStatisticUpsertOne) SetGeoJSON(v string) *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetGeoJSON(v)
+	})
+}
+
+// UpdateGeoJSON sets the "geoJSON" field to the value that was provided on create.
+func (u *FlightStatisticUpsertOne) UpdateGeoJSON() *FlightStatisticUpsertOne {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateGeoJSON()
 	})
 }
 
@@ -1141,6 +1180,20 @@ func (u *FlightStatisticUpsertBulk) AddTotalDistance(v int) *FlightStatisticUpse
 func (u *FlightStatisticUpsertBulk) UpdateTotalDistance() *FlightStatisticUpsertBulk {
 	return u.Update(func(s *FlightStatisticUpsert) {
 		s.UpdateTotalDistance()
+	})
+}
+
+// SetGeoJSON sets the "geoJSON" field.
+func (u *FlightStatisticUpsertBulk) SetGeoJSON(v string) *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.SetGeoJSON(v)
+	})
+}
+
+// UpdateGeoJSON sets the "geoJSON" field to the value that was provided on create.
+func (u *FlightStatisticUpsertBulk) UpdateGeoJSON() *FlightStatisticUpsertBulk {
+	return u.Update(func(s *FlightStatisticUpsert) {
+		s.UpdateGeoJSON()
 	})
 }
 

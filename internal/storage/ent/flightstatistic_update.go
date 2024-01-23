@@ -238,6 +238,20 @@ func (fsu *FlightStatisticUpdate) AddTotalDistance(i int) *FlightStatisticUpdate
 	return fsu
 }
 
+// SetGeoJSON sets the "geoJSON" field.
+func (fsu *FlightStatisticUpdate) SetGeoJSON(s string) *FlightStatisticUpdate {
+	fsu.mutation.SetGeoJSON(s)
+	return fsu
+}
+
+// SetNillableGeoJSON sets the "geoJSON" field if the given value is not nil.
+func (fsu *FlightStatisticUpdate) SetNillableGeoJSON(s *string) *FlightStatisticUpdate {
+	if s != nil {
+		fsu.SetGeoJSON(*s)
+	}
+	return fsu
+}
+
 // SetFlightID sets the "flight" edge to the Flight entity by ID.
 func (fsu *FlightStatisticUpdate) SetFlightID(id int) *FlightStatisticUpdate {
 	fsu.mutation.SetFlightID(id)
@@ -363,6 +377,9 @@ func (fsu *FlightStatisticUpdate) sqlSave(ctx context.Context) (n int, err error
 	}
 	if value, ok := fsu.mutation.AddedTotalDistance(); ok {
 		_spec.AddField(flightstatistic.FieldTotalDistance, field.TypeInt, value)
+	}
+	if value, ok := fsu.mutation.GeoJSON(); ok {
+		_spec.SetField(flightstatistic.FieldGeoJSON, field.TypeString, value)
 	}
 	if fsu.mutation.FlightCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -623,6 +640,20 @@ func (fsuo *FlightStatisticUpdateOne) AddTotalDistance(i int) *FlightStatisticUp
 	return fsuo
 }
 
+// SetGeoJSON sets the "geoJSON" field.
+func (fsuo *FlightStatisticUpdateOne) SetGeoJSON(s string) *FlightStatisticUpdateOne {
+	fsuo.mutation.SetGeoJSON(s)
+	return fsuo
+}
+
+// SetNillableGeoJSON sets the "geoJSON" field if the given value is not nil.
+func (fsuo *FlightStatisticUpdateOne) SetNillableGeoJSON(s *string) *FlightStatisticUpdateOne {
+	if s != nil {
+		fsuo.SetGeoJSON(*s)
+	}
+	return fsuo
+}
+
 // SetFlightID sets the "flight" edge to the Flight entity by ID.
 func (fsuo *FlightStatisticUpdateOne) SetFlightID(id int) *FlightStatisticUpdateOne {
 	fsuo.mutation.SetFlightID(id)
@@ -778,6 +809,9 @@ func (fsuo *FlightStatisticUpdateOne) sqlSave(ctx context.Context) (_node *Fligh
 	}
 	if value, ok := fsuo.mutation.AddedTotalDistance(); ok {
 		_spec.AddField(flightstatistic.FieldTotalDistance, field.TypeInt, value)
+	}
+	if value, ok := fsuo.mutation.GeoJSON(); ok {
+		_spec.SetField(flightstatistic.FieldGeoJSON, field.TypeString, value)
 	}
 	if fsuo.mutation.FlightCleared() {
 		edge := &sqlgraph.EdgeSpec{

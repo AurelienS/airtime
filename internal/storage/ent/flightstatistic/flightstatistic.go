@@ -32,6 +32,8 @@ const (
 	FieldMaxAltitude = "max_altitude"
 	// FieldTotalDistance holds the string denoting the totaldistance field in the database.
 	FieldTotalDistance = "total_distance"
+	// FieldGeoJSON holds the string denoting the geojson field in the database.
+	FieldGeoJSON = "geo_json"
 	// EdgeFlight holds the string denoting the flight edge name in mutations.
 	EdgeFlight = "flight"
 	// Table holds the table name of the flightstatistic in the database.
@@ -58,6 +60,7 @@ var Columns = []string{
 	FieldPercentageThermic,
 	FieldMaxAltitude,
 	FieldTotalDistance,
+	FieldGeoJSON,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "flight_statistics"
@@ -137,6 +140,11 @@ func ByMaxAltitude(opts ...sql.OrderTermOption) OrderOption {
 // ByTotalDistance orders the results by the totalDistance field.
 func ByTotalDistance(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldTotalDistance, opts...).ToFunc()
+}
+
+// ByGeoJSON orders the results by the geoJSON field.
+func ByGeoJSON(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldGeoJSON, opts...).ToFunc()
 }
 
 // ByFlightField orders the results by flight field.

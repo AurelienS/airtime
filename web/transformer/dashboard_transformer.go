@@ -21,7 +21,7 @@ func TransformDashboardToViewModel(
 			Date:            f.Date.Format("02/01/2006 15h04"),
 			TakeoffLocation: f.TakeoffLocation,
 			TotalFlightTime: PrettyDuration(f.Statistic.TotalFlightTime),
-			TotalDistance:   PrettyAltitude(int(f.Statistic.TotalDistance), false),
+			TotalDistance:   PrettyDistance(f.Statistic.TotalDistance, false),
 			FlightNumber:    "-1",
 			Link:            fmt.Sprintf("/logbook/flight/%d", f.ID),
 		})
@@ -39,10 +39,10 @@ func TransformDashboardToViewModel(
 	allTimeStatsView := viewmodel.DashboardStatsView{
 		FlightCount:       strconv.Itoa(allTimeStats.FlightCount),
 		TotalFlightTime:   PrettyDuration(allTimeStats.TotalFlightTime),
-		TotalDistance:     PrettyAltitude(allTimeStats.TotalDistance, false),
+		TotalDistance:     PrettyDistance(allTimeStats.TotalDistance, false),
 		AverageFlightTime: PrettyDuration(allTimeStats.AverageFlightLength),
 		MaxFlightTime:     PrettyDuration(allTimeStats.MaxFlightLength),
-		MaxDistance:       PrettyAltitude(allTimeStats.MaxDistance, false),
+		MaxDistance:       PrettyDistance(allTimeStats.MaxDistance, false),
 	}
 
 	return viewmodel.DashboardView{

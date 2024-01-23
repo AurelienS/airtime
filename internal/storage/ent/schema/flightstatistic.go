@@ -24,6 +24,7 @@ func (FlightStatistic) Fields() []ent.Field {
 		field.Float("percentageThermic"),
 		field.Int("maxAltitude"),
 		field.Int("totalDistance"),
+		field.String("geoJSON"),
 	}
 }
 

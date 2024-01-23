@@ -82,8 +82,9 @@ func (h *LogbookHandler) GetFlight(c echo.Context) error {
 	}
 
 	view := viewmodel.FlightDetailView{
-		UserView:   transformer.TransformUserToViewModel(user),
-		FlightView: transformer.TransformFlightToViewModel(flight),
+		UserView:      transformer.TransformUserToViewModel(user),
+		FlightView:    transformer.TransformFlightToViewModel(flight),
+		FlightGeoJSON: flight.Statistic.GeoJSON,
 	}
 	return Render(c, logbook.Flight(view))
 }

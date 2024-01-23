@@ -26,7 +26,7 @@ func NewFlightRepository(client *ent.Client) FlightRepository {
 func (r FlightRepository) InsertFlight(
 	ctx context.Context,
 	flight domain.Flight,
-	flightStats domain.FlightStatistic,
+	flightStat domain.FlightStatistic,
 	user domain.User,
 ) error {
 	tx, err := r.client.Tx(ctx)
@@ -36,16 +36,17 @@ func (r FlightRepository) InsertFlight(
 
 	fs, err := tx.FlightStatistic.
 		Create().
-		SetTotalThermicTime(int(flightStats.TotalThermicTime.Seconds())).
-		SetTotalFlightTime(int(flightStats.TotalFlightTime.Seconds())).
-		SetMaxClimb(flightStats.MaxClimb).
-		SetMaxClimbRate(flightStats.MaxClimbRate).
-		SetTotalClimb(flightStats.TotalClimb).
-		SetAverageClimbRate(flightStats.AverageClimbRate).
-		SetNumberOfThermals(flightStats.NumberOfThermals).
-		SetPercentageThermic(flightStats.PercentageThermic).
-		SetMaxAltitude(flightStats.MaxAltitude).
-		SetTotalDistance(int(flightStats.TotalDistance)).
+		SetTotalThermicTime(int(flightStat.TotalThermicTime.Seconds())).
+		SetTotalFlightTime(int(flightStat.TotalFlightTime.Seconds())).
+		SetMaxClimb(flightStat.MaxClimb).
+		SetMaxClimbRate(flightStat.MaxClimbRate).
+		SetTotalClimb(flightStat.TotalClimb).
+		SetAverageClimbRate(flightStat.AverageClimbRate).
+		SetNumberOfThermals(flightStat.NumberOfThermals).
+		SetPercentageThermic(flightStat.PercentageThermic).
+		SetMaxAltitude(flightStat.MaxAltitude).
+		SetTotalDistance(flightStat.TotalDistance).
+		SetGeoJSON(flightStat.GeoJSON).
 		Save(ctx)
 	if err != nil {
 		r := tx.Rollback()
@@ -111,7 +112,8 @@ func (r FlightRepository) InsertFlights(
 			SetNumberOfThermals(flightStat.NumberOfThermals).
 			SetPercentageThermic(flightStat.PercentageThermic).
 			SetMaxAltitude(flightStat.MaxAltitude).
-			SetTotalDistance(int(flightStat.TotalDistance))
+			SetTotalDistance(flightStat.TotalDistance).
+			SetGeoJSON(flightStat.GeoJSON)
 	}
 	stats, err := tx.FlightStatistic.
 		CreateBulk(bulkStats...).Save(ctx)

@@ -21,6 +21,7 @@ func DBToDomainFlightStatistic(statDB *ent.FlightStatistic) domain.FlightStatist
 	stat.PercentageThermic = statDB.PercentageThermic
 	stat.MaxAltitude = statDB.MaxAltitude
 	stat.TotalDistance = statDB.TotalDistance
+	stat.GeoJSON = statDB.GeoJSON
 
 	return stat
 }

@@ -25,7 +25,7 @@ func PrettyDuration(d time.Duration) string {
 	return fmt.Sprintf("%d min", minutes)
 }
 
-func PrettyAltitude(alt int, forceMeter bool) string {
+func PrettyDistance(alt int, forceMeter bool) string {
 	if forceMeter {
 		return strconv.Itoa(alt) + " m"
 	}

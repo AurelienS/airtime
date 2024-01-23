@@ -1,11 +1,11 @@
 package domain
 
 import (
-	"fmt"
+	"encoding/json"
 	"math"
-	"strings"
 	"time"
 
+	"github.com/AurelienS/cigare/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 
@@ -25,6 +25,7 @@ type FlightStatistic struct {
 	UpdatedAt         time.Time
 	Thermals          []*Thermal
 	Points            []Point
+	GeoJSON           string
 }
 
 func NewFlightStatistics(points []igc.Point) FlightStatistic {
@@ -40,11 +41,59 @@ func NewFlightStatistics(points []igc.Point) FlightStatistic {
 		})
 	}
 
+	geoJSON, err := GenerateGeoJSON(points)
+	if err != nil {
+		util.Warn().Err(err).Msg("Cannot generate GeoJSON")
+	}
 	stat := FlightStatistic{
-		Points: pts,
+		Points:  pts,
+		GeoJSON: geoJSON,
 	}
 	stat.Compute()
 	return stat
+}
+
+type GeoJSON struct {
+	Type     string    `json:"type"`
+	Features []Feature `json:"features"`
+}
+
+type Feature struct {
+	Type       string      `json:"type"`
+	Geometry   Geometry    `json:"geometry"`
+	Properties interface{} `json:"properties"`
+}
+
+type Geometry struct {
+	Type        string      `json:"type"`
+	Coordinates [][]float64 `json:"coordinates"`
+}
+
+func GenerateGeoJSON(points []igc.Point) (string, error) {
+	var coordinates [][]float64
+	for _, ll := range points {
+		coordinates = append(coordinates, []float64{ll.Lng.Degrees(), ll.Lat.Degrees()})
+	}
+
+	geoJSON := GeoJSON{
+		Type: "FeatureCollection",
+		Features: []Feature{
+			{
+				Type: "Feature",
+				Geometry: Geometry{
+					Type:        "LineString",
+					Coordinates: coordinates,
+				},
+			},
+		},
+	}
+
+	jsonBytes, err := json.Marshal(geoJSON)
+	if err != nil {
+		return "", err
+	}
+
+	return string(jsonBytes), nil
 }
 
 func (fs *FlightStatistic) Compute() {
@@ -182,23 +231,6 @@ func (fs *FlightStatistic) Finalize() {
 		fs.AverageClimbRate /= float64(fs.NumberOfThermals)
 	}
 	fs.PercentageThermic = float64(fs.TotalThermicTime) / float64(fs.TotalFlightTime) * 100
-}
-
-func (fs FlightStatistic) PrettyPrint() string {
-	var sb strings.Builder
-
-	sb.WriteString("Thermal Statistics:\n")
-	sb.WriteString(fmt.Sprintf("Total Thermic Time: %v\n", fs.TotalThermicTime))
-	sb.WriteString(fmt.Sprintf("Total Flight Time: %v\n", fs.TotalFlightTime))
-	sb.WriteString(fmt.Sprintf("Total Climb: %v\n", fs.TotalClimb))
-	sb.WriteString(fmt.Sprintf("Max Climb in a Single Thermal: %dm\n", fs.MaxClimb))
-	sb.WriteString(fmt.Sprintf("Max Altitude in Thermal: %dm\n", fs.MaxAltitude))
-	sb.WriteString(fmt.Sprintf("Average Climb Rate in Thermals: %.2f m/s\n", fs.AverageClimbRate))
-	sb.WriteString(fmt.Sprintf("Max Climb Rate in Thermals: %.2f m/s\n", fs.MaxClimbRate))
-	sb.WriteString(fmt.Sprintf("Number of Thermals Encountered: %d\n", fs.NumberOfThermals))
-	sb.WriteString(fmt.Sprintf("Percentage of Flight in Thermals: %.2f%%\n", fs.PercentageThermic))
-
-	return sb.String()
 }
 
 func Average(numbers []float64) float64 {

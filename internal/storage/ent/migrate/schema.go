@@ -50,6 +50,7 @@ var (
 		{Name: "percentage_thermic", Type: field.TypeFloat64},
 		{Name: "max_altitude", Type: field.TypeInt},
 		{Name: "total_distance", Type: field.TypeInt},
+		{Name: "geo_json", Type: field.TypeString},
 		{Name: "flight_statistic", Type: field.TypeInt, Unique: true, Nullable: true},
 	}
 	// FlightStatisticsTable holds the schema information for the "flight_statistics" table.
@@ -60,7 +61,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "flight_statistics_flights_statistic",
-				Columns:    []*schema.Column{FlightStatisticsColumns[11]},
+				Columns:    []*schema.Column{FlightStatisticsColumns[12]},
 				RefColumns: []*schema.Column{FlightsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

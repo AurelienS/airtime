@@ -113,6 +113,7 @@ func TransformFlightToViewModel(flight domain.Flight) viewmodel.FlightView {
 		TakeoffLocation:  flight.TakeoffLocation,
 		TotalFlightTime:  PrettyDuration(flight.Statistic.TotalFlightTime),
 		TotalThermicTime: PrettyDuration(flight.Statistic.TotalThermicTime),
+		TotalDistance:    PrettyDistance(flight.Statistic.TotalDistance, false),
 		MaxClimbRate:     PrettyRate(flight.Statistic.MaxClimbRate),
 		MaxAltitude:      strconv.Itoa(flight.Statistic.MaxAltitude),
 		Link:             fmt.Sprintf("/logbook/flight/%d", flight.ID),

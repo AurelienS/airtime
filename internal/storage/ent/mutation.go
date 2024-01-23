@@ -617,6 +617,7 @@ type FlightStatisticMutation struct {
 	addmaxAltitude       *int
 	totalDistance        *int
 	addtotalDistance     *int
+	geoJSON              *string
 	clearedFields        map[string]struct{}
 	flight               *int
 	clearedflight        bool
@@ -1283,6 +1284,42 @@ func (m *FlightStatisticMutation) ResetTotalDistance() {
 	m.addtotalDistance = nil
 }
 
+// SetGeoJSON sets the "geoJSON" field.
+func (m *FlightStatisticMutation) SetGeoJSON(s string) {
+	m.geoJSON = &s
+}
+
+// GeoJSON returns the value of the "geoJSON" field in the mutation.
+func (m *FlightStatisticMutation) GeoJSON() (r string, exists bool) {
+	v := m.geoJSON
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGeoJSON returns the old "geoJSON" field's value of the FlightStatistic entity.
+// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FlightStatisticMutation) OldGeoJSON(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGeoJSON is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGeoJSON requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGeoJSON: %w", err)
+	}
+	return oldValue.GeoJSON, nil
+}
+
+// ResetGeoJSON resets all changes to the "geoJSON" field.
+func (m *FlightStatisticMutation) ResetGeoJSON() {
+	m.geoJSON = nil
+}
+
 // SetFlightID sets the "flight" edge to the Flight entity by id.
 func (m *FlightStatisticMutation) SetFlightID(id int) {
 	m.flight = &id
@@ -1356,7 +1393,7 @@ func (m *FlightStatisticMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FlightStatisticMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.totalThermicTime != nil {
 		fields = append(fields, flightstatistic.FieldTotalThermicTime)
 	}
@@ -1387,6 +1424,9 @@ func (m *FlightStatisticMutation) Fields() []string {
 	if m.totalDistance != nil {
 		fields = append(fields, flightstatistic.FieldTotalDistance)
 	}
+	if m.geoJSON != nil {
+		fields = append(fields, flightstatistic.FieldGeoJSON)
+	}
 	return fields
 }
 
@@ -1415,6 +1455,8 @@ func (m *FlightStatisticMutation) Field(name string) (ent.Value, bool) {
 		return m.MaxAltitude()
 	case flightstatistic.FieldTotalDistance:
 		return m.TotalDistance()
+	case flightstatistic.FieldGeoJSON:
+		return m.GeoJSON()
 	}
 	return nil, false
 }
@@ -1444,6 +1486,8 @@ func (m *FlightStatisticMutation) OldField(ctx context.Context, name string) (en
 		return m.OldMaxAltitude(ctx)
 	case flightstatistic.FieldTotalDistance:
 		return m.OldTotalDistance(ctx)
+	case flightstatistic.FieldGeoJSON:
+		return m.OldGeoJSON(ctx)
 	}
 	return nil, fmt.Errorf("unknown FlightStatistic field %s", name)
 }
@@ -1522,6 +1566,13 @@ func (m *FlightStatisticMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetTotalDistance(v)
+		return nil
+	case flightstatistic.FieldGeoJSON:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGeoJSON(v)
 		return nil
 	}
 	return fmt.Errorf("unknown FlightStatistic field %s", name)
@@ -1724,6 +1775,9 @@ func (m *FlightStatisticMutation) ResetField(name string) error {
 		return nil
 	case flightstatistic.FieldTotalDistance:
 		m.ResetTotalDistance()
+		return nil
+	case flightstatistic.FieldGeoJSON:
+		m.ResetGeoJSON()
 		return nil
 	}
 	return fmt.Errorf("unknown FlightStatistic field %s", name)

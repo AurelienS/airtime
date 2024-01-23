@@ -37,6 +37,8 @@ type FlightStatistic struct {
 	MaxAltitude int `json:"maxAltitude,omitempty"`
 	// TotalDistance holds the value of the "totalDistance" field.
 	TotalDistance int `json:"totalDistance,omitempty"`
+	// GeoJSON holds the value of the "geoJSON" field.
+	GeoJSON string `json:"geoJSON,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FlightStatisticQuery when eager-loading is set.
 	Edges            FlightStatisticEdges `json:"edges"`
@@ -75,6 +77,8 @@ func (*FlightStatistic) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullFloat64)
 		case flightstatistic.FieldID, flightstatistic.FieldTotalThermicTime, flightstatistic.FieldTotalFlightTime, flightstatistic.FieldMaxClimb, flightstatistic.FieldTotalClimb, flightstatistic.FieldNumberOfThermals, flightstatistic.FieldMaxAltitude, flightstatistic.FieldTotalDistance:
 			values[i] = new(sql.NullInt64)
+		case flightstatistic.FieldGeoJSON:
+			values[i] = new(sql.NullString)
 		case flightstatistic.ForeignKeys[0]: // flight_statistic
 			values[i] = new(sql.NullInt64)
 		default:
@@ -158,6 +162,12 @@ func (fs *FlightStatistic) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				fs.TotalDistance = int(value.Int64)
 			}
+		case flightstatistic.FieldGeoJSON:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field geoJSON", values[i])
+			} else if value.Valid {
+				fs.GeoJSON = value.String
+			}
 		case flightstatistic.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field flight_statistic", value)
@@ -235,6 +245,9 @@ func (fs *FlightStatistic) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("totalDistance=")
 	builder.WriteString(fmt.Sprintf("%v", fs.TotalDistance))
+	builder.WriteString(", ")
+	builder.WriteString("geoJSON=")
+	builder.WriteString(fs.GeoJSON)
 	builder.WriteByte(')')
 	return builder.String()
 }
