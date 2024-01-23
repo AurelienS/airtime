@@ -14,6 +14,25 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 import "github.com/AurelienS/cigare/web/view/layout"
 import "github.com/AurelienS/cigare/web/view/component"
 
+func ClickableRows() templ.ComponentScript {
+	return templ.ComponentScript{
+		Name: `__templ_ClickableRows_90a9`,
+		Function: `function __templ_ClickableRows_90a9(){document.addEventListener('DOMContentLoaded', function() {
+    var table = document.getElementById('flight_table');
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        row.onclick = function() {
+            var url = this.getAttribute('data-url');
+            if(url) {
+                window.location.href = url;
+            }
+        };
+    }
+});}`,
+		Call:       templ.SafeScript(`__templ_ClickableRows_90a9`),
+		CallInline: templ.SafeScriptInline(`__templ_ClickableRows_90a9`),
+	}
+}
+
 func Index(view viewmodel.DashboardView) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
@@ -46,7 +65,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(view.FirstYear)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 14, Col: 54}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 28, Col: 54}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -64,7 +83,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(view.LastYear)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 14, Col: 74}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 28, Col: 74}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 				if templ_7745c5c3_Err != nil {
@@ -77,7 +96,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.FlightCount)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 16, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 30, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 				if templ_7745c5c3_Err != nil {
@@ -95,7 +114,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var8 string
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.TotalFlightTime)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 16, Col: 83}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 30, Col: 83}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
@@ -117,7 +136,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var10 string
 				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxDistance)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 21, Col: 39}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 35, Col: 39}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 				if templ_7745c5c3_Err != nil {
@@ -148,7 +167,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxDistanceFlight.Date)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 26, Col: 51}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 40, Col: 51}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 				if templ_7745c5c3_Err != nil {
@@ -161,7 +180,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var14 string
 				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxDuration)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 30, Col: 39}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 44, Col: 39}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var14))
 				if templ_7745c5c3_Err != nil {
@@ -192,7 +211,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var17 string
 				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxDurationFlight.Date)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 35, Col: 51}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 49, Col: 51}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 				if templ_7745c5c3_Err != nil {
@@ -205,7 +224,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var18 string
 				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxAltitude)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 39, Col: 39}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 53, Col: 39}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 				if templ_7745c5c3_Err != nil {
@@ -236,7 +255,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var21 string
 				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxAltitudeFlight.Date)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 44, Col: 51}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 58, Col: 51}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 				if templ_7745c5c3_Err != nil {
@@ -258,7 +277,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				var templ_7745c5c3_Var23 string
 				templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.AverageFlightTime)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 48, Col: 49}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 62, Col: 49}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 				if templ_7745c5c3_Err != nil {
@@ -290,7 +309,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var26 string
 					templ_7745c5c3_Var26, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYear)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 59, Col: 29}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 73, Col: 29}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var26))
 					if templ_7745c5c3_Err != nil {
@@ -322,7 +341,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var29 string
 					templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYear)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 64, Col: 29}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 78, Col: 29}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 					if templ_7745c5c3_Err != nil {
@@ -335,7 +354,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var30 string
 					templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.FlightCount)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 66, Col: 73}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 80, Col: 73}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 					if templ_7745c5c3_Err != nil {
@@ -353,7 +372,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var32 string
 					templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.TotalFlightTime)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 66, Col: 121}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 80, Col: 121}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var32))
 					if templ_7745c5c3_Err != nil {
@@ -366,7 +385,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var33 string
 					templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxDistance)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 69, Col: 43}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 83, Col: 43}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 					if templ_7745c5c3_Err != nil {
@@ -397,7 +416,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var36 string
 					templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxDistanceFlight.Date)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 74, Col: 55}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 88, Col: 55}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var36))
 					if templ_7745c5c3_Err != nil {
@@ -410,7 +429,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var37 string
 					templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxDuration)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 78, Col: 43}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 92, Col: 43}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
 					if templ_7745c5c3_Err != nil {
@@ -441,7 +460,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var40 string
 					templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxDurationFlight.Date)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 83, Col: 55}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 97, Col: 55}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var40))
 					if templ_7745c5c3_Err != nil {
@@ -454,7 +473,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var41 string
 					templ_7745c5c3_Var41, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxAltitude)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 87, Col: 43}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 101, Col: 43}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var41))
 					if templ_7745c5c3_Err != nil {
@@ -485,7 +504,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var44 string
 					templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxAltitudeFlight.Date)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 92, Col: 55}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 106, Col: 55}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var44))
 					if templ_7745c5c3_Err != nil {
@@ -505,7 +524,15 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><table class=\"table table-pin-rows overflow-hidden bg-base-100 mt-4\"><thead><tr class=\"text-lg font-normal\"><th>")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = ClickableRows().Render(ctx, templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<table id=\"flight_table\" class=\"table table-pin-rows overflow-hidden bg-base-100 mt-4 \"><thead><tr class=\"text-lg font-normal\"><th>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -550,28 +577,40 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</th><th>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Var51 := `Link`
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var51)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</th></tr></thead> <tbody>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				for _, flight := range view.LastFlights {
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr class=\"hover\"><td>")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<tr class=\"hover cursor-pointer\" data-url=\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(flight.Link))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\"><td>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var51 string
+					templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Date)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 128, Col: 27}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var51))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</td><td>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var52 string
-					templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Date)
+					templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TakeoffLocation)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 114, Col: 27}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 129, Col: 38}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var52))
 					if templ_7745c5c3_Err != nil {
@@ -582,9 +621,9 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var53 string
-					templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TakeoffLocation)
+					templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TotalFlightTime)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 115, Col: 38}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 130, Col: 38}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var53))
 					if templ_7745c5c3_Err != nil {
@@ -595,9 +634,9 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var54 string
-					templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TotalFlightTime)
+					templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TotalDistance)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 116, Col: 38}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 131, Col: 36}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var54))
 					if templ_7745c5c3_Err != nil {
@@ -608,56 +647,25 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var55 string
-					templ_7745c5c3_Var55, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TotalDistance)
+					templ_7745c5c3_Var55, templ_7745c5c3_Err = templ.JoinStringErrs(flight.MaxAltitude)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 117, Col: 36}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 132, Col: 34}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var55))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</td><td>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var56 string
-					templ_7745c5c3_Var56, templ_7745c5c3_Err = templ.JoinStringErrs(flight.MaxAltitude)
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 118, Col: 34}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var56))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</td><td><a href=\"")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var57 templ.SafeURL = templ.SafeURL(flight.Link)
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var57)))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\">")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					templ_7745c5c3_Var58 := `ouvrir`
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var58)
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</a></td></tr>")
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</td></tr>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table><div class=\"flex justify-end\"><a class=\"btn btn-xs\" href=\"/logbook/2023\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table><div class=\"flex justify-end mt-2\"><a class=\"btn btn-xs\" href=\"/logbook/2023\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Var59 := `voir tous mes vols`
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var59)
+				templ_7745c5c3_Var56 := `voir tous mes vols`
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var56)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -690,17 +698,17 @@ func EmptyDashboard() templ.Component {
 			defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var60 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var60 == nil {
-			templ_7745c5c3_Var60 = templ.NopComponent
+		templ_7745c5c3_Var57 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var57 == nil {
+			templ_7745c5c3_Var57 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex-grow flex justify-center items-center\"><div class=\"text-center mt-[-12rem]\"><h1 class=\"text-4xl font-bold mb-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var61 := `Upload tes vols`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var61)
+		templ_7745c5c3_Var58 := `Upload tes vols`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var58)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -708,8 +716,8 @@ func EmptyDashboard() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var62 := `Clique sur le bouton ci-dessous pour uploader tes premiers vols`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var62)
+		templ_7745c5c3_Var59 := `Clique sur le bouton ci-dessous pour uploader tes premiers vols`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var59)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -717,8 +725,8 @@ func EmptyDashboard() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var63 := `Tu peux choisir un fichier IGC ou un zip de fichier IGC`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var63)
+		templ_7745c5c3_Var60 := `Tu peux choisir un fichier IGC ou un zip de fichier IGC`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var60)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

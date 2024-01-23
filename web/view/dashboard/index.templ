@@ -4,6 +4,20 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 import "github.com/AurelienS/cigare/web/view/layout"
 import "github.com/AurelienS/cigare/web/view/component"
 
+script ClickableRows() {
+	document.addEventListener('DOMContentLoaded', function() {
+    var table = document.getElementById('flight_table');
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        row.onclick = function() {
+            var url = this.getAttribute('data-url');
+            if(url) {
+                window.location.href = url;
+            }
+        };
+    }
+});
+}
+
 templ Index(view viewmodel.DashboardView) {
 	@layout.Base(view.User, true) {
 		if view.AllTimeStats.FlightCount == "0" {
@@ -98,7 +112,8 @@ templ Index(view viewmodel.DashboardView) {
 					</div>
 					<div class="rounded-2xl p-4 bg-base-100">
 						<div class="text-2xl font-bold">Mes derniers vols</div>
-						<table class="table table-pin-rows overflow-hidden bg-base-100 mt-4">
+						@ClickableRows()
+						<table id="flight_table" class="table table-pin-rows overflow-hidden bg-base-100 mt-4 ">
 							<thead>
 								<tr class="text-lg font-normal">
 									<th>Date</th>
@@ -106,23 +121,21 @@ templ Index(view viewmodel.DashboardView) {
 									<th>Durée</th>
 									<th>Distance</th>
 									<th>Altitude max</th>
-									<th>Link</th>
 								</tr>
 							</thead>
 							<tbody>
 								for _, flight := range view.LastFlights {
-									<tr class="hover">
+									<tr class="hover cursor-pointer" data-url={ flight.Link }>
 										<td>{ flight.Date }</td>
 										<td>{ flight.TakeoffLocation }</td>
 										<td>{ flight.TotalFlightTime }</td>
 										<td>{ flight.TotalDistance }</td>
 										<td>{ flight.MaxAltitude }</td>
-										<td><a href={ templ.SafeURL(flight.Link) }>ouvrir</a></td>
 									</tr>
 								}
 							</tbody>
 						</table>
-						<div class="flex justify-end">
+						<div class="flex justify-end mt-2">
 							<a class="btn btn-xs" href="/logbook/2023">voir tous mes vols</a>
 						</div>
 					</div>
