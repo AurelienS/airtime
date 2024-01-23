@@ -4,11 +4,32 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 import "github.com/AurelienS/cigare/web/view/layout"
 import "fmt"
 
+script ClickableRows() {
+	document.addEventListener('DOMContentLoaded', function() {
+    var table = document.getElementById('flight_table');
+    for (var i = 0, row; row = table.rows[i]; i++) {
+        row.onclick = function() {
+            var url = this.getAttribute('data-url');
+            if(url) {
+                window.location.href = url;
+            }
+        };
+    }
+});
+}
+
 templ Index(view viewmodel.LogbookView, user viewmodel.UserView) {
 	@layout.Base(user, true) {
-		<div id="logbook_page" class="flex flex-col w-full md:max-w-[1200px] rounded-lg">
+		@ClickableRows()
+		<button class="btn justify-self-start w-max" onclick={ goBack() }>
+			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+			</svg>
+			retour
+		</button>
+		<div id="logbook_page" class="flex flex-col w-full md:max-w-[1200px] rounded-lg mx-auto">
 			@YearSelection(view.AvailableYears, view.CurrentYear)
-			<table class="table table-pin-rows overflow-hidden bg-base-100 ">
+			<table id="flight_table" class="table table-pin-rows overflow-hidden bg-base-100 ">
 				<thead>
 					<tr class="text-lg">
 						<th>Date</th>
@@ -21,7 +42,7 @@ templ Index(view viewmodel.LogbookView, user viewmodel.UserView) {
 				</thead>
 				<tbody>
 					for _, flight := range view.Flights {
-						<tr class="hover" hx-get={ flight.Link }>
+						<tr class="hover cursor-pointer" data-url={ flight.Link }>
 							<td>{ flight.Date }</td>
 							<th>{ flight.TakeoffLocation }</th>
 							<td>{ flight.TotalFlightTime }</td>
@@ -53,32 +74,5 @@ templ YearSelection(years []string, current string) {
 				hx-push-url="true"
 			/>
 		}
-	</div>
-}
-
-templ GeneralStatisticCard(title string, year string, stats []viewmodel.StatView) {
-	<div class="p-4 rounded-xl bg-base-200 h-max">
-		<div class="text-lg pb-2">{ title }</div>
-		<div class="grid grid-cols-[auto_minmax(0,1fr)_minmax(0,1fr)] gap-4 ">
-			<div>
-				<!-- Placeholder for alignment -->
-				<div class="invisible font-bold mb-2">invisible</div>
-				for _, s := range stats {
-					<div class="py-1">{ s.Title }</div>
-				}
-			</div>
-			<div>
-				<div class="font-bold mb-2">{ year }</div>
-				for _, s := range stats {
-					<div class="py-1">{ s.CurrentYearValue }</div>
-				}
-			</div>
-			<div>
-				<div class="font-bold mb-2">All time</div>
-				for _, s := range stats {
-					<div class="py-1">{ s.AlltimeValue }</div>
-				}
-			</div>
-		</div>
 	</div>
 }
