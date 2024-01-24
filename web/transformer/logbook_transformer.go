@@ -1,7 +1,6 @@
 package transformer
 
 import (
-	"fmt"
 	"sort"
 	"strconv"
 	"time"
@@ -18,7 +17,7 @@ func TransformLogbookToViewModel(
 ) viewmodel.LogbookView {
 	var flightViews []viewmodel.FlightView
 	for _, f := range flights {
-		flightViews = append(flightViews, TransformFlightToViewModel(f))
+		flightViews = append(flightViews, TransformFlightToViewmodel(f))
 	}
 
 	flyingYearsString := make([]string, 0, len(flyingYears))
@@ -104,19 +103,4 @@ func TransformChartViewModel(statsYearMonth service.StatsYearMonth, extractor St
 	}
 
 	return datasets
-}
-
-func TransformFlightToViewModel(flight domain.Flight) viewmodel.FlightView {
-	return viewmodel.FlightView{
-		ID:       strconv.Itoa(flight.ID),
-		Date:     flight.Date.Local().Format("02/01 15:04"),
-		Location: flight.Location,
-
-		// TotalFlightTime:  PrettyDuration(flight.Statistic.TotalFlightTime),
-		// TotalThermicTime: PrettyDuration(flight.Statistic.TotalThermicTime),
-		// TotalDistance:    PrettyDistance(flight.Statistic.TotalDistance, false),
-		// MaxClimbRate:     PrettyRate(flight.Statistic.MaxClimbRate),
-		// MaxAltitude:      strconv.Itoa(flight.Statistic.MaxAltitude),
-		Link: fmt.Sprintf("/logbook/flight/%d", flight.ID),
-	}
 }

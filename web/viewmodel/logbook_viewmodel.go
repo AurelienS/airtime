@@ -8,6 +8,7 @@ type LogbookView struct {
 
 type FlightView struct {
 	ID          string
+	Fulldate    string
 	Date        string
 	Location    string
 	Duration    string

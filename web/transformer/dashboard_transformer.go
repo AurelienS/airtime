@@ -67,7 +67,8 @@ func TransformDashboardToViewModel(
 
 func TransformFlightToViewmodel(flight domain.Flight) viewmodel.FlightView {
 	return viewmodel.FlightView{
-		Date:        flight.Date.Format("02/01/2006 15h04"),
+		Fulldate:    flight.Date.Format("02/01/2006 15h04"),
+		Date:        flight.Date.Format("02/01/2006"),
 		Location:    flight.Location,
 		Duration:    PrettyDuration(flight.Duration),
 		Distance:    PrettyDistance(flight.Distance, false),
