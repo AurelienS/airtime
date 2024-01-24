@@ -27,11 +27,11 @@ func (h *ProgressionHandler) GetProgression(c echo.Context) error {
 		return err
 	}
 
-	totalFlightTimeExtractor := func(stats domain.StatsAggregated) int {
-		return int(stats.TotalFlightTime.Hours())
+	totalFlightTimeExtractor := func(stats domain.MultipleFlightStats) int {
+		return int(stats.DurationTotal.Hours())
 	}
-	flightCountExtractor := func(stats domain.StatsAggregated) int {
-		return stats.FlightCount
+	flightCountExtractor := func(stats domain.MultipleFlightStats) int {
+		return len(stats.Flights)
 	}
 
 	view := viewmodel.ProgressionView{

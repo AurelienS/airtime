@@ -15,6 +15,10 @@ import (
 func init() {
 	userFields := schema.User{}.Fields()
 	_ = userFields
+	// userDescTheme is the schema descriptor for theme field.
+	userDescTheme := userFields[4].Descriptor()
+	// user.DefaultTheme holds the default value on creation for the theme field.
+	user.DefaultTheme = userDescTheme.Default.(string)
 	// userDescCreatedAt is the schema descriptor for createdAt field.
 	userDescCreatedAt := userFields[5].Descriptor()
 	// user.DefaultCreatedAt holds the default value on creation for the createdAt field.

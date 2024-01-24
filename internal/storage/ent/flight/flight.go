@@ -14,14 +14,18 @@ const (
 	FieldID = "id"
 	// FieldDate holds the string denoting the date field in the database.
 	FieldDate = "date"
-	// FieldTakeoffLocation holds the string denoting the takeofflocation field in the database.
-	FieldTakeoffLocation = "takeoff_location"
-	// FieldIgcFilePath holds the string denoting the igcfilepath field in the database.
-	FieldIgcFilePath = "igc_file_path"
+	// FieldLocation holds the string denoting the location field in the database.
+	FieldLocation = "location"
+	// FieldDuration holds the string denoting the duration field in the database.
+	FieldDuration = "duration"
+	// FieldDistance holds the string denoting the distance field in the database.
+	FieldDistance = "distance"
+	// FieldAltitudeMax holds the string denoting the altitudemax field in the database.
+	FieldAltitudeMax = "altitude_max"
+	// FieldIgcData holds the string denoting the igcdata field in the database.
+	FieldIgcData = "igc_data"
 	// EdgePilot holds the string denoting the pilot edge name in mutations.
 	EdgePilot = "pilot"
-	// EdgeStatistic holds the string denoting the statistic edge name in mutations.
-	EdgeStatistic = "statistic"
 	// Table holds the table name of the flight in the database.
 	Table = "flights"
 	// PilotTable is the table that holds the pilot relation/edge.
@@ -31,21 +35,17 @@ const (
 	PilotInverseTable = "users"
 	// PilotColumn is the table column denoting the pilot relation/edge.
 	PilotColumn = "user_flights"
-	// StatisticTable is the table that holds the statistic relation/edge.
-	StatisticTable = "flight_statistics"
-	// StatisticInverseTable is the table name for the FlightStatistic entity.
-	// It exists in this package in order to avoid circular dependency with the "flightstatistic" package.
-	StatisticInverseTable = "flight_statistics"
-	// StatisticColumn is the table column denoting the statistic relation/edge.
-	StatisticColumn = "flight_statistic"
 )
 
 // Columns holds all SQL columns for flight fields.
 var Columns = []string{
 	FieldID,
 	FieldDate,
-	FieldTakeoffLocation,
-	FieldIgcFilePath,
+	FieldLocation,
+	FieldDuration,
+	FieldDistance,
+	FieldAltitudeMax,
+	FieldIgcData,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "flights"
@@ -82,14 +82,29 @@ func ByDate(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldDate, opts...).ToFunc()
 }
 
-// ByTakeoffLocation orders the results by the takeoffLocation field.
-func ByTakeoffLocation(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldTakeoffLocation, opts...).ToFunc()
+// ByLocation orders the results by the location field.
+func ByLocation(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldLocation, opts...).ToFunc()
 }
 
-// ByIgcFilePath orders the results by the igcFilePath field.
-func ByIgcFilePath(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldIgcFilePath, opts...).ToFunc()
+// ByDuration orders the results by the duration field.
+func ByDuration(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDuration, opts...).ToFunc()
+}
+
+// ByDistance orders the results by the distance field.
+func ByDistance(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldDistance, opts...).ToFunc()
+}
+
+// ByAltitudeMax orders the results by the altitudeMax field.
+func ByAltitudeMax(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldAltitudeMax, opts...).ToFunc()
+}
+
+// ByIgcData orders the results by the igcData field.
+func ByIgcData(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldIgcData, opts...).ToFunc()
 }
 
 // ByPilotField orders the results by pilot field.
@@ -98,24 +113,10 @@ func ByPilotField(field string, opts ...sql.OrderTermOption) OrderOption {
 		sqlgraph.OrderByNeighborTerms(s, newPilotStep(), sql.OrderByField(field, opts...))
 	}
 }
-
-// ByStatisticField orders the results by statistic field.
-func ByStatisticField(field string, opts ...sql.OrderTermOption) OrderOption {
-	return func(s *sql.Selector) {
-		sqlgraph.OrderByNeighborTerms(s, newStatisticStep(), sql.OrderByField(field, opts...))
-	}
-}
 func newPilotStep() *sqlgraph.Step {
 	return sqlgraph.NewStep(
 		sqlgraph.From(Table, FieldID),
 		sqlgraph.To(PilotInverseTable, FieldID),
 		sqlgraph.Edge(sqlgraph.M2O, true, PilotTable, PilotColumn),
-	)
-}
-func newStatisticStep() *sqlgraph.Step {
-	return sqlgraph.NewStep(
-		sqlgraph.From(Table, FieldID),
-		sqlgraph.To(StatisticInverseTable, FieldID),
-		sqlgraph.Edge(sqlgraph.O2O, false, StatisticTable, StatisticColumn),
 	)
 }

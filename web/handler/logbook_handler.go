@@ -81,10 +81,14 @@ func (h *LogbookHandler) GetFlight(c echo.Context) error {
 		return err
 	}
 
+	geoJSON, err := flight.GenerateGeoJSON()
+	if err != nil {
+		return err
+	}
 	view := viewmodel.FlightDetailView{
 		UserView:      transformer.TransformUserToViewModel(user),
-		FlightView:    transformer.TransformFlightToViewModel(flight),
-		FlightGeoJSON: flight.Statistic.GeoJSON,
+		FlightView:    transformer.TransformFlightToViewmodel(flight),
+		FlightGeoJSON: geoJSON,
 	}
 	return Render(c, logbook.Flight(view))
 }

@@ -14,8 +14,11 @@ type Flight struct {
 func (Flight) Fields() []ent.Field {
 	return []ent.Field{
 		field.Time("date"),
-		field.String("takeoffLocation"),
-		field.String("igcFilePath"),
+		field.String("location"),
+		field.Int("duration"),
+		field.Int("distance"),
+		field.Int("altitudeMax"),
+		field.String("igcData"),
 	}
 }
 
@@ -23,8 +26,6 @@ func (Flight) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("pilot", User.Type).Unique().
 			Ref("flights"),
-		edge.To("statistic", FlightStatistic.Type).
-			Unique(),
 	}
 }
 

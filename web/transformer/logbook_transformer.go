@@ -56,7 +56,7 @@ var datasetColors = []string{
 	"rgb(255, 69, 0)",    // Rouge orangé
 }
 
-type StatExtractor func(stats domain.StatsAggregated) int
+type StatExtractor func(stats domain.MultipleFlightStats) int
 
 func TransformChartViewModel(statsYearMonth service.StatsYearMonth, extractor StatExtractor) []viewmodel.ChartDataset {
 	datasets := []viewmodel.ChartDataset{}
@@ -108,14 +108,15 @@ func TransformChartViewModel(statsYearMonth service.StatsYearMonth, extractor St
 
 func TransformFlightToViewModel(flight domain.Flight) viewmodel.FlightView {
 	return viewmodel.FlightView{
-		ID:               strconv.Itoa(flight.ID),
-		Date:             flight.Date.Local().Format("02/01 15:04"),
-		TakeoffLocation:  flight.TakeoffLocation,
-		TotalFlightTime:  PrettyDuration(flight.Statistic.TotalFlightTime),
-		TotalThermicTime: PrettyDuration(flight.Statistic.TotalThermicTime),
-		TotalDistance:    PrettyDistance(flight.Statistic.TotalDistance, false),
-		MaxClimbRate:     PrettyRate(flight.Statistic.MaxClimbRate),
-		MaxAltitude:      strconv.Itoa(flight.Statistic.MaxAltitude),
-		Link:             fmt.Sprintf("/logbook/flight/%d", flight.ID),
+		ID:       strconv.Itoa(flight.ID),
+		Date:     flight.Date.Local().Format("02/01 15:04"),
+		Location: flight.Location,
+
+		// TotalFlightTime:  PrettyDuration(flight.Statistic.TotalFlightTime),
+		// TotalThermicTime: PrettyDuration(flight.Statistic.TotalThermicTime),
+		// TotalDistance:    PrettyDistance(flight.Statistic.TotalDistance, false),
+		// MaxClimbRate:     PrettyRate(flight.Statistic.MaxClimbRate),
+		// MaxAltitude:      strconv.Itoa(flight.Statistic.MaxAltitude),
+		Link: fmt.Sprintf("/logbook/flight/%d", flight.ID),
 	}
 }

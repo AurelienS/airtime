@@ -12,8 +12,11 @@ var (
 	FlightsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "date", Type: field.TypeTime},
-		{Name: "takeoff_location", Type: field.TypeString},
-		{Name: "igc_file_path", Type: field.TypeString},
+		{Name: "location", Type: field.TypeString},
+		{Name: "duration", Type: field.TypeInt},
+		{Name: "distance", Type: field.TypeInt},
+		{Name: "altitude_max", Type: field.TypeInt},
+		{Name: "igc_data", Type: field.TypeString},
 		{Name: "user_flights", Type: field.TypeInt, Nullable: true},
 	}
 	// FlightsTable holds the schema information for the "flights" table.
@@ -24,7 +27,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "flights_users_flights",
-				Columns:    []*schema.Column{FlightsColumns[4]},
+				Columns:    []*schema.Column{FlightsColumns[7]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},
@@ -33,37 +36,7 @@ var (
 			{
 				Name:    "flight_date_user_flights",
 				Unique:  true,
-				Columns: []*schema.Column{FlightsColumns[1], FlightsColumns[4]},
-			},
-		},
-	}
-	// FlightStatisticsColumns holds the columns for the "flight_statistics" table.
-	FlightStatisticsColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
-		{Name: "total_thermic_time", Type: field.TypeInt},
-		{Name: "total_flight_time", Type: field.TypeInt},
-		{Name: "max_climb", Type: field.TypeInt},
-		{Name: "max_climb_rate", Type: field.TypeFloat64},
-		{Name: "total_climb", Type: field.TypeInt},
-		{Name: "average_climb_rate", Type: field.TypeFloat64},
-		{Name: "number_of_thermals", Type: field.TypeInt},
-		{Name: "percentage_thermic", Type: field.TypeFloat64},
-		{Name: "max_altitude", Type: field.TypeInt},
-		{Name: "total_distance", Type: field.TypeInt},
-		{Name: "geo_json", Type: field.TypeString},
-		{Name: "flight_statistic", Type: field.TypeInt, Unique: true, Nullable: true},
-	}
-	// FlightStatisticsTable holds the schema information for the "flight_statistics" table.
-	FlightStatisticsTable = &schema.Table{
-		Name:       "flight_statistics",
-		Columns:    FlightStatisticsColumns,
-		PrimaryKey: []*schema.Column{FlightStatisticsColumns[0]},
-		ForeignKeys: []*schema.ForeignKey{
-			{
-				Symbol:     "flight_statistics_flights_statistic",
-				Columns:    []*schema.Column{FlightStatisticsColumns[12]},
-				RefColumns: []*schema.Column{FlightsColumns[0]},
-				OnDelete:   schema.SetNull,
+				Columns: []*schema.Column{FlightsColumns[1], FlightsColumns[7]},
 			},
 		},
 	}
@@ -74,7 +47,7 @@ var (
 		{Name: "email", Type: field.TypeString, Unique: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "picture_url", Type: field.TypeString},
-		{Name: "theme", Type: field.TypeString},
+		{Name: "theme", Type: field.TypeString, Default: "light"},
 		{Name: "created_at", Type: field.TypeTime},
 	}
 	// UsersTable holds the schema information for the "users" table.
@@ -86,12 +59,10 @@ var (
 	// Tables holds all the tables in the schema.
 	Tables = []*schema.Table{
 		FlightsTable,
-		FlightStatisticsTable,
 		UsersTable,
 	}
 )
 
 func init() {
 	FlightsTable.ForeignKeys[0].RefTable = UsersTable
-	FlightStatisticsTable.ForeignKeys[0].RefTable = FlightsTable
 }

@@ -60,14 +60,29 @@ func Date(v time.Time) predicate.Flight {
 	return predicate.Flight(sql.FieldEQ(FieldDate, v))
 }
 
-// TakeoffLocation applies equality check predicate on the "takeoffLocation" field. It's identical to TakeoffLocationEQ.
-func TakeoffLocation(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldEQ(FieldTakeoffLocation, v))
+// Location applies equality check predicate on the "location" field. It's identical to LocationEQ.
+func Location(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldLocation, v))
 }
 
-// IgcFilePath applies equality check predicate on the "igcFilePath" field. It's identical to IgcFilePathEQ.
-func IgcFilePath(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldEQ(FieldIgcFilePath, v))
+// Duration applies equality check predicate on the "duration" field. It's identical to DurationEQ.
+func Duration(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldDuration, v))
+}
+
+// Distance applies equality check predicate on the "distance" field. It's identical to DistanceEQ.
+func Distance(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldDistance, v))
+}
+
+// AltitudeMax applies equality check predicate on the "altitudeMax" field. It's identical to AltitudeMaxEQ.
+func AltitudeMax(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldAltitudeMax, v))
+}
+
+// IgcData applies equality check predicate on the "igcData" field. It's identical to IgcDataEQ.
+func IgcData(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldIgcData, v))
 }
 
 // DateEQ applies the EQ predicate on the "date" field.
@@ -110,134 +125,254 @@ func DateLTE(v time.Time) predicate.Flight {
 	return predicate.Flight(sql.FieldLTE(FieldDate, v))
 }
 
-// TakeoffLocationEQ applies the EQ predicate on the "takeoffLocation" field.
-func TakeoffLocationEQ(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldEQ(FieldTakeoffLocation, v))
+// LocationEQ applies the EQ predicate on the "location" field.
+func LocationEQ(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldLocation, v))
 }
 
-// TakeoffLocationNEQ applies the NEQ predicate on the "takeoffLocation" field.
-func TakeoffLocationNEQ(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldNEQ(FieldTakeoffLocation, v))
+// LocationNEQ applies the NEQ predicate on the "location" field.
+func LocationNEQ(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldNEQ(FieldLocation, v))
 }
 
-// TakeoffLocationIn applies the In predicate on the "takeoffLocation" field.
-func TakeoffLocationIn(vs ...string) predicate.Flight {
-	return predicate.Flight(sql.FieldIn(FieldTakeoffLocation, vs...))
+// LocationIn applies the In predicate on the "location" field.
+func LocationIn(vs ...string) predicate.Flight {
+	return predicate.Flight(sql.FieldIn(FieldLocation, vs...))
 }
 
-// TakeoffLocationNotIn applies the NotIn predicate on the "takeoffLocation" field.
-func TakeoffLocationNotIn(vs ...string) predicate.Flight {
-	return predicate.Flight(sql.FieldNotIn(FieldTakeoffLocation, vs...))
+// LocationNotIn applies the NotIn predicate on the "location" field.
+func LocationNotIn(vs ...string) predicate.Flight {
+	return predicate.Flight(sql.FieldNotIn(FieldLocation, vs...))
 }
 
-// TakeoffLocationGT applies the GT predicate on the "takeoffLocation" field.
-func TakeoffLocationGT(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldGT(FieldTakeoffLocation, v))
+// LocationGT applies the GT predicate on the "location" field.
+func LocationGT(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldGT(FieldLocation, v))
 }
 
-// TakeoffLocationGTE applies the GTE predicate on the "takeoffLocation" field.
-func TakeoffLocationGTE(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldGTE(FieldTakeoffLocation, v))
+// LocationGTE applies the GTE predicate on the "location" field.
+func LocationGTE(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldGTE(FieldLocation, v))
 }
 
-// TakeoffLocationLT applies the LT predicate on the "takeoffLocation" field.
-func TakeoffLocationLT(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldLT(FieldTakeoffLocation, v))
+// LocationLT applies the LT predicate on the "location" field.
+func LocationLT(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldLT(FieldLocation, v))
 }
 
-// TakeoffLocationLTE applies the LTE predicate on the "takeoffLocation" field.
-func TakeoffLocationLTE(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldLTE(FieldTakeoffLocation, v))
+// LocationLTE applies the LTE predicate on the "location" field.
+func LocationLTE(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldLTE(FieldLocation, v))
 }
 
-// TakeoffLocationContains applies the Contains predicate on the "takeoffLocation" field.
-func TakeoffLocationContains(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldContains(FieldTakeoffLocation, v))
+// LocationContains applies the Contains predicate on the "location" field.
+func LocationContains(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldContains(FieldLocation, v))
 }
 
-// TakeoffLocationHasPrefix applies the HasPrefix predicate on the "takeoffLocation" field.
-func TakeoffLocationHasPrefix(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldHasPrefix(FieldTakeoffLocation, v))
+// LocationHasPrefix applies the HasPrefix predicate on the "location" field.
+func LocationHasPrefix(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldHasPrefix(FieldLocation, v))
 }
 
-// TakeoffLocationHasSuffix applies the HasSuffix predicate on the "takeoffLocation" field.
-func TakeoffLocationHasSuffix(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldHasSuffix(FieldTakeoffLocation, v))
+// LocationHasSuffix applies the HasSuffix predicate on the "location" field.
+func LocationHasSuffix(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldHasSuffix(FieldLocation, v))
 }
 
-// TakeoffLocationEqualFold applies the EqualFold predicate on the "takeoffLocation" field.
-func TakeoffLocationEqualFold(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldEqualFold(FieldTakeoffLocation, v))
+// LocationEqualFold applies the EqualFold predicate on the "location" field.
+func LocationEqualFold(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldEqualFold(FieldLocation, v))
 }
 
-// TakeoffLocationContainsFold applies the ContainsFold predicate on the "takeoffLocation" field.
-func TakeoffLocationContainsFold(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldContainsFold(FieldTakeoffLocation, v))
+// LocationContainsFold applies the ContainsFold predicate on the "location" field.
+func LocationContainsFold(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldContainsFold(FieldLocation, v))
 }
 
-// IgcFilePathEQ applies the EQ predicate on the "igcFilePath" field.
-func IgcFilePathEQ(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldEQ(FieldIgcFilePath, v))
+// DurationEQ applies the EQ predicate on the "duration" field.
+func DurationEQ(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldDuration, v))
 }
 
-// IgcFilePathNEQ applies the NEQ predicate on the "igcFilePath" field.
-func IgcFilePathNEQ(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldNEQ(FieldIgcFilePath, v))
+// DurationNEQ applies the NEQ predicate on the "duration" field.
+func DurationNEQ(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldNEQ(FieldDuration, v))
 }
 
-// IgcFilePathIn applies the In predicate on the "igcFilePath" field.
-func IgcFilePathIn(vs ...string) predicate.Flight {
-	return predicate.Flight(sql.FieldIn(FieldIgcFilePath, vs...))
+// DurationIn applies the In predicate on the "duration" field.
+func DurationIn(vs ...int) predicate.Flight {
+	return predicate.Flight(sql.FieldIn(FieldDuration, vs...))
 }
 
-// IgcFilePathNotIn applies the NotIn predicate on the "igcFilePath" field.
-func IgcFilePathNotIn(vs ...string) predicate.Flight {
-	return predicate.Flight(sql.FieldNotIn(FieldIgcFilePath, vs...))
+// DurationNotIn applies the NotIn predicate on the "duration" field.
+func DurationNotIn(vs ...int) predicate.Flight {
+	return predicate.Flight(sql.FieldNotIn(FieldDuration, vs...))
 }
 
-// IgcFilePathGT applies the GT predicate on the "igcFilePath" field.
-func IgcFilePathGT(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldGT(FieldIgcFilePath, v))
+// DurationGT applies the GT predicate on the "duration" field.
+func DurationGT(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldGT(FieldDuration, v))
 }
 
-// IgcFilePathGTE applies the GTE predicate on the "igcFilePath" field.
-func IgcFilePathGTE(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldGTE(FieldIgcFilePath, v))
+// DurationGTE applies the GTE predicate on the "duration" field.
+func DurationGTE(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldGTE(FieldDuration, v))
 }
 
-// IgcFilePathLT applies the LT predicate on the "igcFilePath" field.
-func IgcFilePathLT(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldLT(FieldIgcFilePath, v))
+// DurationLT applies the LT predicate on the "duration" field.
+func DurationLT(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldLT(FieldDuration, v))
 }
 
-// IgcFilePathLTE applies the LTE predicate on the "igcFilePath" field.
-func IgcFilePathLTE(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldLTE(FieldIgcFilePath, v))
+// DurationLTE applies the LTE predicate on the "duration" field.
+func DurationLTE(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldLTE(FieldDuration, v))
 }
 
-// IgcFilePathContains applies the Contains predicate on the "igcFilePath" field.
-func IgcFilePathContains(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldContains(FieldIgcFilePath, v))
+// DistanceEQ applies the EQ predicate on the "distance" field.
+func DistanceEQ(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldDistance, v))
 }
 
-// IgcFilePathHasPrefix applies the HasPrefix predicate on the "igcFilePath" field.
-func IgcFilePathHasPrefix(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldHasPrefix(FieldIgcFilePath, v))
+// DistanceNEQ applies the NEQ predicate on the "distance" field.
+func DistanceNEQ(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldNEQ(FieldDistance, v))
 }
 
-// IgcFilePathHasSuffix applies the HasSuffix predicate on the "igcFilePath" field.
-func IgcFilePathHasSuffix(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldHasSuffix(FieldIgcFilePath, v))
+// DistanceIn applies the In predicate on the "distance" field.
+func DistanceIn(vs ...int) predicate.Flight {
+	return predicate.Flight(sql.FieldIn(FieldDistance, vs...))
 }
 
-// IgcFilePathEqualFold applies the EqualFold predicate on the "igcFilePath" field.
-func IgcFilePathEqualFold(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldEqualFold(FieldIgcFilePath, v))
+// DistanceNotIn applies the NotIn predicate on the "distance" field.
+func DistanceNotIn(vs ...int) predicate.Flight {
+	return predicate.Flight(sql.FieldNotIn(FieldDistance, vs...))
 }
 
-// IgcFilePathContainsFold applies the ContainsFold predicate on the "igcFilePath" field.
-func IgcFilePathContainsFold(v string) predicate.Flight {
-	return predicate.Flight(sql.FieldContainsFold(FieldIgcFilePath, v))
+// DistanceGT applies the GT predicate on the "distance" field.
+func DistanceGT(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldGT(FieldDistance, v))
+}
+
+// DistanceGTE applies the GTE predicate on the "distance" field.
+func DistanceGTE(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldGTE(FieldDistance, v))
+}
+
+// DistanceLT applies the LT predicate on the "distance" field.
+func DistanceLT(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldLT(FieldDistance, v))
+}
+
+// DistanceLTE applies the LTE predicate on the "distance" field.
+func DistanceLTE(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldLTE(FieldDistance, v))
+}
+
+// AltitudeMaxEQ applies the EQ predicate on the "altitudeMax" field.
+func AltitudeMaxEQ(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldAltitudeMax, v))
+}
+
+// AltitudeMaxNEQ applies the NEQ predicate on the "altitudeMax" field.
+func AltitudeMaxNEQ(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldNEQ(FieldAltitudeMax, v))
+}
+
+// AltitudeMaxIn applies the In predicate on the "altitudeMax" field.
+func AltitudeMaxIn(vs ...int) predicate.Flight {
+	return predicate.Flight(sql.FieldIn(FieldAltitudeMax, vs...))
+}
+
+// AltitudeMaxNotIn applies the NotIn predicate on the "altitudeMax" field.
+func AltitudeMaxNotIn(vs ...int) predicate.Flight {
+	return predicate.Flight(sql.FieldNotIn(FieldAltitudeMax, vs...))
+}
+
+// AltitudeMaxGT applies the GT predicate on the "altitudeMax" field.
+func AltitudeMaxGT(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldGT(FieldAltitudeMax, v))
+}
+
+// AltitudeMaxGTE applies the GTE predicate on the "altitudeMax" field.
+func AltitudeMaxGTE(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldGTE(FieldAltitudeMax, v))
+}
+
+// AltitudeMaxLT applies the LT predicate on the "altitudeMax" field.
+func AltitudeMaxLT(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldLT(FieldAltitudeMax, v))
+}
+
+// AltitudeMaxLTE applies the LTE predicate on the "altitudeMax" field.
+func AltitudeMaxLTE(v int) predicate.Flight {
+	return predicate.Flight(sql.FieldLTE(FieldAltitudeMax, v))
+}
+
+// IgcDataEQ applies the EQ predicate on the "igcData" field.
+func IgcDataEQ(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldEQ(FieldIgcData, v))
+}
+
+// IgcDataNEQ applies the NEQ predicate on the "igcData" field.
+func IgcDataNEQ(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldNEQ(FieldIgcData, v))
+}
+
+// IgcDataIn applies the In predicate on the "igcData" field.
+func IgcDataIn(vs ...string) predicate.Flight {
+	return predicate.Flight(sql.FieldIn(FieldIgcData, vs...))
+}
+
+// IgcDataNotIn applies the NotIn predicate on the "igcData" field.
+func IgcDataNotIn(vs ...string) predicate.Flight {
+	return predicate.Flight(sql.FieldNotIn(FieldIgcData, vs...))
+}
+
+// IgcDataGT applies the GT predicate on the "igcData" field.
+func IgcDataGT(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldGT(FieldIgcData, v))
+}
+
+// IgcDataGTE applies the GTE predicate on the "igcData" field.
+func IgcDataGTE(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldGTE(FieldIgcData, v))
+}
+
+// IgcDataLT applies the LT predicate on the "igcData" field.
+func IgcDataLT(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldLT(FieldIgcData, v))
+}
+
+// IgcDataLTE applies the LTE predicate on the "igcData" field.
+func IgcDataLTE(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldLTE(FieldIgcData, v))
+}
+
+// IgcDataContains applies the Contains predicate on the "igcData" field.
+func IgcDataContains(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldContains(FieldIgcData, v))
+}
+
+// IgcDataHasPrefix applies the HasPrefix predicate on the "igcData" field.
+func IgcDataHasPrefix(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldHasPrefix(FieldIgcData, v))
+}
+
+// IgcDataHasSuffix applies the HasSuffix predicate on the "igcData" field.
+func IgcDataHasSuffix(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldHasSuffix(FieldIgcData, v))
+}
+
+// IgcDataEqualFold applies the EqualFold predicate on the "igcData" field.
+func IgcDataEqualFold(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldEqualFold(FieldIgcData, v))
+}
+
+// IgcDataContainsFold applies the ContainsFold predicate on the "igcData" field.
+func IgcDataContainsFold(v string) predicate.Flight {
+	return predicate.Flight(sql.FieldContainsFold(FieldIgcData, v))
 }
 
 // HasPilot applies the HasEdge predicate on the "pilot" edge.
@@ -255,29 +390,6 @@ func HasPilot() predicate.Flight {
 func HasPilotWith(preds ...predicate.User) predicate.Flight {
 	return predicate.Flight(func(s *sql.Selector) {
 		step := newPilotStep()
-		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
-			for _, p := range preds {
-				p(s)
-			}
-		})
-	})
-}
-
-// HasStatistic applies the HasEdge predicate on the "statistic" edge.
-func HasStatistic() predicate.Flight {
-	return predicate.Flight(func(s *sql.Selector) {
-		step := sqlgraph.NewStep(
-			sqlgraph.From(Table, FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, StatisticTable, StatisticColumn),
-		)
-		sqlgraph.HasNeighbors(s, step)
-	})
-}
-
-// HasStatisticWith applies the HasEdge predicate on the "statistic" edge with a given conditions (other predicates).
-func HasStatisticWith(preds ...predicate.FlightStatistic) predicate.Flight {
-	return predicate.Flight(func(s *sql.Selector) {
-		step := newStatisticStep()
 		sqlgraph.HasNeighborsWith(s, step, func(s *sql.Selector) {
 			for _, p := range preds {
 				p(s)

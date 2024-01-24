@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
 
@@ -21,10 +20,16 @@ type Flight struct {
 	ID int `json:"id,omitempty"`
 	// Date holds the value of the "date" field.
 	Date time.Time `json:"date,omitempty"`
-	// TakeoffLocation holds the value of the "takeoffLocation" field.
-	TakeoffLocation string `json:"takeoffLocation,omitempty"`
-	// IgcFilePath holds the value of the "igcFilePath" field.
-	IgcFilePath string `json:"igcFilePath,omitempty"`
+	// Location holds the value of the "location" field.
+	Location string `json:"location,omitempty"`
+	// Duration holds the value of the "duration" field.
+	Duration int `json:"duration,omitempty"`
+	// Distance holds the value of the "distance" field.
+	Distance int `json:"distance,omitempty"`
+	// AltitudeMax holds the value of the "altitudeMax" field.
+	AltitudeMax int `json:"altitudeMax,omitempty"`
+	// IgcData holds the value of the "igcData" field.
+	IgcData string `json:"igcData,omitempty"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FlightQuery when eager-loading is set.
 	Edges        FlightEdges `json:"edges"`
@@ -36,11 +41,9 @@ type Flight struct {
 type FlightEdges struct {
 	// Pilot holds the value of the pilot edge.
 	Pilot *User `json:"pilot,omitempty"`
-	// Statistic holds the value of the statistic edge.
-	Statistic *FlightStatistic `json:"statistic,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [2]bool
+	loadedTypes [1]bool
 }
 
 // PilotOrErr returns the Pilot value or an error if the edge
@@ -56,27 +59,14 @@ func (e FlightEdges) PilotOrErr() (*User, error) {
 	return nil, &NotLoadedError{edge: "pilot"}
 }
 
-// StatisticOrErr returns the Statistic value or an error if the edge
-// was not loaded in eager-loading, or loaded but was not found.
-func (e FlightEdges) StatisticOrErr() (*FlightStatistic, error) {
-	if e.loadedTypes[1] {
-		if e.Statistic == nil {
-			// Edge was loaded but was not found.
-			return nil, &NotFoundError{label: flightstatistic.Label}
-		}
-		return e.Statistic, nil
-	}
-	return nil, &NotLoadedError{edge: "statistic"}
-}
-
 // scanValues returns the types for scanning values from sql.Rows.
 func (*Flight) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case flight.FieldID:
+		case flight.FieldID, flight.FieldDuration, flight.FieldDistance, flight.FieldAltitudeMax:
 			values[i] = new(sql.NullInt64)
-		case flight.FieldTakeoffLocation, flight.FieldIgcFilePath:
+		case flight.FieldLocation, flight.FieldIgcData:
 			values[i] = new(sql.NullString)
 		case flight.FieldDate:
 			values[i] = new(sql.NullTime)
@@ -109,17 +99,35 @@ func (f *Flight) assignValues(columns []string, values []any) error {
 			} else if value.Valid {
 				f.Date = value.Time
 			}
-		case flight.FieldTakeoffLocation:
+		case flight.FieldLocation:
 			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field takeoffLocation", values[i])
+				return fmt.Errorf("unexpected type %T for field location", values[i])
 			} else if value.Valid {
-				f.TakeoffLocation = value.String
+				f.Location = value.String
 			}
-		case flight.FieldIgcFilePath:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field igcFilePath", values[i])
+		case flight.FieldDuration:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field duration", values[i])
 			} else if value.Valid {
-				f.IgcFilePath = value.String
+				f.Duration = int(value.Int64)
+			}
+		case flight.FieldDistance:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field distance", values[i])
+			} else if value.Valid {
+				f.Distance = int(value.Int64)
+			}
+		case flight.FieldAltitudeMax:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field altitudeMax", values[i])
+			} else if value.Valid {
+				f.AltitudeMax = int(value.Int64)
+			}
+		case flight.FieldIgcData:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field igcData", values[i])
+			} else if value.Valid {
+				f.IgcData = value.String
 			}
 		case flight.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -144,11 +152,6 @@ func (f *Flight) Value(name string) (ent.Value, error) {
 // QueryPilot queries the "pilot" edge of the Flight entity.
 func (f *Flight) QueryPilot() *UserQuery {
 	return NewFlightClient(f.config).QueryPilot(f)
-}
-
-// QueryStatistic queries the "statistic" edge of the Flight entity.
-func (f *Flight) QueryStatistic() *FlightStatisticQuery {
-	return NewFlightClient(f.config).QueryStatistic(f)
 }
 
 // Update returns a builder for updating this Flight.
@@ -177,11 +180,20 @@ func (f *Flight) String() string {
 	builder.WriteString("date=")
 	builder.WriteString(f.Date.Format(time.ANSIC))
 	builder.WriteString(", ")
-	builder.WriteString("takeoffLocation=")
-	builder.WriteString(f.TakeoffLocation)
+	builder.WriteString("location=")
+	builder.WriteString(f.Location)
 	builder.WriteString(", ")
-	builder.WriteString("igcFilePath=")
-	builder.WriteString(f.IgcFilePath)
+	builder.WriteString("duration=")
+	builder.WriteString(fmt.Sprintf("%v", f.Duration))
+	builder.WriteString(", ")
+	builder.WriteString("distance=")
+	builder.WriteString(fmt.Sprintf("%v", f.Distance))
+	builder.WriteString(", ")
+	builder.WriteString("altitudeMax=")
+	builder.WriteString(fmt.Sprintf("%v", f.AltitudeMax))
+	builder.WriteString(", ")
+	builder.WriteString("igcData=")
+	builder.WriteString(f.IgcData)
 	builder.WriteByte(')')
 	return builder.String()
 }

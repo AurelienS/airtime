@@ -61,6 +61,8 @@ func ValidColumn(column string) bool {
 }
 
 var (
+	// DefaultTheme holds the default value on creation for the "theme" field.
+	DefaultTheme string
 	// DefaultCreatedAt holds the default value on creation for the "createdAt" field.
 	DefaultCreatedAt func() time.Time
 )

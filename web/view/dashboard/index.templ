@@ -28,42 +28,42 @@ templ Index(view viewmodel.DashboardView) {
 					<div class="flex flex-col rounded-2xl p-4 shadow bg-base-100 min-w-64">
 						<div class="text-2xl font-bold">{ view.FirstYear } - { view.LastYear } </div>
 						<div>
-							{ view.AllTimeStats.FlightCount } vols - { view.AllTimeStats.TotalFlightTime }
+							{ view.AllTimeStats.FlightCount } vols - { view.AllTimeStats.TotalDuration }
 						</div>
 						<div class="flex flex-col gap-y-2 mt-4">
 							<div class="mt-3 font-semibold text-lg">Records</div>
 							<div>
-								{ view.AllTimeStats.MaxDistance } le
+								{ view.AllTimeStats.DistanceMax } le
 								<a
 									class="link"
-									href={ templ.SafeURL(view.AllTimeStats.MaxDistanceFlight.Link) }
+									href={ templ.SafeURL(view.AllTimeStats.DistanceMaxFlight.Link) }
 								>
-									{ view.AllTimeStats.MaxDistanceFlight.Date }
+									{ view.AllTimeStats.DistanceMaxFlight.Date }
 								</a>
 							</div>
 							<div>
-								{ view.AllTimeStats.MaxDuration } le
+								{ view.AllTimeStats.DurationMax } le
 								<a
 									class="link"
-									href={ templ.SafeURL(view.AllTimeStats.MaxDurationFlight.Link) }
+									href={ templ.SafeURL(view.AllTimeStats.DurationMaxFlight.Link) }
 								>
-									{ view.AllTimeStats.MaxDurationFlight.Date }
+									{ view.AllTimeStats.DurationMaxFlight.Date }
 								</a>
 							</div>
 							<div>
-								{ view.AllTimeStats.MaxAltitude } le
+								{ view.AllTimeStats.AltitudeMax } le
 								<a
 									class="link"
-									href={ templ.SafeURL(view.AllTimeStats.MaxAltitudeFlight.Link) }
+									href={ templ.SafeURL(view.AllTimeStats.AltitudeMaxFlight.Link) }
 								>
-									{ view.AllTimeStats.MaxAltitudeFlight.Date }
+									{ view.AllTimeStats.AltitudeMaxFlight.Date }
 								</a>
 							</div>
 							<div class="mt-3 font-semibold text-lg">En moyenne</div>
-							<div>{ view.AllTimeStats.AverageFlightTime }</div>
+							<div>{ view.AllTimeStats.AverageDuration }</div>
 						</div>
 						<div class="flex justify-end mt-4">
-							<a class="btn btn-xs" href="/progression">plus de statistiques</a>
+							<a class="btn btn-xs btn-primary btn-outline" href="/progression">plus de statistiques</a>
 						</div>
 					</div>
 				</div>
@@ -78,40 +78,43 @@ templ Index(view viewmodel.DashboardView) {
 							<div class="text-2xl font-bold">
 								En { view.CurrentYear }
 							</div>
-							<div class="text-xl font-light">{ view.CurrentYearStat.FlightCount } vols - { view.CurrentYearStat.TotalFlightTime }</div>
+							<div class="text-xl font-light">{ view.CurrentYearStat.FlightCount } vols - { view.CurrentYearStat.TotalDuration }</div>
 							<div class="flex gap-4 mt-4">
 								<div>
-									{ view.CurrentYearStat.MaxDistance } le
+									{ view.CurrentYearStat.DistanceMax } le
 									<a
 										class="link"
-										href={ templ.SafeURL(view.CurrentYearStat.MaxDistanceFlight.Link) }
+										href={ templ.SafeURL(view.CurrentYearStat.DistanceMaxFlight.Link) }
 									>
-										{ view.CurrentYearStat.MaxDistanceFlight.Date }
+										{ view.CurrentYearStat.DistanceMaxFlight.Date }
 									</a>
 								</div>
 								<div>
-									{ view.CurrentYearStat.MaxDuration } le
+									{ view.CurrentYearStat.DurationMax } le
 									<a
 										class="link"
-										href={ templ.SafeURL(view.CurrentYearStat.MaxDurationFlight.Link) }
+										href={ templ.SafeURL(view.CurrentYearStat.DurationMaxFlight.Link) }
 									>
-										{ view.CurrentYearStat.MaxDurationFlight.Date }
+										{ view.CurrentYearStat.DurationMaxFlight.Date }
 									</a>
 								</div>
 								<div>
-									{ view.CurrentYearStat.MaxAltitude } le
+									{ view.CurrentYearStat.AltitudeMax } le
 									<a
 										class="link"
-										href={ templ.SafeURL(view.CurrentYearStat.MaxAltitudeFlight.Link) }
+										href={ templ.SafeURL(view.CurrentYearStat.AltitudeMaxFlight.Link) }
 									>
-										{ view.CurrentYearStat.MaxAltitudeFlight.Date }
+										{ view.CurrentYearStat.AltitudeMaxFlight.Date }
 									</a>
 								</div>
 							</div>
 						}
 					</div>
 					<div class="rounded-2xl p-4 bg-base-100">
-						<div class="text-2xl font-bold">Mes derniers vols</div>
+						<div class="flex justify-between mt-4">
+							<div class="text-2xl font-bold">Mes derniers vols</div>
+							@component.UploadFlightForm("btn btn-sm btn-primary")
+						</div>
 						@ClickableRows()
 						<table id="flight_table" class="table table-pin-rows overflow-hidden bg-base-100 mt-4 ">
 							<thead>
@@ -127,16 +130,16 @@ templ Index(view viewmodel.DashboardView) {
 								for _, flight := range view.LastFlights {
 									<tr class="hover cursor-pointer" data-url={ flight.Link }>
 										<td>{ flight.Date }</td>
-										<td>{ flight.TakeoffLocation }</td>
-										<td>{ flight.TotalFlightTime }</td>
-										<td>{ flight.TotalDistance }</td>
-										<td>{ flight.MaxAltitude }</td>
+										<td>{ flight.Location }</td>
+										<td>{ flight.Duration }</td>
+										<td>{ flight.Distance }</td>
+										<td>{ flight.AltitudeMax }</td>
 									</tr>
 								}
 							</tbody>
 						</table>
 						<div class="flex justify-end mt-2">
-							<a class="btn btn-xs" href="/logbook/2023">voir tous mes vols</a>
+							<a class="btn btn-xs btn-primary btn-outline" href="/logbook/2023">voir tous mes vols</a>
 						</div>
 					</div>
 				</div>

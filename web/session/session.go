@@ -3,7 +3,6 @@ package session
 import (
 	"encoding/gob"
 	"errors"
-	"fmt"
 
 	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/internal/util"
@@ -52,7 +51,6 @@ func SaveUserInSession(c echo.Context, user domain.User) error {
 		return err
 	}
 	session.Values["user"] = user
-	fmt.Println("file: session.go ~ line 54 ~ funcSaveUserInSession ~ user : ", user)
 	return saveSession(c, session)
 }
 

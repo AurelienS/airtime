@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	"github.com/AurelienS/cigare/internal/storage/ent/predicate"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
@@ -44,30 +43,93 @@ func (fu *FlightUpdate) SetNillableDate(t *time.Time) *FlightUpdate {
 	return fu
 }
 
-// SetTakeoffLocation sets the "takeoffLocation" field.
-func (fu *FlightUpdate) SetTakeoffLocation(s string) *FlightUpdate {
-	fu.mutation.SetTakeoffLocation(s)
+// SetLocation sets the "location" field.
+func (fu *FlightUpdate) SetLocation(s string) *FlightUpdate {
+	fu.mutation.SetLocation(s)
 	return fu
 }
 
-// SetNillableTakeoffLocation sets the "takeoffLocation" field if the given value is not nil.
-func (fu *FlightUpdate) SetNillableTakeoffLocation(s *string) *FlightUpdate {
+// SetNillableLocation sets the "location" field if the given value is not nil.
+func (fu *FlightUpdate) SetNillableLocation(s *string) *FlightUpdate {
 	if s != nil {
-		fu.SetTakeoffLocation(*s)
+		fu.SetLocation(*s)
 	}
 	return fu
 }
 
-// SetIgcFilePath sets the "igcFilePath" field.
-func (fu *FlightUpdate) SetIgcFilePath(s string) *FlightUpdate {
-	fu.mutation.SetIgcFilePath(s)
+// SetDuration sets the "duration" field.
+func (fu *FlightUpdate) SetDuration(i int) *FlightUpdate {
+	fu.mutation.ResetDuration()
+	fu.mutation.SetDuration(i)
 	return fu
 }
 
-// SetNillableIgcFilePath sets the "igcFilePath" field if the given value is not nil.
-func (fu *FlightUpdate) SetNillableIgcFilePath(s *string) *FlightUpdate {
+// SetNillableDuration sets the "duration" field if the given value is not nil.
+func (fu *FlightUpdate) SetNillableDuration(i *int) *FlightUpdate {
+	if i != nil {
+		fu.SetDuration(*i)
+	}
+	return fu
+}
+
+// AddDuration adds i to the "duration" field.
+func (fu *FlightUpdate) AddDuration(i int) *FlightUpdate {
+	fu.mutation.AddDuration(i)
+	return fu
+}
+
+// SetDistance sets the "distance" field.
+func (fu *FlightUpdate) SetDistance(i int) *FlightUpdate {
+	fu.mutation.ResetDistance()
+	fu.mutation.SetDistance(i)
+	return fu
+}
+
+// SetNillableDistance sets the "distance" field if the given value is not nil.
+func (fu *FlightUpdate) SetNillableDistance(i *int) *FlightUpdate {
+	if i != nil {
+		fu.SetDistance(*i)
+	}
+	return fu
+}
+
+// AddDistance adds i to the "distance" field.
+func (fu *FlightUpdate) AddDistance(i int) *FlightUpdate {
+	fu.mutation.AddDistance(i)
+	return fu
+}
+
+// SetAltitudeMax sets the "altitudeMax" field.
+func (fu *FlightUpdate) SetAltitudeMax(i int) *FlightUpdate {
+	fu.mutation.ResetAltitudeMax()
+	fu.mutation.SetAltitudeMax(i)
+	return fu
+}
+
+// SetNillableAltitudeMax sets the "altitudeMax" field if the given value is not nil.
+func (fu *FlightUpdate) SetNillableAltitudeMax(i *int) *FlightUpdate {
+	if i != nil {
+		fu.SetAltitudeMax(*i)
+	}
+	return fu
+}
+
+// AddAltitudeMax adds i to the "altitudeMax" field.
+func (fu *FlightUpdate) AddAltitudeMax(i int) *FlightUpdate {
+	fu.mutation.AddAltitudeMax(i)
+	return fu
+}
+
+// SetIgcData sets the "igcData" field.
+func (fu *FlightUpdate) SetIgcData(s string) *FlightUpdate {
+	fu.mutation.SetIgcData(s)
+	return fu
+}
+
+// SetNillableIgcData sets the "igcData" field if the given value is not nil.
+func (fu *FlightUpdate) SetNillableIgcData(s *string) *FlightUpdate {
 	if s != nil {
-		fu.SetIgcFilePath(*s)
+		fu.SetIgcData(*s)
 	}
 	return fu
 }
@@ -91,25 +153,6 @@ func (fu *FlightUpdate) SetPilot(u *User) *FlightUpdate {
 	return fu.SetPilotID(u.ID)
 }
 
-// SetStatisticID sets the "statistic" edge to the FlightStatistic entity by ID.
-func (fu *FlightUpdate) SetStatisticID(id int) *FlightUpdate {
-	fu.mutation.SetStatisticID(id)
-	return fu
-}
-
-// SetNillableStatisticID sets the "statistic" edge to the FlightStatistic entity by ID if the given value is not nil.
-func (fu *FlightUpdate) SetNillableStatisticID(id *int) *FlightUpdate {
-	if id != nil {
-		fu = fu.SetStatisticID(*id)
-	}
-	return fu
-}
-
-// SetStatistic sets the "statistic" edge to the FlightStatistic entity.
-func (fu *FlightUpdate) SetStatistic(f *FlightStatistic) *FlightUpdate {
-	return fu.SetStatisticID(f.ID)
-}
-
 // Mutation returns the FlightMutation object of the builder.
 func (fu *FlightUpdate) Mutation() *FlightMutation {
 	return fu.mutation
@@ -118,12 +161,6 @@ func (fu *FlightUpdate) Mutation() *FlightMutation {
 // ClearPilot clears the "pilot" edge to the User entity.
 func (fu *FlightUpdate) ClearPilot() *FlightUpdate {
 	fu.mutation.ClearPilot()
-	return fu
-}
-
-// ClearStatistic clears the "statistic" edge to the FlightStatistic entity.
-func (fu *FlightUpdate) ClearStatistic() *FlightUpdate {
-	fu.mutation.ClearStatistic()
 	return fu
 }
 
@@ -166,11 +203,29 @@ func (fu *FlightUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := fu.mutation.Date(); ok {
 		_spec.SetField(flight.FieldDate, field.TypeTime, value)
 	}
-	if value, ok := fu.mutation.TakeoffLocation(); ok {
-		_spec.SetField(flight.FieldTakeoffLocation, field.TypeString, value)
+	if value, ok := fu.mutation.Location(); ok {
+		_spec.SetField(flight.FieldLocation, field.TypeString, value)
 	}
-	if value, ok := fu.mutation.IgcFilePath(); ok {
-		_spec.SetField(flight.FieldIgcFilePath, field.TypeString, value)
+	if value, ok := fu.mutation.Duration(); ok {
+		_spec.SetField(flight.FieldDuration, field.TypeInt, value)
+	}
+	if value, ok := fu.mutation.AddedDuration(); ok {
+		_spec.AddField(flight.FieldDuration, field.TypeInt, value)
+	}
+	if value, ok := fu.mutation.Distance(); ok {
+		_spec.SetField(flight.FieldDistance, field.TypeInt, value)
+	}
+	if value, ok := fu.mutation.AddedDistance(); ok {
+		_spec.AddField(flight.FieldDistance, field.TypeInt, value)
+	}
+	if value, ok := fu.mutation.AltitudeMax(); ok {
+		_spec.SetField(flight.FieldAltitudeMax, field.TypeInt, value)
+	}
+	if value, ok := fu.mutation.AddedAltitudeMax(); ok {
+		_spec.AddField(flight.FieldAltitudeMax, field.TypeInt, value)
+	}
+	if value, ok := fu.mutation.IgcData(); ok {
+		_spec.SetField(flight.FieldIgcData, field.TypeString, value)
 	}
 	if fu.mutation.PilotCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -194,35 +249,6 @@ func (fu *FlightUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if fu.mutation.StatisticCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   flight.StatisticTable,
-			Columns: []string{flight.StatisticColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(flightstatistic.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fu.mutation.StatisticIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   flight.StatisticTable,
-			Columns: []string{flight.StatisticColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(flightstatistic.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {
@@ -264,30 +290,93 @@ func (fuo *FlightUpdateOne) SetNillableDate(t *time.Time) *FlightUpdateOne {
 	return fuo
 }
 
-// SetTakeoffLocation sets the "takeoffLocation" field.
-func (fuo *FlightUpdateOne) SetTakeoffLocation(s string) *FlightUpdateOne {
-	fuo.mutation.SetTakeoffLocation(s)
+// SetLocation sets the "location" field.
+func (fuo *FlightUpdateOne) SetLocation(s string) *FlightUpdateOne {
+	fuo.mutation.SetLocation(s)
 	return fuo
 }
 
-// SetNillableTakeoffLocation sets the "takeoffLocation" field if the given value is not nil.
-func (fuo *FlightUpdateOne) SetNillableTakeoffLocation(s *string) *FlightUpdateOne {
+// SetNillableLocation sets the "location" field if the given value is not nil.
+func (fuo *FlightUpdateOne) SetNillableLocation(s *string) *FlightUpdateOne {
 	if s != nil {
-		fuo.SetTakeoffLocation(*s)
+		fuo.SetLocation(*s)
 	}
 	return fuo
 }
 
-// SetIgcFilePath sets the "igcFilePath" field.
-func (fuo *FlightUpdateOne) SetIgcFilePath(s string) *FlightUpdateOne {
-	fuo.mutation.SetIgcFilePath(s)
+// SetDuration sets the "duration" field.
+func (fuo *FlightUpdateOne) SetDuration(i int) *FlightUpdateOne {
+	fuo.mutation.ResetDuration()
+	fuo.mutation.SetDuration(i)
 	return fuo
 }
 
-// SetNillableIgcFilePath sets the "igcFilePath" field if the given value is not nil.
-func (fuo *FlightUpdateOne) SetNillableIgcFilePath(s *string) *FlightUpdateOne {
+// SetNillableDuration sets the "duration" field if the given value is not nil.
+func (fuo *FlightUpdateOne) SetNillableDuration(i *int) *FlightUpdateOne {
+	if i != nil {
+		fuo.SetDuration(*i)
+	}
+	return fuo
+}
+
+// AddDuration adds i to the "duration" field.
+func (fuo *FlightUpdateOne) AddDuration(i int) *FlightUpdateOne {
+	fuo.mutation.AddDuration(i)
+	return fuo
+}
+
+// SetDistance sets the "distance" field.
+func (fuo *FlightUpdateOne) SetDistance(i int) *FlightUpdateOne {
+	fuo.mutation.ResetDistance()
+	fuo.mutation.SetDistance(i)
+	return fuo
+}
+
+// SetNillableDistance sets the "distance" field if the given value is not nil.
+func (fuo *FlightUpdateOne) SetNillableDistance(i *int) *FlightUpdateOne {
+	if i != nil {
+		fuo.SetDistance(*i)
+	}
+	return fuo
+}
+
+// AddDistance adds i to the "distance" field.
+func (fuo *FlightUpdateOne) AddDistance(i int) *FlightUpdateOne {
+	fuo.mutation.AddDistance(i)
+	return fuo
+}
+
+// SetAltitudeMax sets the "altitudeMax" field.
+func (fuo *FlightUpdateOne) SetAltitudeMax(i int) *FlightUpdateOne {
+	fuo.mutation.ResetAltitudeMax()
+	fuo.mutation.SetAltitudeMax(i)
+	return fuo
+}
+
+// SetNillableAltitudeMax sets the "altitudeMax" field if the given value is not nil.
+func (fuo *FlightUpdateOne) SetNillableAltitudeMax(i *int) *FlightUpdateOne {
+	if i != nil {
+		fuo.SetAltitudeMax(*i)
+	}
+	return fuo
+}
+
+// AddAltitudeMax adds i to the "altitudeMax" field.
+func (fuo *FlightUpdateOne) AddAltitudeMax(i int) *FlightUpdateOne {
+	fuo.mutation.AddAltitudeMax(i)
+	return fuo
+}
+
+// SetIgcData sets the "igcData" field.
+func (fuo *FlightUpdateOne) SetIgcData(s string) *FlightUpdateOne {
+	fuo.mutation.SetIgcData(s)
+	return fuo
+}
+
+// SetNillableIgcData sets the "igcData" field if the given value is not nil.
+func (fuo *FlightUpdateOne) SetNillableIgcData(s *string) *FlightUpdateOne {
 	if s != nil {
-		fuo.SetIgcFilePath(*s)
+		fuo.SetIgcData(*s)
 	}
 	return fuo
 }
@@ -311,25 +400,6 @@ func (fuo *FlightUpdateOne) SetPilot(u *User) *FlightUpdateOne {
 	return fuo.SetPilotID(u.ID)
 }
 
-// SetStatisticID sets the "statistic" edge to the FlightStatistic entity by ID.
-func (fuo *FlightUpdateOne) SetStatisticID(id int) *FlightUpdateOne {
-	fuo.mutation.SetStatisticID(id)
-	return fuo
-}
-
-// SetNillableStatisticID sets the "statistic" edge to the FlightStatistic entity by ID if the given value is not nil.
-func (fuo *FlightUpdateOne) SetNillableStatisticID(id *int) *FlightUpdateOne {
-	if id != nil {
-		fuo = fuo.SetStatisticID(*id)
-	}
-	return fuo
-}
-
-// SetStatistic sets the "statistic" edge to the FlightStatistic entity.
-func (fuo *FlightUpdateOne) SetStatistic(f *FlightStatistic) *FlightUpdateOne {
-	return fuo.SetStatisticID(f.ID)
-}
-
 // Mutation returns the FlightMutation object of the builder.
 func (fuo *FlightUpdateOne) Mutation() *FlightMutation {
 	return fuo.mutation
@@ -338,12 +408,6 @@ func (fuo *FlightUpdateOne) Mutation() *FlightMutation {
 // ClearPilot clears the "pilot" edge to the User entity.
 func (fuo *FlightUpdateOne) ClearPilot() *FlightUpdateOne {
 	fuo.mutation.ClearPilot()
-	return fuo
-}
-
-// ClearStatistic clears the "statistic" edge to the FlightStatistic entity.
-func (fuo *FlightUpdateOne) ClearStatistic() *FlightUpdateOne {
-	fuo.mutation.ClearStatistic()
 	return fuo
 }
 
@@ -416,11 +480,29 @@ func (fuo *FlightUpdateOne) sqlSave(ctx context.Context) (_node *Flight, err err
 	if value, ok := fuo.mutation.Date(); ok {
 		_spec.SetField(flight.FieldDate, field.TypeTime, value)
 	}
-	if value, ok := fuo.mutation.TakeoffLocation(); ok {
-		_spec.SetField(flight.FieldTakeoffLocation, field.TypeString, value)
+	if value, ok := fuo.mutation.Location(); ok {
+		_spec.SetField(flight.FieldLocation, field.TypeString, value)
 	}
-	if value, ok := fuo.mutation.IgcFilePath(); ok {
-		_spec.SetField(flight.FieldIgcFilePath, field.TypeString, value)
+	if value, ok := fuo.mutation.Duration(); ok {
+		_spec.SetField(flight.FieldDuration, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.AddedDuration(); ok {
+		_spec.AddField(flight.FieldDuration, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.Distance(); ok {
+		_spec.SetField(flight.FieldDistance, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.AddedDistance(); ok {
+		_spec.AddField(flight.FieldDistance, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.AltitudeMax(); ok {
+		_spec.SetField(flight.FieldAltitudeMax, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.AddedAltitudeMax(); ok {
+		_spec.AddField(flight.FieldAltitudeMax, field.TypeInt, value)
+	}
+	if value, ok := fuo.mutation.IgcData(); ok {
+		_spec.SetField(flight.FieldIgcData, field.TypeString, value)
 	}
 	if fuo.mutation.PilotCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -444,35 +526,6 @@ func (fuo *FlightUpdateOne) sqlSave(ctx context.Context) (_node *Flight, err err
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
 				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
-		_spec.Edges.Add = append(_spec.Edges.Add, edge)
-	}
-	if fuo.mutation.StatisticCleared() {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   flight.StatisticTable,
-			Columns: []string{flight.StatisticColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(flightstatistic.FieldID, field.TypeInt),
-			},
-		}
-		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
-	}
-	if nodes := fuo.mutation.StatisticIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   flight.StatisticTable,
-			Columns: []string{flight.StatisticColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(flightstatistic.FieldID, field.TypeInt),
 			},
 		}
 		for _, k := range nodes {

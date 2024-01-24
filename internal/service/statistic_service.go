@@ -52,10 +52,10 @@ func (s StatisticService) GetStatisticsByYearAndMonth(
 	// Flatten the YearMonth stats to aggregated stats
 	for year, monthStats := range flightsStatisticsByYearMonth {
 		if statsYearMonth[year] == nil {
-			statsYearMonth[year] = make(map[time.Month]domain.StatsAggregated)
+			statsYearMonth[year] = make(map[time.Month]domain.MultipleFlightStats)
 		}
 		for month, stats := range monthStats {
-			statsYearMonth[year][month] = domain.ComputeAggregateStatistics(stats)
+			statsYearMonth[year][month] = domain.ComputeMultipleFlightStats(stats)
 		}
 	}
 
@@ -68,7 +68,7 @@ func (s StatisticService) GetFlyingYears(ctx context.Context, user domain.User) 
 
 type (
 	Year           = int
-	StatsYearMonth = map[Year]map[time.Month]domain.StatsAggregated
+	StatsYearMonth = map[Year]map[time.Month]domain.MultipleFlightStats
 )
 
 func (s StatisticService) GetFlightStats(
@@ -76,12 +76,12 @@ func (s StatisticService) GetFlightStats(
 	user domain.User,
 	start time.Time,
 	end time.Time,
-) (domain.StatsAggregated, error) {
+) (domain.MultipleFlightStats, error) {
 	flights, err := s.flightService.GetFlights(ctx, start, end, user)
-	var stats domain.StatsAggregated
+	var stats domain.MultipleFlightStats
 	if err != nil {
 		return stats, err
 	}
-	stats = domain.ComputeAggregateStatistics(flights)
+	stats = domain.ComputeMultipleFlightStats(flights)
 	return stats, nil
 }

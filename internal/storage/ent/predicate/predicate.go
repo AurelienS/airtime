@@ -9,8 +9,5 @@ import (
 // Flight is the predicate function for flight builders.
 type Flight func(*sql.Selector)
 
-// FlightStatistic is the predicate function for flightstatistic builders.
-type FlightStatistic func(*sql.Selector)
-
 // User is the predicate function for user builders.
 type User func(*sql.Selector)

@@ -38,7 +38,7 @@ func UploadFlightForm(style string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"/logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"none\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc, .zip\" style=\"display:none;\" onchange=\"triggerUpload(this)\"> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"/logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"none\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc, .zip\" style=\"display:none;\" onchange=\"triggerUpload(this)\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -47,7 +47,7 @@ func UploadFlightForm(style string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -55,7 +55,7 @@ func UploadFlightForm(style string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" type=\"button\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -64,7 +64,7 @@ func UploadFlightForm(style string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</button></form>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

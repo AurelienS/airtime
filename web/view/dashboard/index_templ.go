@@ -112,9 +112,9 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var8 string
-				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.TotalFlightTime)
+				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.TotalDuration)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 30, Col: 83}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 30, Col: 81}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 				if templ_7745c5c3_Err != nil {
@@ -134,7 +134,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var10 string
-				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxDistance)
+				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.DistanceMax)
 				if templ_7745c5c3_Err != nil {
 					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 35, Col: 39}
 				}
@@ -155,7 +155,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var12 templ.SafeURL = templ.SafeURL(view.AllTimeStats.MaxDistanceFlight.Link)
+				var templ_7745c5c3_Var12 templ.SafeURL = templ.SafeURL(view.AllTimeStats.DistanceMaxFlight.Link)
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var12)))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -165,7 +165,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var13 string
-				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxDistanceFlight.Date)
+				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.DistanceMaxFlight.Date)
 				if templ_7745c5c3_Err != nil {
 					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 40, Col: 51}
 				}
@@ -178,7 +178,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var14 string
-				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxDuration)
+				templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.DurationMax)
 				if templ_7745c5c3_Err != nil {
 					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 44, Col: 39}
 				}
@@ -199,7 +199,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var16 templ.SafeURL = templ.SafeURL(view.AllTimeStats.MaxDurationFlight.Link)
+				var templ_7745c5c3_Var16 templ.SafeURL = templ.SafeURL(view.AllTimeStats.DurationMaxFlight.Link)
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var16)))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -209,7 +209,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var17 string
-				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxDurationFlight.Date)
+				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.DurationMaxFlight.Date)
 				if templ_7745c5c3_Err != nil {
 					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 49, Col: 51}
 				}
@@ -222,7 +222,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var18 string
-				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxAltitude)
+				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.AltitudeMax)
 				if templ_7745c5c3_Err != nil {
 					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 53, Col: 39}
 				}
@@ -243,7 +243,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var20 templ.SafeURL = templ.SafeURL(view.AllTimeStats.MaxAltitudeFlight.Link)
+				var templ_7745c5c3_Var20 templ.SafeURL = templ.SafeURL(view.AllTimeStats.AltitudeMaxFlight.Link)
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var20)))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -253,7 +253,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var21 string
-				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.MaxAltitudeFlight.Date)
+				templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.AltitudeMaxFlight.Date)
 				if templ_7745c5c3_Err != nil {
 					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 58, Col: 51}
 				}
@@ -275,15 +275,15 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var23 string
-				templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.AverageFlightTime)
+				templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(view.AllTimeStats.AverageDuration)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 62, Col: 49}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 62, Col: 47}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"flex justify-end mt-4\"><a class=\"btn btn-xs\" href=\"/progression\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div><div class=\"flex justify-end mt-4\"><a class=\"btn btn-xs btn-primary btn-outline\" href=\"/progression\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -370,9 +370,9 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var32 string
-					templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.TotalFlightTime)
+					templ_7745c5c3_Var32, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.TotalDuration)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 80, Col: 121}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 80, Col: 119}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var32))
 					if templ_7745c5c3_Err != nil {
@@ -383,7 +383,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var33 string
-					templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxDistance)
+					templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.DistanceMax)
 					if templ_7745c5c3_Err != nil {
 						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 83, Col: 43}
 					}
@@ -404,7 +404,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var35 templ.SafeURL = templ.SafeURL(view.CurrentYearStat.MaxDistanceFlight.Link)
+					var templ_7745c5c3_Var35 templ.SafeURL = templ.SafeURL(view.CurrentYearStat.DistanceMaxFlight.Link)
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var35)))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -414,7 +414,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var36 string
-					templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxDistanceFlight.Date)
+					templ_7745c5c3_Var36, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.DistanceMaxFlight.Date)
 					if templ_7745c5c3_Err != nil {
 						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 88, Col: 55}
 					}
@@ -427,7 +427,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var37 string
-					templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxDuration)
+					templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.DurationMax)
 					if templ_7745c5c3_Err != nil {
 						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 92, Col: 43}
 					}
@@ -448,7 +448,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var39 templ.SafeURL = templ.SafeURL(view.CurrentYearStat.MaxDurationFlight.Link)
+					var templ_7745c5c3_Var39 templ.SafeURL = templ.SafeURL(view.CurrentYearStat.DurationMaxFlight.Link)
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var39)))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -458,7 +458,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var40 string
-					templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxDurationFlight.Date)
+					templ_7745c5c3_Var40, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.DurationMaxFlight.Date)
 					if templ_7745c5c3_Err != nil {
 						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 97, Col: 55}
 					}
@@ -471,7 +471,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var41 string
-					templ_7745c5c3_Var41, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxAltitude)
+					templ_7745c5c3_Var41, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.AltitudeMax)
 					if templ_7745c5c3_Err != nil {
 						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 101, Col: 43}
 					}
@@ -492,7 +492,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var43 templ.SafeURL = templ.SafeURL(view.CurrentYearStat.MaxAltitudeFlight.Link)
+					var templ_7745c5c3_Var43 templ.SafeURL = templ.SafeURL(view.CurrentYearStat.AltitudeMaxFlight.Link)
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(string(templ_7745c5c3_Var43)))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -502,7 +502,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var44 string
-					templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.MaxAltitudeFlight.Date)
+					templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.JoinStringErrs(view.CurrentYearStat.AltitudeMaxFlight.Date)
 					if templ_7745c5c3_Err != nil {
 						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 106, Col: 55}
 					}
@@ -515,12 +515,20 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"rounded-2xl p-4 bg-base-100\"><div class=\"text-2xl font-bold\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div class=\"rounded-2xl p-4 bg-base-100\"><div class=\"flex justify-between mt-4\"><div class=\"text-2xl font-bold\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				templ_7745c5c3_Var45 := `Mes derniers vols`
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var45)
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = component.UploadFlightForm("btn btn-sm btn-primary").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -597,7 +605,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 					var templ_7745c5c3_Var51 string
 					templ_7745c5c3_Var51, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Date)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 128, Col: 27}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 131, Col: 27}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var51))
 					if templ_7745c5c3_Err != nil {
@@ -608,9 +616,9 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var52 string
-					templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TakeoffLocation)
+					templ_7745c5c3_Var52, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Location)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 129, Col: 38}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 132, Col: 31}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var52))
 					if templ_7745c5c3_Err != nil {
@@ -621,9 +629,9 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var53 string
-					templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TotalFlightTime)
+					templ_7745c5c3_Var53, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Duration)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 130, Col: 38}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 133, Col: 31}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var53))
 					if templ_7745c5c3_Err != nil {
@@ -634,9 +642,9 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var54 string
-					templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.JoinStringErrs(flight.TotalDistance)
+					templ_7745c5c3_Var54, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Distance)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 131, Col: 36}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 134, Col: 31}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var54))
 					if templ_7745c5c3_Err != nil {
@@ -647,9 +655,9 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var55 string
-					templ_7745c5c3_Var55, templ_7745c5c3_Err = templ.JoinStringErrs(flight.MaxAltitude)
+					templ_7745c5c3_Var55, templ_7745c5c3_Err = templ.JoinStringErrs(flight.AltitudeMax)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 132, Col: 34}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/dashboard/index.templ`, Line: 135, Col: 34}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var55))
 					if templ_7745c5c3_Err != nil {
@@ -660,7 +668,7 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table><div class=\"flex justify-end mt-2\"><a class=\"btn btn-xs\" href=\"/logbook/2023\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</tbody></table><div class=\"flex justify-end mt-2\"><a class=\"btn btn-xs btn-primary btn-outline\" href=\"/logbook/2023\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

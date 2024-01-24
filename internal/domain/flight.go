@@ -1,8 +1,12 @@
 package domain
 
 import (
+	"math"
+	"strings"
 	"time"
 
+	"github.com/AurelienS/cigare/internal/util"
+	"github.com/ezgliding/goigc/pkg/igc"
 	"github.com/golang/geo/s2"
 )
 
@@ -16,64 +20,107 @@ type Point struct {
 }
 
 type Flight struct {
-	ID              int
-	Date            time.Time
-	TakeoffLocation string
-	IgcFilePath     string
-	Pilot           User
-	Statistic       FlightStatistic
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID          int
+	Date        time.Time
+	Pilot       User
+	Location    string
+	Duration    time.Duration
+	Distance    int
+	AltitudeMax int
+	IgcData     string
 }
 
-type Thermal struct {
-	Start              time.Time
-	End                time.Time
-	StartAltitude      int
-	MaxThermalAltitude int
-	DownwardTolerance  int
-	MaxClimbRate       float64
-	AverageClimbRate   float64
-	StartIndex         int
-	EndIndex           int
-}
+var earthRadius = 6371e3
 
-func NewThermal(startTime time.Time, startAltitude, startIndex int) *Thermal {
-	return &Thermal{
-		Start:              startTime,
-		StartAltitude:      startAltitude,
-		StartIndex:         startIndex,
-		MaxThermalAltitude: startAltitude,
+func NewFlightFromIgc(igcData string) (Flight, error) {
+	f := Flight{
+		IgcData: igcData,
 	}
-}
 
-func (t *Thermal) Update(point Point, integratedClimbRate float64) {
-	altitudeGain := point.GNSSAltitude - t.MaxThermalAltitude
-	if altitudeGain < 0 {
-		t.DownwardTolerance++
-	} else {
-		t.DownwardTolerance = 0
-		if point.GNSSAltitude > t.MaxThermalAltitude {
-			t.MaxThermalAltitude = point.GNSSAltitude
+	track, err := igc.Parse(igcData)
+	if err != nil {
+		util.Error().Err(err).Msg("Error parsing IGC data")
+		return f, err
+	}
+
+	points := f.convertPoints(track.Points)
+
+	var lastPoint *Point
+	for i := range points {
+		point := &points[i]
+		if i == 0 {
+			lastPoint = point
+			continue
 		}
-		if integratedClimbRate > t.MaxClimbRate {
-			t.MaxClimbRate = integratedClimbRate
+		f.AltitudeMax = int(math.Max(float64(f.AltitudeMax), float64(point.GNSSAltitude)))
+
+		if i > 0 {
+			f.Distance += haversineDistance(
+				lastPoint.Lat.Degrees(), lastPoint.Lng.Degrees(),
+				point.Lat.Degrees(), point.Lng.Degrees(), earthRadius,
+			)
 		}
+		lastPoint = point
 	}
-	t.End = point.Time
-}
 
-func (t *Thermal) ShouldEnd(maxDownwardTolerance int) bool {
-	return t.DownwardTolerance > maxDownwardTolerance
-}
+	endTime := points[len(points)-1].Time
+	startTime := points[0].Time
+	f.Duration = endTime.Sub(startTime)
 
-func (t *Thermal) Duration() time.Duration {
-	if t.End.IsZero() {
-		return 0
+	loc, err := time.LoadLocation("Europe/Paris")
+	if err != nil {
+		util.Warn().Msg("Error loading location Europe/Paris for")
 	}
-	return t.End.Sub(t.Start)
+
+	correctDate := time.Date(
+		track.Date.Year(),
+		track.Date.Month(),
+		track.Date.Day(),
+		track.Points[0].Time.Hour(),
+		track.Points[0].Time.Minute(),
+		track.Points[0].Time.Second(),
+		track.Points[0].Time.Nanosecond(),
+		loc,
+	)
+
+	siteName := strings.Split(track.Site, "_")
+	site := "Inconnu"
+
+	if len(siteName) > 0 {
+		site = siteName[0]
+	}
+
+	f.Location = site
+	f.Date = correctDate
+
+	return f, nil
 }
 
-func (t *Thermal) Climb() int {
-	return t.MaxThermalAltitude - t.StartAltitude
+func haversineDistance(lat1, lon1, lat2, lon2, radius float64) int {
+	dLat := (lat2 - lat1) * math.Pi / 180.0
+	dLon := (lon2 - lon1) * math.Pi / 180.0
+
+	lat1 = lat1 * math.Pi / 180.0
+	lat2 = lat2 * math.Pi / 180.0
+
+	a := math.Sin(dLat/2)*math.Sin(dLat/2) + math.Sin(dLon/2)*math.Sin(dLon/2)*math.Cos(lat1)*math.Cos(lat2)
+	c := 2 * math.Atan2(math.Sqrt(a), math.Sqrt(1-a))
+
+	return int(radius * c)
+}
+
+func (f *Flight) convertPoints(points []igc.Point) []Point {
+	var pts []Point
+	for _, p := range points {
+		pts = append(pts, Point{
+			LatLng:           p.LatLng,
+			Time:             p.Time,
+			PressureAltitude: int(p.PressureAltitude),
+			GNSSAltitude:     int(p.GNSSAltitude),
+			NumSatellites:    p.NumSatellites,
+			Description:      p.Description,
+		})
+	}
+
+	return pts
 }

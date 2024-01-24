@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	"github.com/AurelienS/cigare/internal/storage/ent/predicate"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
@@ -26,28 +25,31 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeFlight          = "Flight"
-	TypeFlightStatistic = "FlightStatistic"
-	TypeUser            = "User"
+	TypeFlight = "Flight"
+	TypeUser   = "User"
 )
 
 // FlightMutation represents an operation that mutates the Flight nodes in the graph.
 type FlightMutation struct {
 	config
-	op               Op
-	typ              string
-	id               *int
-	date             *time.Time
-	takeoffLocation  *string
-	igcFilePath      *string
-	clearedFields    map[string]struct{}
-	pilot            *int
-	clearedpilot     bool
-	statistic        *int
-	clearedstatistic bool
-	done             bool
-	oldValue         func(context.Context) (*Flight, error)
-	predicates       []predicate.Flight
+	op             Op
+	typ            string
+	id             *int
+	date           *time.Time
+	location       *string
+	duration       *int
+	addduration    *int
+	distance       *int
+	adddistance    *int
+	altitudeMax    *int
+	addaltitudeMax *int
+	igcData        *string
+	clearedFields  map[string]struct{}
+	pilot          *int
+	clearedpilot   bool
+	done           bool
+	oldValue       func(context.Context) (*Flight, error)
+	predicates     []predicate.Flight
 }
 
 var _ ent.Mutation = (*FlightMutation)(nil)
@@ -184,76 +186,244 @@ func (m *FlightMutation) ResetDate() {
 	m.date = nil
 }
 
-// SetTakeoffLocation sets the "takeoffLocation" field.
-func (m *FlightMutation) SetTakeoffLocation(s string) {
-	m.takeoffLocation = &s
+// SetLocation sets the "location" field.
+func (m *FlightMutation) SetLocation(s string) {
+	m.location = &s
 }
 
-// TakeoffLocation returns the value of the "takeoffLocation" field in the mutation.
-func (m *FlightMutation) TakeoffLocation() (r string, exists bool) {
-	v := m.takeoffLocation
+// Location returns the value of the "location" field in the mutation.
+func (m *FlightMutation) Location() (r string, exists bool) {
+	v := m.location
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldTakeoffLocation returns the old "takeoffLocation" field's value of the Flight entity.
+// OldLocation returns the old "location" field's value of the Flight entity.
 // If the Flight object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightMutation) OldTakeoffLocation(ctx context.Context) (v string, err error) {
+func (m *FlightMutation) OldLocation(ctx context.Context) (v string, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTakeoffLocation is only allowed on UpdateOne operations")
+		return v, errors.New("OldLocation is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTakeoffLocation requires an ID field in the mutation")
+		return v, errors.New("OldLocation requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTakeoffLocation: %w", err)
+		return v, fmt.Errorf("querying old value for OldLocation: %w", err)
 	}
-	return oldValue.TakeoffLocation, nil
+	return oldValue.Location, nil
 }
 
-// ResetTakeoffLocation resets all changes to the "takeoffLocation" field.
-func (m *FlightMutation) ResetTakeoffLocation() {
-	m.takeoffLocation = nil
+// ResetLocation resets all changes to the "location" field.
+func (m *FlightMutation) ResetLocation() {
+	m.location = nil
 }
 
-// SetIgcFilePath sets the "igcFilePath" field.
-func (m *FlightMutation) SetIgcFilePath(s string) {
-	m.igcFilePath = &s
+// SetDuration sets the "duration" field.
+func (m *FlightMutation) SetDuration(i int) {
+	m.duration = &i
+	m.addduration = nil
 }
 
-// IgcFilePath returns the value of the "igcFilePath" field in the mutation.
-func (m *FlightMutation) IgcFilePath() (r string, exists bool) {
-	v := m.igcFilePath
+// Duration returns the value of the "duration" field in the mutation.
+func (m *FlightMutation) Duration() (r int, exists bool) {
+	v := m.duration
 	if v == nil {
 		return
 	}
 	return *v, true
 }
 
-// OldIgcFilePath returns the old "igcFilePath" field's value of the Flight entity.
+// OldDuration returns the old "duration" field's value of the Flight entity.
 // If the Flight object wasn't provided to the builder, the object is fetched from the database.
 // An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightMutation) OldIgcFilePath(ctx context.Context) (v string, err error) {
+func (m *FlightMutation) OldDuration(ctx context.Context) (v int, err error) {
 	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldIgcFilePath is only allowed on UpdateOne operations")
+		return v, errors.New("OldDuration is only allowed on UpdateOne operations")
 	}
 	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldIgcFilePath requires an ID field in the mutation")
+		return v, errors.New("OldDuration requires an ID field in the mutation")
 	}
 	oldValue, err := m.oldValue(ctx)
 	if err != nil {
-		return v, fmt.Errorf("querying old value for OldIgcFilePath: %w", err)
+		return v, fmt.Errorf("querying old value for OldDuration: %w", err)
 	}
-	return oldValue.IgcFilePath, nil
+	return oldValue.Duration, nil
 }
 
-// ResetIgcFilePath resets all changes to the "igcFilePath" field.
-func (m *FlightMutation) ResetIgcFilePath() {
-	m.igcFilePath = nil
+// AddDuration adds i to the "duration" field.
+func (m *FlightMutation) AddDuration(i int) {
+	if m.addduration != nil {
+		*m.addduration += i
+	} else {
+		m.addduration = &i
+	}
+}
+
+// AddedDuration returns the value that was added to the "duration" field in this mutation.
+func (m *FlightMutation) AddedDuration() (r int, exists bool) {
+	v := m.addduration
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDuration resets all changes to the "duration" field.
+func (m *FlightMutation) ResetDuration() {
+	m.duration = nil
+	m.addduration = nil
+}
+
+// SetDistance sets the "distance" field.
+func (m *FlightMutation) SetDistance(i int) {
+	m.distance = &i
+	m.adddistance = nil
+}
+
+// Distance returns the value of the "distance" field in the mutation.
+func (m *FlightMutation) Distance() (r int, exists bool) {
+	v := m.distance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldDistance returns the old "distance" field's value of the Flight entity.
+// If the Flight object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FlightMutation) OldDistance(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldDistance is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldDistance requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldDistance: %w", err)
+	}
+	return oldValue.Distance, nil
+}
+
+// AddDistance adds i to the "distance" field.
+func (m *FlightMutation) AddDistance(i int) {
+	if m.adddistance != nil {
+		*m.adddistance += i
+	} else {
+		m.adddistance = &i
+	}
+}
+
+// AddedDistance returns the value that was added to the "distance" field in this mutation.
+func (m *FlightMutation) AddedDistance() (r int, exists bool) {
+	v := m.adddistance
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetDistance resets all changes to the "distance" field.
+func (m *FlightMutation) ResetDistance() {
+	m.distance = nil
+	m.adddistance = nil
+}
+
+// SetAltitudeMax sets the "altitudeMax" field.
+func (m *FlightMutation) SetAltitudeMax(i int) {
+	m.altitudeMax = &i
+	m.addaltitudeMax = nil
+}
+
+// AltitudeMax returns the value of the "altitudeMax" field in the mutation.
+func (m *FlightMutation) AltitudeMax() (r int, exists bool) {
+	v := m.altitudeMax
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAltitudeMax returns the old "altitudeMax" field's value of the Flight entity.
+// If the Flight object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FlightMutation) OldAltitudeMax(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAltitudeMax is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAltitudeMax requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAltitudeMax: %w", err)
+	}
+	return oldValue.AltitudeMax, nil
+}
+
+// AddAltitudeMax adds i to the "altitudeMax" field.
+func (m *FlightMutation) AddAltitudeMax(i int) {
+	if m.addaltitudeMax != nil {
+		*m.addaltitudeMax += i
+	} else {
+		m.addaltitudeMax = &i
+	}
+}
+
+// AddedAltitudeMax returns the value that was added to the "altitudeMax" field in this mutation.
+func (m *FlightMutation) AddedAltitudeMax() (r int, exists bool) {
+	v := m.addaltitudeMax
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetAltitudeMax resets all changes to the "altitudeMax" field.
+func (m *FlightMutation) ResetAltitudeMax() {
+	m.altitudeMax = nil
+	m.addaltitudeMax = nil
+}
+
+// SetIgcData sets the "igcData" field.
+func (m *FlightMutation) SetIgcData(s string) {
+	m.igcData = &s
+}
+
+// IgcData returns the value of the "igcData" field in the mutation.
+func (m *FlightMutation) IgcData() (r string, exists bool) {
+	v := m.igcData
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldIgcData returns the old "igcData" field's value of the Flight entity.
+// If the Flight object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *FlightMutation) OldIgcData(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldIgcData is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldIgcData requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldIgcData: %w", err)
+	}
+	return oldValue.IgcData, nil
+}
+
+// ResetIgcData resets all changes to the "igcData" field.
+func (m *FlightMutation) ResetIgcData() {
+	m.igcData = nil
 }
 
 // SetPilotID sets the "pilot" edge to the User entity by id.
@@ -295,45 +465,6 @@ func (m *FlightMutation) ResetPilot() {
 	m.clearedpilot = false
 }
 
-// SetStatisticID sets the "statistic" edge to the FlightStatistic entity by id.
-func (m *FlightMutation) SetStatisticID(id int) {
-	m.statistic = &id
-}
-
-// ClearStatistic clears the "statistic" edge to the FlightStatistic entity.
-func (m *FlightMutation) ClearStatistic() {
-	m.clearedstatistic = true
-}
-
-// StatisticCleared reports if the "statistic" edge to the FlightStatistic entity was cleared.
-func (m *FlightMutation) StatisticCleared() bool {
-	return m.clearedstatistic
-}
-
-// StatisticID returns the "statistic" edge ID in the mutation.
-func (m *FlightMutation) StatisticID() (id int, exists bool) {
-	if m.statistic != nil {
-		return *m.statistic, true
-	}
-	return
-}
-
-// StatisticIDs returns the "statistic" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// StatisticID instead. It exists only for internal usage by the builders.
-func (m *FlightMutation) StatisticIDs() (ids []int) {
-	if id := m.statistic; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetStatistic resets all changes to the "statistic" edge.
-func (m *FlightMutation) ResetStatistic() {
-	m.statistic = nil
-	m.clearedstatistic = false
-}
-
 // Where appends a list predicates to the FlightMutation builder.
 func (m *FlightMutation) Where(ps ...predicate.Flight) {
 	m.predicates = append(m.predicates, ps...)
@@ -368,15 +499,24 @@ func (m *FlightMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *FlightMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 6)
 	if m.date != nil {
 		fields = append(fields, flight.FieldDate)
 	}
-	if m.takeoffLocation != nil {
-		fields = append(fields, flight.FieldTakeoffLocation)
+	if m.location != nil {
+		fields = append(fields, flight.FieldLocation)
 	}
-	if m.igcFilePath != nil {
-		fields = append(fields, flight.FieldIgcFilePath)
+	if m.duration != nil {
+		fields = append(fields, flight.FieldDuration)
+	}
+	if m.distance != nil {
+		fields = append(fields, flight.FieldDistance)
+	}
+	if m.altitudeMax != nil {
+		fields = append(fields, flight.FieldAltitudeMax)
+	}
+	if m.igcData != nil {
+		fields = append(fields, flight.FieldIgcData)
 	}
 	return fields
 }
@@ -388,10 +528,16 @@ func (m *FlightMutation) Field(name string) (ent.Value, bool) {
 	switch name {
 	case flight.FieldDate:
 		return m.Date()
-	case flight.FieldTakeoffLocation:
-		return m.TakeoffLocation()
-	case flight.FieldIgcFilePath:
-		return m.IgcFilePath()
+	case flight.FieldLocation:
+		return m.Location()
+	case flight.FieldDuration:
+		return m.Duration()
+	case flight.FieldDistance:
+		return m.Distance()
+	case flight.FieldAltitudeMax:
+		return m.AltitudeMax()
+	case flight.FieldIgcData:
+		return m.IgcData()
 	}
 	return nil, false
 }
@@ -403,10 +549,16 @@ func (m *FlightMutation) OldField(ctx context.Context, name string) (ent.Value, 
 	switch name {
 	case flight.FieldDate:
 		return m.OldDate(ctx)
-	case flight.FieldTakeoffLocation:
-		return m.OldTakeoffLocation(ctx)
-	case flight.FieldIgcFilePath:
-		return m.OldIgcFilePath(ctx)
+	case flight.FieldLocation:
+		return m.OldLocation(ctx)
+	case flight.FieldDuration:
+		return m.OldDuration(ctx)
+	case flight.FieldDistance:
+		return m.OldDistance(ctx)
+	case flight.FieldAltitudeMax:
+		return m.OldAltitudeMax(ctx)
+	case flight.FieldIgcData:
+		return m.OldIgcData(ctx)
 	}
 	return nil, fmt.Errorf("unknown Flight field %s", name)
 }
@@ -423,19 +575,40 @@ func (m *FlightMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetDate(v)
 		return nil
-	case flight.FieldTakeoffLocation:
+	case flight.FieldLocation:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetTakeoffLocation(v)
+		m.SetLocation(v)
 		return nil
-	case flight.FieldIgcFilePath:
+	case flight.FieldDuration:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDuration(v)
+		return nil
+	case flight.FieldDistance:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetDistance(v)
+		return nil
+	case flight.FieldAltitudeMax:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAltitudeMax(v)
+		return nil
+	case flight.FieldIgcData:
 		v, ok := value.(string)
 		if !ok {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
-		m.SetIgcFilePath(v)
+		m.SetIgcData(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Flight field %s", name)
@@ -444,13 +617,31 @@ func (m *FlightMutation) SetField(name string, value ent.Value) error {
 // AddedFields returns all numeric fields that were incremented/decremented during
 // this mutation.
 func (m *FlightMutation) AddedFields() []string {
-	return nil
+	var fields []string
+	if m.addduration != nil {
+		fields = append(fields, flight.FieldDuration)
+	}
+	if m.adddistance != nil {
+		fields = append(fields, flight.FieldDistance)
+	}
+	if m.addaltitudeMax != nil {
+		fields = append(fields, flight.FieldAltitudeMax)
+	}
+	return fields
 }
 
 // AddedField returns the numeric value that was incremented/decremented on a field
 // with the given name. The second boolean return value indicates that this field
 // was not set, or was not defined in the schema.
 func (m *FlightMutation) AddedField(name string) (ent.Value, bool) {
+	switch name {
+	case flight.FieldDuration:
+		return m.AddedDuration()
+	case flight.FieldDistance:
+		return m.AddedDistance()
+	case flight.FieldAltitudeMax:
+		return m.AddedAltitudeMax()
+	}
 	return nil, false
 }
 
@@ -459,6 +650,27 @@ func (m *FlightMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *FlightMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case flight.FieldDuration:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDuration(v)
+		return nil
+	case flight.FieldDistance:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddDistance(v)
+		return nil
+	case flight.FieldAltitudeMax:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddAltitudeMax(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Flight numeric field %s", name)
 }
@@ -489,11 +701,20 @@ func (m *FlightMutation) ResetField(name string) error {
 	case flight.FieldDate:
 		m.ResetDate()
 		return nil
-	case flight.FieldTakeoffLocation:
-		m.ResetTakeoffLocation()
+	case flight.FieldLocation:
+		m.ResetLocation()
 		return nil
-	case flight.FieldIgcFilePath:
-		m.ResetIgcFilePath()
+	case flight.FieldDuration:
+		m.ResetDuration()
+		return nil
+	case flight.FieldDistance:
+		m.ResetDistance()
+		return nil
+	case flight.FieldAltitudeMax:
+		m.ResetAltitudeMax()
+		return nil
+	case flight.FieldIgcData:
+		m.ResetIgcData()
 		return nil
 	}
 	return fmt.Errorf("unknown Flight field %s", name)
@@ -501,12 +722,9 @@ func (m *FlightMutation) ResetField(name string) error {
 
 // AddedEdges returns all edge names that were set/added in this mutation.
 func (m *FlightMutation) AddedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.pilot != nil {
 		edges = append(edges, flight.EdgePilot)
-	}
-	if m.statistic != nil {
-		edges = append(edges, flight.EdgeStatistic)
 	}
 	return edges
 }
@@ -519,17 +737,13 @@ func (m *FlightMutation) AddedIDs(name string) []ent.Value {
 		if id := m.pilot; id != nil {
 			return []ent.Value{*id}
 		}
-	case flight.EdgeStatistic:
-		if id := m.statistic; id != nil {
-			return []ent.Value{*id}
-		}
 	}
 	return nil
 }
 
 // RemovedEdges returns all edge names that were removed in this mutation.
 func (m *FlightMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	return edges
 }
 
@@ -541,12 +755,9 @@ func (m *FlightMutation) RemovedIDs(name string) []ent.Value {
 
 // ClearedEdges returns all edge names that were cleared in this mutation.
 func (m *FlightMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 2)
+	edges := make([]string, 0, 1)
 	if m.clearedpilot {
 		edges = append(edges, flight.EdgePilot)
-	}
-	if m.clearedstatistic {
-		edges = append(edges, flight.EdgeStatistic)
 	}
 	return edges
 }
@@ -557,8 +768,6 @@ func (m *FlightMutation) EdgeCleared(name string) bool {
 	switch name {
 	case flight.EdgePilot:
 		return m.clearedpilot
-	case flight.EdgeStatistic:
-		return m.clearedstatistic
 	}
 	return false
 }
@@ -569,9 +778,6 @@ func (m *FlightMutation) ClearEdge(name string) error {
 	switch name {
 	case flight.EdgePilot:
 		m.ClearPilot()
-		return nil
-	case flight.EdgeStatistic:
-		m.ClearStatistic()
 		return nil
 	}
 	return fmt.Errorf("unknown Flight unique edge %s", name)
@@ -584,1277 +790,8 @@ func (m *FlightMutation) ResetEdge(name string) error {
 	case flight.EdgePilot:
 		m.ResetPilot()
 		return nil
-	case flight.EdgeStatistic:
-		m.ResetStatistic()
-		return nil
 	}
 	return fmt.Errorf("unknown Flight edge %s", name)
-}
-
-// FlightStatisticMutation represents an operation that mutates the FlightStatistic nodes in the graph.
-type FlightStatisticMutation struct {
-	config
-	op                   Op
-	typ                  string
-	id                   *int
-	totalThermicTime     *int
-	addtotalThermicTime  *int
-	totalFlightTime      *int
-	addtotalFlightTime   *int
-	maxClimb             *int
-	addmaxClimb          *int
-	maxClimbRate         *float64
-	addmaxClimbRate      *float64
-	totalClimb           *int
-	addtotalClimb        *int
-	averageClimbRate     *float64
-	addaverageClimbRate  *float64
-	numberOfThermals     *int
-	addnumberOfThermals  *int
-	percentageThermic    *float64
-	addpercentageThermic *float64
-	maxAltitude          *int
-	addmaxAltitude       *int
-	totalDistance        *int
-	addtotalDistance     *int
-	geoJSON              *string
-	clearedFields        map[string]struct{}
-	flight               *int
-	clearedflight        bool
-	done                 bool
-	oldValue             func(context.Context) (*FlightStatistic, error)
-	predicates           []predicate.FlightStatistic
-}
-
-var _ ent.Mutation = (*FlightStatisticMutation)(nil)
-
-// flightstatisticOption allows management of the mutation configuration using functional options.
-type flightstatisticOption func(*FlightStatisticMutation)
-
-// newFlightStatisticMutation creates new mutation for the FlightStatistic entity.
-func newFlightStatisticMutation(c config, op Op, opts ...flightstatisticOption) *FlightStatisticMutation {
-	m := &FlightStatisticMutation{
-		config:        c,
-		op:            op,
-		typ:           TypeFlightStatistic,
-		clearedFields: make(map[string]struct{}),
-	}
-	for _, opt := range opts {
-		opt(m)
-	}
-	return m
-}
-
-// withFlightStatisticID sets the ID field of the mutation.
-func withFlightStatisticID(id int) flightstatisticOption {
-	return func(m *FlightStatisticMutation) {
-		var (
-			err   error
-			once  sync.Once
-			value *FlightStatistic
-		)
-		m.oldValue = func(ctx context.Context) (*FlightStatistic, error) {
-			once.Do(func() {
-				if m.done {
-					err = errors.New("querying old values post mutation is not allowed")
-				} else {
-					value, err = m.Client().FlightStatistic.Get(ctx, id)
-				}
-			})
-			return value, err
-		}
-		m.id = &id
-	}
-}
-
-// withFlightStatistic sets the old FlightStatistic of the mutation.
-func withFlightStatistic(node *FlightStatistic) flightstatisticOption {
-	return func(m *FlightStatisticMutation) {
-		m.oldValue = func(context.Context) (*FlightStatistic, error) {
-			return node, nil
-		}
-		m.id = &node.ID
-	}
-}
-
-// Client returns a new `ent.Client` from the mutation. If the mutation was
-// executed in a transaction (ent.Tx), a transactional client is returned.
-func (m FlightStatisticMutation) Client() *Client {
-	client := &Client{config: m.config}
-	client.init()
-	return client
-}
-
-// Tx returns an `ent.Tx` for mutations that were executed in transactions;
-// it returns an error otherwise.
-func (m FlightStatisticMutation) Tx() (*Tx, error) {
-	if _, ok := m.driver.(*txDriver); !ok {
-		return nil, errors.New("ent: mutation is not running in a transaction")
-	}
-	tx := &Tx{config: m.config}
-	tx.init()
-	return tx, nil
-}
-
-// ID returns the ID value in the mutation. Note that the ID is only available
-// if it was provided to the builder or after it was returned from the database.
-func (m *FlightStatisticMutation) ID() (id int, exists bool) {
-	if m.id == nil {
-		return
-	}
-	return *m.id, true
-}
-
-// IDs queries the database and returns the entity ids that match the mutation's predicate.
-// That means, if the mutation is applied within a transaction with an isolation level such
-// as sql.LevelSerializable, the returned ids match the ids of the rows that will be updated
-// or updated by the mutation.
-func (m *FlightStatisticMutation) IDs(ctx context.Context) ([]int, error) {
-	switch {
-	case m.op.Is(OpUpdateOne | OpDeleteOne):
-		id, exists := m.ID()
-		if exists {
-			return []int{id}, nil
-		}
-		fallthrough
-	case m.op.Is(OpUpdate | OpDelete):
-		return m.Client().FlightStatistic.Query().Where(m.predicates...).IDs(ctx)
-	default:
-		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
-	}
-}
-
-// SetTotalThermicTime sets the "totalThermicTime" field.
-func (m *FlightStatisticMutation) SetTotalThermicTime(i int) {
-	m.totalThermicTime = &i
-	m.addtotalThermicTime = nil
-}
-
-// TotalThermicTime returns the value of the "totalThermicTime" field in the mutation.
-func (m *FlightStatisticMutation) TotalThermicTime() (r int, exists bool) {
-	v := m.totalThermicTime
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTotalThermicTime returns the old "totalThermicTime" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldTotalThermicTime(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTotalThermicTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTotalThermicTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTotalThermicTime: %w", err)
-	}
-	return oldValue.TotalThermicTime, nil
-}
-
-// AddTotalThermicTime adds i to the "totalThermicTime" field.
-func (m *FlightStatisticMutation) AddTotalThermicTime(i int) {
-	if m.addtotalThermicTime != nil {
-		*m.addtotalThermicTime += i
-	} else {
-		m.addtotalThermicTime = &i
-	}
-}
-
-// AddedTotalThermicTime returns the value that was added to the "totalThermicTime" field in this mutation.
-func (m *FlightStatisticMutation) AddedTotalThermicTime() (r int, exists bool) {
-	v := m.addtotalThermicTime
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetTotalThermicTime resets all changes to the "totalThermicTime" field.
-func (m *FlightStatisticMutation) ResetTotalThermicTime() {
-	m.totalThermicTime = nil
-	m.addtotalThermicTime = nil
-}
-
-// SetTotalFlightTime sets the "totalFlightTime" field.
-func (m *FlightStatisticMutation) SetTotalFlightTime(i int) {
-	m.totalFlightTime = &i
-	m.addtotalFlightTime = nil
-}
-
-// TotalFlightTime returns the value of the "totalFlightTime" field in the mutation.
-func (m *FlightStatisticMutation) TotalFlightTime() (r int, exists bool) {
-	v := m.totalFlightTime
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTotalFlightTime returns the old "totalFlightTime" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldTotalFlightTime(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTotalFlightTime is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTotalFlightTime requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTotalFlightTime: %w", err)
-	}
-	return oldValue.TotalFlightTime, nil
-}
-
-// AddTotalFlightTime adds i to the "totalFlightTime" field.
-func (m *FlightStatisticMutation) AddTotalFlightTime(i int) {
-	if m.addtotalFlightTime != nil {
-		*m.addtotalFlightTime += i
-	} else {
-		m.addtotalFlightTime = &i
-	}
-}
-
-// AddedTotalFlightTime returns the value that was added to the "totalFlightTime" field in this mutation.
-func (m *FlightStatisticMutation) AddedTotalFlightTime() (r int, exists bool) {
-	v := m.addtotalFlightTime
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetTotalFlightTime resets all changes to the "totalFlightTime" field.
-func (m *FlightStatisticMutation) ResetTotalFlightTime() {
-	m.totalFlightTime = nil
-	m.addtotalFlightTime = nil
-}
-
-// SetMaxClimb sets the "maxClimb" field.
-func (m *FlightStatisticMutation) SetMaxClimb(i int) {
-	m.maxClimb = &i
-	m.addmaxClimb = nil
-}
-
-// MaxClimb returns the value of the "maxClimb" field in the mutation.
-func (m *FlightStatisticMutation) MaxClimb() (r int, exists bool) {
-	v := m.maxClimb
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldMaxClimb returns the old "maxClimb" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldMaxClimb(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMaxClimb is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMaxClimb requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMaxClimb: %w", err)
-	}
-	return oldValue.MaxClimb, nil
-}
-
-// AddMaxClimb adds i to the "maxClimb" field.
-func (m *FlightStatisticMutation) AddMaxClimb(i int) {
-	if m.addmaxClimb != nil {
-		*m.addmaxClimb += i
-	} else {
-		m.addmaxClimb = &i
-	}
-}
-
-// AddedMaxClimb returns the value that was added to the "maxClimb" field in this mutation.
-func (m *FlightStatisticMutation) AddedMaxClimb() (r int, exists bool) {
-	v := m.addmaxClimb
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetMaxClimb resets all changes to the "maxClimb" field.
-func (m *FlightStatisticMutation) ResetMaxClimb() {
-	m.maxClimb = nil
-	m.addmaxClimb = nil
-}
-
-// SetMaxClimbRate sets the "maxClimbRate" field.
-func (m *FlightStatisticMutation) SetMaxClimbRate(f float64) {
-	m.maxClimbRate = &f
-	m.addmaxClimbRate = nil
-}
-
-// MaxClimbRate returns the value of the "maxClimbRate" field in the mutation.
-func (m *FlightStatisticMutation) MaxClimbRate() (r float64, exists bool) {
-	v := m.maxClimbRate
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldMaxClimbRate returns the old "maxClimbRate" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldMaxClimbRate(ctx context.Context) (v float64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMaxClimbRate is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMaxClimbRate requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMaxClimbRate: %w", err)
-	}
-	return oldValue.MaxClimbRate, nil
-}
-
-// AddMaxClimbRate adds f to the "maxClimbRate" field.
-func (m *FlightStatisticMutation) AddMaxClimbRate(f float64) {
-	if m.addmaxClimbRate != nil {
-		*m.addmaxClimbRate += f
-	} else {
-		m.addmaxClimbRate = &f
-	}
-}
-
-// AddedMaxClimbRate returns the value that was added to the "maxClimbRate" field in this mutation.
-func (m *FlightStatisticMutation) AddedMaxClimbRate() (r float64, exists bool) {
-	v := m.addmaxClimbRate
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetMaxClimbRate resets all changes to the "maxClimbRate" field.
-func (m *FlightStatisticMutation) ResetMaxClimbRate() {
-	m.maxClimbRate = nil
-	m.addmaxClimbRate = nil
-}
-
-// SetTotalClimb sets the "totalClimb" field.
-func (m *FlightStatisticMutation) SetTotalClimb(i int) {
-	m.totalClimb = &i
-	m.addtotalClimb = nil
-}
-
-// TotalClimb returns the value of the "totalClimb" field in the mutation.
-func (m *FlightStatisticMutation) TotalClimb() (r int, exists bool) {
-	v := m.totalClimb
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTotalClimb returns the old "totalClimb" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldTotalClimb(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTotalClimb is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTotalClimb requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTotalClimb: %w", err)
-	}
-	return oldValue.TotalClimb, nil
-}
-
-// AddTotalClimb adds i to the "totalClimb" field.
-func (m *FlightStatisticMutation) AddTotalClimb(i int) {
-	if m.addtotalClimb != nil {
-		*m.addtotalClimb += i
-	} else {
-		m.addtotalClimb = &i
-	}
-}
-
-// AddedTotalClimb returns the value that was added to the "totalClimb" field in this mutation.
-func (m *FlightStatisticMutation) AddedTotalClimb() (r int, exists bool) {
-	v := m.addtotalClimb
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetTotalClimb resets all changes to the "totalClimb" field.
-func (m *FlightStatisticMutation) ResetTotalClimb() {
-	m.totalClimb = nil
-	m.addtotalClimb = nil
-}
-
-// SetAverageClimbRate sets the "averageClimbRate" field.
-func (m *FlightStatisticMutation) SetAverageClimbRate(f float64) {
-	m.averageClimbRate = &f
-	m.addaverageClimbRate = nil
-}
-
-// AverageClimbRate returns the value of the "averageClimbRate" field in the mutation.
-func (m *FlightStatisticMutation) AverageClimbRate() (r float64, exists bool) {
-	v := m.averageClimbRate
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldAverageClimbRate returns the old "averageClimbRate" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldAverageClimbRate(ctx context.Context) (v float64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldAverageClimbRate is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldAverageClimbRate requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldAverageClimbRate: %w", err)
-	}
-	return oldValue.AverageClimbRate, nil
-}
-
-// AddAverageClimbRate adds f to the "averageClimbRate" field.
-func (m *FlightStatisticMutation) AddAverageClimbRate(f float64) {
-	if m.addaverageClimbRate != nil {
-		*m.addaverageClimbRate += f
-	} else {
-		m.addaverageClimbRate = &f
-	}
-}
-
-// AddedAverageClimbRate returns the value that was added to the "averageClimbRate" field in this mutation.
-func (m *FlightStatisticMutation) AddedAverageClimbRate() (r float64, exists bool) {
-	v := m.addaverageClimbRate
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetAverageClimbRate resets all changes to the "averageClimbRate" field.
-func (m *FlightStatisticMutation) ResetAverageClimbRate() {
-	m.averageClimbRate = nil
-	m.addaverageClimbRate = nil
-}
-
-// SetNumberOfThermals sets the "numberOfThermals" field.
-func (m *FlightStatisticMutation) SetNumberOfThermals(i int) {
-	m.numberOfThermals = &i
-	m.addnumberOfThermals = nil
-}
-
-// NumberOfThermals returns the value of the "numberOfThermals" field in the mutation.
-func (m *FlightStatisticMutation) NumberOfThermals() (r int, exists bool) {
-	v := m.numberOfThermals
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldNumberOfThermals returns the old "numberOfThermals" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldNumberOfThermals(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldNumberOfThermals is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldNumberOfThermals requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldNumberOfThermals: %w", err)
-	}
-	return oldValue.NumberOfThermals, nil
-}
-
-// AddNumberOfThermals adds i to the "numberOfThermals" field.
-func (m *FlightStatisticMutation) AddNumberOfThermals(i int) {
-	if m.addnumberOfThermals != nil {
-		*m.addnumberOfThermals += i
-	} else {
-		m.addnumberOfThermals = &i
-	}
-}
-
-// AddedNumberOfThermals returns the value that was added to the "numberOfThermals" field in this mutation.
-func (m *FlightStatisticMutation) AddedNumberOfThermals() (r int, exists bool) {
-	v := m.addnumberOfThermals
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetNumberOfThermals resets all changes to the "numberOfThermals" field.
-func (m *FlightStatisticMutation) ResetNumberOfThermals() {
-	m.numberOfThermals = nil
-	m.addnumberOfThermals = nil
-}
-
-// SetPercentageThermic sets the "percentageThermic" field.
-func (m *FlightStatisticMutation) SetPercentageThermic(f float64) {
-	m.percentageThermic = &f
-	m.addpercentageThermic = nil
-}
-
-// PercentageThermic returns the value of the "percentageThermic" field in the mutation.
-func (m *FlightStatisticMutation) PercentageThermic() (r float64, exists bool) {
-	v := m.percentageThermic
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldPercentageThermic returns the old "percentageThermic" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldPercentageThermic(ctx context.Context) (v float64, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldPercentageThermic is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldPercentageThermic requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldPercentageThermic: %w", err)
-	}
-	return oldValue.PercentageThermic, nil
-}
-
-// AddPercentageThermic adds f to the "percentageThermic" field.
-func (m *FlightStatisticMutation) AddPercentageThermic(f float64) {
-	if m.addpercentageThermic != nil {
-		*m.addpercentageThermic += f
-	} else {
-		m.addpercentageThermic = &f
-	}
-}
-
-// AddedPercentageThermic returns the value that was added to the "percentageThermic" field in this mutation.
-func (m *FlightStatisticMutation) AddedPercentageThermic() (r float64, exists bool) {
-	v := m.addpercentageThermic
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetPercentageThermic resets all changes to the "percentageThermic" field.
-func (m *FlightStatisticMutation) ResetPercentageThermic() {
-	m.percentageThermic = nil
-	m.addpercentageThermic = nil
-}
-
-// SetMaxAltitude sets the "maxAltitude" field.
-func (m *FlightStatisticMutation) SetMaxAltitude(i int) {
-	m.maxAltitude = &i
-	m.addmaxAltitude = nil
-}
-
-// MaxAltitude returns the value of the "maxAltitude" field in the mutation.
-func (m *FlightStatisticMutation) MaxAltitude() (r int, exists bool) {
-	v := m.maxAltitude
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldMaxAltitude returns the old "maxAltitude" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldMaxAltitude(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldMaxAltitude is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldMaxAltitude requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldMaxAltitude: %w", err)
-	}
-	return oldValue.MaxAltitude, nil
-}
-
-// AddMaxAltitude adds i to the "maxAltitude" field.
-func (m *FlightStatisticMutation) AddMaxAltitude(i int) {
-	if m.addmaxAltitude != nil {
-		*m.addmaxAltitude += i
-	} else {
-		m.addmaxAltitude = &i
-	}
-}
-
-// AddedMaxAltitude returns the value that was added to the "maxAltitude" field in this mutation.
-func (m *FlightStatisticMutation) AddedMaxAltitude() (r int, exists bool) {
-	v := m.addmaxAltitude
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetMaxAltitude resets all changes to the "maxAltitude" field.
-func (m *FlightStatisticMutation) ResetMaxAltitude() {
-	m.maxAltitude = nil
-	m.addmaxAltitude = nil
-}
-
-// SetTotalDistance sets the "totalDistance" field.
-func (m *FlightStatisticMutation) SetTotalDistance(i int) {
-	m.totalDistance = &i
-	m.addtotalDistance = nil
-}
-
-// TotalDistance returns the value of the "totalDistance" field in the mutation.
-func (m *FlightStatisticMutation) TotalDistance() (r int, exists bool) {
-	v := m.totalDistance
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldTotalDistance returns the old "totalDistance" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldTotalDistance(ctx context.Context) (v int, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldTotalDistance is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldTotalDistance requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldTotalDistance: %w", err)
-	}
-	return oldValue.TotalDistance, nil
-}
-
-// AddTotalDistance adds i to the "totalDistance" field.
-func (m *FlightStatisticMutation) AddTotalDistance(i int) {
-	if m.addtotalDistance != nil {
-		*m.addtotalDistance += i
-	} else {
-		m.addtotalDistance = &i
-	}
-}
-
-// AddedTotalDistance returns the value that was added to the "totalDistance" field in this mutation.
-func (m *FlightStatisticMutation) AddedTotalDistance() (r int, exists bool) {
-	v := m.addtotalDistance
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// ResetTotalDistance resets all changes to the "totalDistance" field.
-func (m *FlightStatisticMutation) ResetTotalDistance() {
-	m.totalDistance = nil
-	m.addtotalDistance = nil
-}
-
-// SetGeoJSON sets the "geoJSON" field.
-func (m *FlightStatisticMutation) SetGeoJSON(s string) {
-	m.geoJSON = &s
-}
-
-// GeoJSON returns the value of the "geoJSON" field in the mutation.
-func (m *FlightStatisticMutation) GeoJSON() (r string, exists bool) {
-	v := m.geoJSON
-	if v == nil {
-		return
-	}
-	return *v, true
-}
-
-// OldGeoJSON returns the old "geoJSON" field's value of the FlightStatistic entity.
-// If the FlightStatistic object wasn't provided to the builder, the object is fetched from the database.
-// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
-func (m *FlightStatisticMutation) OldGeoJSON(ctx context.Context) (v string, err error) {
-	if !m.op.Is(OpUpdateOne) {
-		return v, errors.New("OldGeoJSON is only allowed on UpdateOne operations")
-	}
-	if m.id == nil || m.oldValue == nil {
-		return v, errors.New("OldGeoJSON requires an ID field in the mutation")
-	}
-	oldValue, err := m.oldValue(ctx)
-	if err != nil {
-		return v, fmt.Errorf("querying old value for OldGeoJSON: %w", err)
-	}
-	return oldValue.GeoJSON, nil
-}
-
-// ResetGeoJSON resets all changes to the "geoJSON" field.
-func (m *FlightStatisticMutation) ResetGeoJSON() {
-	m.geoJSON = nil
-}
-
-// SetFlightID sets the "flight" edge to the Flight entity by id.
-func (m *FlightStatisticMutation) SetFlightID(id int) {
-	m.flight = &id
-}
-
-// ClearFlight clears the "flight" edge to the Flight entity.
-func (m *FlightStatisticMutation) ClearFlight() {
-	m.clearedflight = true
-}
-
-// FlightCleared reports if the "flight" edge to the Flight entity was cleared.
-func (m *FlightStatisticMutation) FlightCleared() bool {
-	return m.clearedflight
-}
-
-// FlightID returns the "flight" edge ID in the mutation.
-func (m *FlightStatisticMutation) FlightID() (id int, exists bool) {
-	if m.flight != nil {
-		return *m.flight, true
-	}
-	return
-}
-
-// FlightIDs returns the "flight" edge IDs in the mutation.
-// Note that IDs always returns len(IDs) <= 1 for unique edges, and you should use
-// FlightID instead. It exists only for internal usage by the builders.
-func (m *FlightStatisticMutation) FlightIDs() (ids []int) {
-	if id := m.flight; id != nil {
-		ids = append(ids, *id)
-	}
-	return
-}
-
-// ResetFlight resets all changes to the "flight" edge.
-func (m *FlightStatisticMutation) ResetFlight() {
-	m.flight = nil
-	m.clearedflight = false
-}
-
-// Where appends a list predicates to the FlightStatisticMutation builder.
-func (m *FlightStatisticMutation) Where(ps ...predicate.FlightStatistic) {
-	m.predicates = append(m.predicates, ps...)
-}
-
-// WhereP appends storage-level predicates to the FlightStatisticMutation builder. Using this method,
-// users can use type-assertion to append predicates that do not depend on any generated package.
-func (m *FlightStatisticMutation) WhereP(ps ...func(*sql.Selector)) {
-	p := make([]predicate.FlightStatistic, len(ps))
-	for i := range ps {
-		p[i] = ps[i]
-	}
-	m.Where(p...)
-}
-
-// Op returns the operation name.
-func (m *FlightStatisticMutation) Op() Op {
-	return m.op
-}
-
-// SetOp allows setting the mutation operation.
-func (m *FlightStatisticMutation) SetOp(op Op) {
-	m.op = op
-}
-
-// Type returns the node type of this mutation (FlightStatistic).
-func (m *FlightStatisticMutation) Type() string {
-	return m.typ
-}
-
-// Fields returns all fields that were changed during this mutation. Note that in
-// order to get all numeric fields that were incremented/decremented, call
-// AddedFields().
-func (m *FlightStatisticMutation) Fields() []string {
-	fields := make([]string, 0, 11)
-	if m.totalThermicTime != nil {
-		fields = append(fields, flightstatistic.FieldTotalThermicTime)
-	}
-	if m.totalFlightTime != nil {
-		fields = append(fields, flightstatistic.FieldTotalFlightTime)
-	}
-	if m.maxClimb != nil {
-		fields = append(fields, flightstatistic.FieldMaxClimb)
-	}
-	if m.maxClimbRate != nil {
-		fields = append(fields, flightstatistic.FieldMaxClimbRate)
-	}
-	if m.totalClimb != nil {
-		fields = append(fields, flightstatistic.FieldTotalClimb)
-	}
-	if m.averageClimbRate != nil {
-		fields = append(fields, flightstatistic.FieldAverageClimbRate)
-	}
-	if m.numberOfThermals != nil {
-		fields = append(fields, flightstatistic.FieldNumberOfThermals)
-	}
-	if m.percentageThermic != nil {
-		fields = append(fields, flightstatistic.FieldPercentageThermic)
-	}
-	if m.maxAltitude != nil {
-		fields = append(fields, flightstatistic.FieldMaxAltitude)
-	}
-	if m.totalDistance != nil {
-		fields = append(fields, flightstatistic.FieldTotalDistance)
-	}
-	if m.geoJSON != nil {
-		fields = append(fields, flightstatistic.FieldGeoJSON)
-	}
-	return fields
-}
-
-// Field returns the value of a field with the given name. The second boolean
-// return value indicates that this field was not set, or was not defined in the
-// schema.
-func (m *FlightStatisticMutation) Field(name string) (ent.Value, bool) {
-	switch name {
-	case flightstatistic.FieldTotalThermicTime:
-		return m.TotalThermicTime()
-	case flightstatistic.FieldTotalFlightTime:
-		return m.TotalFlightTime()
-	case flightstatistic.FieldMaxClimb:
-		return m.MaxClimb()
-	case flightstatistic.FieldMaxClimbRate:
-		return m.MaxClimbRate()
-	case flightstatistic.FieldTotalClimb:
-		return m.TotalClimb()
-	case flightstatistic.FieldAverageClimbRate:
-		return m.AverageClimbRate()
-	case flightstatistic.FieldNumberOfThermals:
-		return m.NumberOfThermals()
-	case flightstatistic.FieldPercentageThermic:
-		return m.PercentageThermic()
-	case flightstatistic.FieldMaxAltitude:
-		return m.MaxAltitude()
-	case flightstatistic.FieldTotalDistance:
-		return m.TotalDistance()
-	case flightstatistic.FieldGeoJSON:
-		return m.GeoJSON()
-	}
-	return nil, false
-}
-
-// OldField returns the old value of the field from the database. An error is
-// returned if the mutation operation is not UpdateOne, or the query to the
-// database failed.
-func (m *FlightStatisticMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
-	switch name {
-	case flightstatistic.FieldTotalThermicTime:
-		return m.OldTotalThermicTime(ctx)
-	case flightstatistic.FieldTotalFlightTime:
-		return m.OldTotalFlightTime(ctx)
-	case flightstatistic.FieldMaxClimb:
-		return m.OldMaxClimb(ctx)
-	case flightstatistic.FieldMaxClimbRate:
-		return m.OldMaxClimbRate(ctx)
-	case flightstatistic.FieldTotalClimb:
-		return m.OldTotalClimb(ctx)
-	case flightstatistic.FieldAverageClimbRate:
-		return m.OldAverageClimbRate(ctx)
-	case flightstatistic.FieldNumberOfThermals:
-		return m.OldNumberOfThermals(ctx)
-	case flightstatistic.FieldPercentageThermic:
-		return m.OldPercentageThermic(ctx)
-	case flightstatistic.FieldMaxAltitude:
-		return m.OldMaxAltitude(ctx)
-	case flightstatistic.FieldTotalDistance:
-		return m.OldTotalDistance(ctx)
-	case flightstatistic.FieldGeoJSON:
-		return m.OldGeoJSON(ctx)
-	}
-	return nil, fmt.Errorf("unknown FlightStatistic field %s", name)
-}
-
-// SetField sets the value of a field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *FlightStatisticMutation) SetField(name string, value ent.Value) error {
-	switch name {
-	case flightstatistic.FieldTotalThermicTime:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTotalThermicTime(v)
-		return nil
-	case flightstatistic.FieldTotalFlightTime:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTotalFlightTime(v)
-		return nil
-	case flightstatistic.FieldMaxClimb:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMaxClimb(v)
-		return nil
-	case flightstatistic.FieldMaxClimbRate:
-		v, ok := value.(float64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMaxClimbRate(v)
-		return nil
-	case flightstatistic.FieldTotalClimb:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTotalClimb(v)
-		return nil
-	case flightstatistic.FieldAverageClimbRate:
-		v, ok := value.(float64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetAverageClimbRate(v)
-		return nil
-	case flightstatistic.FieldNumberOfThermals:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetNumberOfThermals(v)
-		return nil
-	case flightstatistic.FieldPercentageThermic:
-		v, ok := value.(float64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetPercentageThermic(v)
-		return nil
-	case flightstatistic.FieldMaxAltitude:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetMaxAltitude(v)
-		return nil
-	case flightstatistic.FieldTotalDistance:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetTotalDistance(v)
-		return nil
-	case flightstatistic.FieldGeoJSON:
-		v, ok := value.(string)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.SetGeoJSON(v)
-		return nil
-	}
-	return fmt.Errorf("unknown FlightStatistic field %s", name)
-}
-
-// AddedFields returns all numeric fields that were incremented/decremented during
-// this mutation.
-func (m *FlightStatisticMutation) AddedFields() []string {
-	var fields []string
-	if m.addtotalThermicTime != nil {
-		fields = append(fields, flightstatistic.FieldTotalThermicTime)
-	}
-	if m.addtotalFlightTime != nil {
-		fields = append(fields, flightstatistic.FieldTotalFlightTime)
-	}
-	if m.addmaxClimb != nil {
-		fields = append(fields, flightstatistic.FieldMaxClimb)
-	}
-	if m.addmaxClimbRate != nil {
-		fields = append(fields, flightstatistic.FieldMaxClimbRate)
-	}
-	if m.addtotalClimb != nil {
-		fields = append(fields, flightstatistic.FieldTotalClimb)
-	}
-	if m.addaverageClimbRate != nil {
-		fields = append(fields, flightstatistic.FieldAverageClimbRate)
-	}
-	if m.addnumberOfThermals != nil {
-		fields = append(fields, flightstatistic.FieldNumberOfThermals)
-	}
-	if m.addpercentageThermic != nil {
-		fields = append(fields, flightstatistic.FieldPercentageThermic)
-	}
-	if m.addmaxAltitude != nil {
-		fields = append(fields, flightstatistic.FieldMaxAltitude)
-	}
-	if m.addtotalDistance != nil {
-		fields = append(fields, flightstatistic.FieldTotalDistance)
-	}
-	return fields
-}
-
-// AddedField returns the numeric value that was incremented/decremented on a field
-// with the given name. The second boolean return value indicates that this field
-// was not set, or was not defined in the schema.
-func (m *FlightStatisticMutation) AddedField(name string) (ent.Value, bool) {
-	switch name {
-	case flightstatistic.FieldTotalThermicTime:
-		return m.AddedTotalThermicTime()
-	case flightstatistic.FieldTotalFlightTime:
-		return m.AddedTotalFlightTime()
-	case flightstatistic.FieldMaxClimb:
-		return m.AddedMaxClimb()
-	case flightstatistic.FieldMaxClimbRate:
-		return m.AddedMaxClimbRate()
-	case flightstatistic.FieldTotalClimb:
-		return m.AddedTotalClimb()
-	case flightstatistic.FieldAverageClimbRate:
-		return m.AddedAverageClimbRate()
-	case flightstatistic.FieldNumberOfThermals:
-		return m.AddedNumberOfThermals()
-	case flightstatistic.FieldPercentageThermic:
-		return m.AddedPercentageThermic()
-	case flightstatistic.FieldMaxAltitude:
-		return m.AddedMaxAltitude()
-	case flightstatistic.FieldTotalDistance:
-		return m.AddedTotalDistance()
-	}
-	return nil, false
-}
-
-// AddField adds the value to the field with the given name. It returns an error if
-// the field is not defined in the schema, or if the type mismatched the field
-// type.
-func (m *FlightStatisticMutation) AddField(name string, value ent.Value) error {
-	switch name {
-	case flightstatistic.FieldTotalThermicTime:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTotalThermicTime(v)
-		return nil
-	case flightstatistic.FieldTotalFlightTime:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTotalFlightTime(v)
-		return nil
-	case flightstatistic.FieldMaxClimb:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddMaxClimb(v)
-		return nil
-	case flightstatistic.FieldMaxClimbRate:
-		v, ok := value.(float64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddMaxClimbRate(v)
-		return nil
-	case flightstatistic.FieldTotalClimb:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTotalClimb(v)
-		return nil
-	case flightstatistic.FieldAverageClimbRate:
-		v, ok := value.(float64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddAverageClimbRate(v)
-		return nil
-	case flightstatistic.FieldNumberOfThermals:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddNumberOfThermals(v)
-		return nil
-	case flightstatistic.FieldPercentageThermic:
-		v, ok := value.(float64)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddPercentageThermic(v)
-		return nil
-	case flightstatistic.FieldMaxAltitude:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddMaxAltitude(v)
-		return nil
-	case flightstatistic.FieldTotalDistance:
-		v, ok := value.(int)
-		if !ok {
-			return fmt.Errorf("unexpected type %T for field %s", value, name)
-		}
-		m.AddTotalDistance(v)
-		return nil
-	}
-	return fmt.Errorf("unknown FlightStatistic numeric field %s", name)
-}
-
-// ClearedFields returns all nullable fields that were cleared during this
-// mutation.
-func (m *FlightStatisticMutation) ClearedFields() []string {
-	return nil
-}
-
-// FieldCleared returns a boolean indicating if a field with the given name was
-// cleared in this mutation.
-func (m *FlightStatisticMutation) FieldCleared(name string) bool {
-	_, ok := m.clearedFields[name]
-	return ok
-}
-
-// ClearField clears the value of the field with the given name. It returns an
-// error if the field is not defined in the schema.
-func (m *FlightStatisticMutation) ClearField(name string) error {
-	return fmt.Errorf("unknown FlightStatistic nullable field %s", name)
-}
-
-// ResetField resets all changes in the mutation for the field with the given name.
-// It returns an error if the field is not defined in the schema.
-func (m *FlightStatisticMutation) ResetField(name string) error {
-	switch name {
-	case flightstatistic.FieldTotalThermicTime:
-		m.ResetTotalThermicTime()
-		return nil
-	case flightstatistic.FieldTotalFlightTime:
-		m.ResetTotalFlightTime()
-		return nil
-	case flightstatistic.FieldMaxClimb:
-		m.ResetMaxClimb()
-		return nil
-	case flightstatistic.FieldMaxClimbRate:
-		m.ResetMaxClimbRate()
-		return nil
-	case flightstatistic.FieldTotalClimb:
-		m.ResetTotalClimb()
-		return nil
-	case flightstatistic.FieldAverageClimbRate:
-		m.ResetAverageClimbRate()
-		return nil
-	case flightstatistic.FieldNumberOfThermals:
-		m.ResetNumberOfThermals()
-		return nil
-	case flightstatistic.FieldPercentageThermic:
-		m.ResetPercentageThermic()
-		return nil
-	case flightstatistic.FieldMaxAltitude:
-		m.ResetMaxAltitude()
-		return nil
-	case flightstatistic.FieldTotalDistance:
-		m.ResetTotalDistance()
-		return nil
-	case flightstatistic.FieldGeoJSON:
-		m.ResetGeoJSON()
-		return nil
-	}
-	return fmt.Errorf("unknown FlightStatistic field %s", name)
-}
-
-// AddedEdges returns all edge names that were set/added in this mutation.
-func (m *FlightStatisticMutation) AddedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.flight != nil {
-		edges = append(edges, flightstatistic.EdgeFlight)
-	}
-	return edges
-}
-
-// AddedIDs returns all IDs (to other nodes) that were added for the given edge
-// name in this mutation.
-func (m *FlightStatisticMutation) AddedIDs(name string) []ent.Value {
-	switch name {
-	case flightstatistic.EdgeFlight:
-		if id := m.flight; id != nil {
-			return []ent.Value{*id}
-		}
-	}
-	return nil
-}
-
-// RemovedEdges returns all edge names that were removed in this mutation.
-func (m *FlightStatisticMutation) RemovedEdges() []string {
-	edges := make([]string, 0, 1)
-	return edges
-}
-
-// RemovedIDs returns all IDs (to other nodes) that were removed for the edge with
-// the given name in this mutation.
-func (m *FlightStatisticMutation) RemovedIDs(name string) []ent.Value {
-	return nil
-}
-
-// ClearedEdges returns all edge names that were cleared in this mutation.
-func (m *FlightStatisticMutation) ClearedEdges() []string {
-	edges := make([]string, 0, 1)
-	if m.clearedflight {
-		edges = append(edges, flightstatistic.EdgeFlight)
-	}
-	return edges
-}
-
-// EdgeCleared returns a boolean which indicates if the edge with the given name
-// was cleared in this mutation.
-func (m *FlightStatisticMutation) EdgeCleared(name string) bool {
-	switch name {
-	case flightstatistic.EdgeFlight:
-		return m.clearedflight
-	}
-	return false
-}
-
-// ClearEdge clears the value of the edge with the given name. It returns an error
-// if that edge is not defined in the schema.
-func (m *FlightStatisticMutation) ClearEdge(name string) error {
-	switch name {
-	case flightstatistic.EdgeFlight:
-		m.ClearFlight()
-		return nil
-	}
-	return fmt.Errorf("unknown FlightStatistic unique edge %s", name)
-}
-
-// ResetEdge resets all changes to the edge with the given name in this mutation.
-// It returns an error if the edge is not defined in the schema.
-func (m *FlightStatisticMutation) ResetEdge(name string) error {
-	switch name {
-	case flightstatistic.EdgeFlight:
-		m.ResetFlight()
-		return nil
-	}
-	return fmt.Errorf("unknown FlightStatistic edge %s", name)
 }
 
 // UserMutation represents an operation that mutates the User nodes in the graph.

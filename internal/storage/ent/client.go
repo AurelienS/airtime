@@ -16,7 +16,6 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
 
@@ -27,8 +26,6 @@ type Client struct {
 	Schema *migrate.Schema
 	// Flight is the client for interacting with the Flight builders.
 	Flight *FlightClient
-	// FlightStatistic is the client for interacting with the FlightStatistic builders.
-	FlightStatistic *FlightStatisticClient
 	// User is the client for interacting with the User builders.
 	User *UserClient
 }
@@ -43,7 +40,6 @@ func NewClient(opts ...Option) *Client {
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
 	c.Flight = NewFlightClient(c.config)
-	c.FlightStatistic = NewFlightStatisticClient(c.config)
 	c.User = NewUserClient(c.config)
 }
 
@@ -135,11 +131,10 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:             ctx,
-		config:          cfg,
-		Flight:          NewFlightClient(cfg),
-		FlightStatistic: NewFlightStatisticClient(cfg),
-		User:            NewUserClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Flight: NewFlightClient(cfg),
+		User:   NewUserClient(cfg),
 	}, nil
 }
 
@@ -157,11 +152,10 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:             ctx,
-		config:          cfg,
-		Flight:          NewFlightClient(cfg),
-		FlightStatistic: NewFlightStatisticClient(cfg),
-		User:            NewUserClient(cfg),
+		ctx:    ctx,
+		config: cfg,
+		Flight: NewFlightClient(cfg),
+		User:   NewUserClient(cfg),
 	}, nil
 }
 
@@ -191,7 +185,6 @@ func (c *Client) Close() error {
 // In order to add hooks to a specific client, call: `client.Node.Use(...)`.
 func (c *Client) Use(hooks ...Hook) {
 	c.Flight.Use(hooks...)
-	c.FlightStatistic.Use(hooks...)
 	c.User.Use(hooks...)
 }
 
@@ -199,7 +192,6 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	c.Flight.Intercept(interceptors...)
-	c.FlightStatistic.Intercept(interceptors...)
 	c.User.Intercept(interceptors...)
 }
 
@@ -208,8 +200,6 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	switch m := m.(type) {
 	case *FlightMutation:
 		return c.Flight.mutate(ctx, m)
-	case *FlightStatisticMutation:
-		return c.FlightStatistic.mutate(ctx, m)
 	case *UserMutation:
 		return c.User.mutate(ctx, m)
 	default:
@@ -341,22 +331,6 @@ func (c *FlightClient) QueryPilot(f *Flight) *UserQuery {
 	return query
 }
 
-// QueryStatistic queries the statistic edge of a Flight.
-func (c *FlightClient) QueryStatistic(f *Flight) *FlightStatisticQuery {
-	query := (&FlightStatisticClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := f.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(flight.Table, flight.FieldID, id),
-			sqlgraph.To(flightstatistic.Table, flightstatistic.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, flight.StatisticTable, flight.StatisticColumn),
-		)
-		fromV = sqlgraph.Neighbors(f.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
 // Hooks returns the client hooks.
 func (c *FlightClient) Hooks() []Hook {
 	return c.hooks.Flight
@@ -379,155 +353,6 @@ func (c *FlightClient) mutate(ctx context.Context, m *FlightMutation) (Value, er
 		return (&FlightDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
 	default:
 		return nil, fmt.Errorf("ent: unknown Flight mutation op: %q", m.Op())
-	}
-}
-
-// FlightStatisticClient is a client for the FlightStatistic schema.
-type FlightStatisticClient struct {
-	config
-}
-
-// NewFlightStatisticClient returns a client for the FlightStatistic from the given config.
-func NewFlightStatisticClient(c config) *FlightStatisticClient {
-	return &FlightStatisticClient{config: c}
-}
-
-// Use adds a list of mutation hooks to the hooks stack.
-// A call to `Use(f, g, h)` equals to `flightstatistic.Hooks(f(g(h())))`.
-func (c *FlightStatisticClient) Use(hooks ...Hook) {
-	c.hooks.FlightStatistic = append(c.hooks.FlightStatistic, hooks...)
-}
-
-// Intercept adds a list of query interceptors to the interceptors stack.
-// A call to `Intercept(f, g, h)` equals to `flightstatistic.Intercept(f(g(h())))`.
-func (c *FlightStatisticClient) Intercept(interceptors ...Interceptor) {
-	c.inters.FlightStatistic = append(c.inters.FlightStatistic, interceptors...)
-}
-
-// Create returns a builder for creating a FlightStatistic entity.
-func (c *FlightStatisticClient) Create() *FlightStatisticCreate {
-	mutation := newFlightStatisticMutation(c.config, OpCreate)
-	return &FlightStatisticCreate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// CreateBulk returns a builder for creating a bulk of FlightStatistic entities.
-func (c *FlightStatisticClient) CreateBulk(builders ...*FlightStatisticCreate) *FlightStatisticCreateBulk {
-	return &FlightStatisticCreateBulk{config: c.config, builders: builders}
-}
-
-// MapCreateBulk creates a bulk creation builder from the given slice. For each item in the slice, the function creates
-// a builder and applies setFunc on it.
-func (c *FlightStatisticClient) MapCreateBulk(slice any, setFunc func(*FlightStatisticCreate, int)) *FlightStatisticCreateBulk {
-	rv := reflect.ValueOf(slice)
-	if rv.Kind() != reflect.Slice {
-		return &FlightStatisticCreateBulk{err: fmt.Errorf("calling to FlightStatisticClient.MapCreateBulk with wrong type %T, need slice", slice)}
-	}
-	builders := make([]*FlightStatisticCreate, rv.Len())
-	for i := 0; i < rv.Len(); i++ {
-		builders[i] = c.Create()
-		setFunc(builders[i], i)
-	}
-	return &FlightStatisticCreateBulk{config: c.config, builders: builders}
-}
-
-// Update returns an update builder for FlightStatistic.
-func (c *FlightStatisticClient) Update() *FlightStatisticUpdate {
-	mutation := newFlightStatisticMutation(c.config, OpUpdate)
-	return &FlightStatisticUpdate{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOne returns an update builder for the given entity.
-func (c *FlightStatisticClient) UpdateOne(fs *FlightStatistic) *FlightStatisticUpdateOne {
-	mutation := newFlightStatisticMutation(c.config, OpUpdateOne, withFlightStatistic(fs))
-	return &FlightStatisticUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// UpdateOneID returns an update builder for the given id.
-func (c *FlightStatisticClient) UpdateOneID(id int) *FlightStatisticUpdateOne {
-	mutation := newFlightStatisticMutation(c.config, OpUpdateOne, withFlightStatisticID(id))
-	return &FlightStatisticUpdateOne{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// Delete returns a delete builder for FlightStatistic.
-func (c *FlightStatisticClient) Delete() *FlightStatisticDelete {
-	mutation := newFlightStatisticMutation(c.config, OpDelete)
-	return &FlightStatisticDelete{config: c.config, hooks: c.Hooks(), mutation: mutation}
-}
-
-// DeleteOne returns a builder for deleting the given entity.
-func (c *FlightStatisticClient) DeleteOne(fs *FlightStatistic) *FlightStatisticDeleteOne {
-	return c.DeleteOneID(fs.ID)
-}
-
-// DeleteOneID returns a builder for deleting the given entity by its id.
-func (c *FlightStatisticClient) DeleteOneID(id int) *FlightStatisticDeleteOne {
-	builder := c.Delete().Where(flightstatistic.ID(id))
-	builder.mutation.id = &id
-	builder.mutation.op = OpDeleteOne
-	return &FlightStatisticDeleteOne{builder}
-}
-
-// Query returns a query builder for FlightStatistic.
-func (c *FlightStatisticClient) Query() *FlightStatisticQuery {
-	return &FlightStatisticQuery{
-		config: c.config,
-		ctx:    &QueryContext{Type: TypeFlightStatistic},
-		inters: c.Interceptors(),
-	}
-}
-
-// Get returns a FlightStatistic entity by its id.
-func (c *FlightStatisticClient) Get(ctx context.Context, id int) (*FlightStatistic, error) {
-	return c.Query().Where(flightstatistic.ID(id)).Only(ctx)
-}
-
-// GetX is like Get, but panics if an error occurs.
-func (c *FlightStatisticClient) GetX(ctx context.Context, id int) *FlightStatistic {
-	obj, err := c.Get(ctx, id)
-	if err != nil {
-		panic(err)
-	}
-	return obj
-}
-
-// QueryFlight queries the flight edge of a FlightStatistic.
-func (c *FlightStatisticClient) QueryFlight(fs *FlightStatistic) *FlightQuery {
-	query := (&FlightClient{config: c.config}).Query()
-	query.path = func(context.Context) (fromV *sql.Selector, _ error) {
-		id := fs.ID
-		step := sqlgraph.NewStep(
-			sqlgraph.From(flightstatistic.Table, flightstatistic.FieldID, id),
-			sqlgraph.To(flight.Table, flight.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, true, flightstatistic.FlightTable, flightstatistic.FlightColumn),
-		)
-		fromV = sqlgraph.Neighbors(fs.driver.Dialect(), step)
-		return fromV, nil
-	}
-	return query
-}
-
-// Hooks returns the client hooks.
-func (c *FlightStatisticClient) Hooks() []Hook {
-	return c.hooks.FlightStatistic
-}
-
-// Interceptors returns the client interceptors.
-func (c *FlightStatisticClient) Interceptors() []Interceptor {
-	return c.inters.FlightStatistic
-}
-
-func (c *FlightStatisticClient) mutate(ctx context.Context, m *FlightStatisticMutation) (Value, error) {
-	switch m.Op() {
-	case OpCreate:
-		return (&FlightStatisticCreate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdate:
-		return (&FlightStatisticUpdate{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpUpdateOne:
-		return (&FlightStatisticUpdateOne{config: c.config, hooks: c.Hooks(), mutation: m}).Save(ctx)
-	case OpDelete, OpDeleteOne:
-		return (&FlightStatisticDelete{config: c.config, hooks: c.Hooks(), mutation: m}).Exec(ctx)
-	default:
-		return nil, fmt.Errorf("ent: unknown FlightStatistic mutation op: %q", m.Op())
 	}
 }
 
@@ -683,9 +508,9 @@ func (c *UserClient) mutate(ctx context.Context, m *UserMutation) (Value, error)
 // hooks and interceptors per client, for fast access.
 type (
 	hooks struct {
-		Flight, FlightStatistic, User []ent.Hook
+		Flight, User []ent.Hook
 	}
 	inters struct {
-		Flight, FlightStatistic, User []ent.Interceptor
+		Flight, User []ent.Interceptor
 	}
 )

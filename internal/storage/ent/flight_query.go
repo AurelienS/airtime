@@ -4,7 +4,6 @@ package ent
 
 import (
 	"context"
-	"database/sql/driver"
 	"fmt"
 	"math"
 
@@ -12,7 +11,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	"github.com/AurelienS/cigare/internal/storage/ent/predicate"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
@@ -20,13 +18,12 @@ import (
 // FlightQuery is the builder for querying Flight entities.
 type FlightQuery struct {
 	config
-	ctx           *QueryContext
-	order         []flight.OrderOption
-	inters        []Interceptor
-	predicates    []predicate.Flight
-	withPilot     *UserQuery
-	withStatistic *FlightStatisticQuery
-	withFKs       bool
+	ctx        *QueryContext
+	order      []flight.OrderOption
+	inters     []Interceptor
+	predicates []predicate.Flight
+	withPilot  *UserQuery
+	withFKs    bool
 	// intermediate query (i.e. traversal path).
 	sql  *sql.Selector
 	path func(context.Context) (*sql.Selector, error)
@@ -78,28 +75,6 @@ func (fq *FlightQuery) QueryPilot() *UserQuery {
 			sqlgraph.From(flight.Table, flight.FieldID, selector),
 			sqlgraph.To(user.Table, user.FieldID),
 			sqlgraph.Edge(sqlgraph.M2O, true, flight.PilotTable, flight.PilotColumn),
-		)
-		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
-		return fromU, nil
-	}
-	return query
-}
-
-// QueryStatistic chains the current query on the "statistic" edge.
-func (fq *FlightQuery) QueryStatistic() *FlightStatisticQuery {
-	query := (&FlightStatisticClient{config: fq.config}).Query()
-	query.path = func(ctx context.Context) (fromU *sql.Selector, err error) {
-		if err := fq.prepareQuery(ctx); err != nil {
-			return nil, err
-		}
-		selector := fq.sqlQuery(ctx)
-		if err := selector.Err(); err != nil {
-			return nil, err
-		}
-		step := sqlgraph.NewStep(
-			sqlgraph.From(flight.Table, flight.FieldID, selector),
-			sqlgraph.To(flightstatistic.Table, flightstatistic.FieldID),
-			sqlgraph.Edge(sqlgraph.O2O, false, flight.StatisticTable, flight.StatisticColumn),
 		)
 		fromU = sqlgraph.SetNeighbors(fq.driver.Dialect(), step)
 		return fromU, nil
@@ -294,13 +269,12 @@ func (fq *FlightQuery) Clone() *FlightQuery {
 		return nil
 	}
 	return &FlightQuery{
-		config:        fq.config,
-		ctx:           fq.ctx.Clone(),
-		order:         append([]flight.OrderOption{}, fq.order...),
-		inters:        append([]Interceptor{}, fq.inters...),
-		predicates:    append([]predicate.Flight{}, fq.predicates...),
-		withPilot:     fq.withPilot.Clone(),
-		withStatistic: fq.withStatistic.Clone(),
+		config:     fq.config,
+		ctx:        fq.ctx.Clone(),
+		order:      append([]flight.OrderOption{}, fq.order...),
+		inters:     append([]Interceptor{}, fq.inters...),
+		predicates: append([]predicate.Flight{}, fq.predicates...),
+		withPilot:  fq.withPilot.Clone(),
 		// clone intermediate query.
 		sql:  fq.sql.Clone(),
 		path: fq.path,
@@ -315,17 +289,6 @@ func (fq *FlightQuery) WithPilot(opts ...func(*UserQuery)) *FlightQuery {
 		opt(query)
 	}
 	fq.withPilot = query
-	return fq
-}
-
-// WithStatistic tells the query-builder to eager-load the nodes that are connected to
-// the "statistic" edge. The optional arguments are used to configure the query builder of the edge.
-func (fq *FlightQuery) WithStatistic(opts ...func(*FlightStatisticQuery)) *FlightQuery {
-	query := (&FlightStatisticClient{config: fq.config}).Query()
-	for _, opt := range opts {
-		opt(query)
-	}
-	fq.withStatistic = query
 	return fq
 }
 
@@ -408,9 +371,8 @@ func (fq *FlightQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fligh
 		nodes       = []*Flight{}
 		withFKs     = fq.withFKs
 		_spec       = fq.querySpec()
-		loadedTypes = [2]bool{
+		loadedTypes = [1]bool{
 			fq.withPilot != nil,
-			fq.withStatistic != nil,
 		}
 	)
 	if fq.withPilot != nil {
@@ -440,12 +402,6 @@ func (fq *FlightQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Fligh
 	if query := fq.withPilot; query != nil {
 		if err := fq.loadPilot(ctx, query, nodes, nil,
 			func(n *Flight, e *User) { n.Edges.Pilot = e }); err != nil {
-			return nil, err
-		}
-	}
-	if query := fq.withStatistic; query != nil {
-		if err := fq.loadStatistic(ctx, query, nodes, nil,
-			func(n *Flight, e *FlightStatistic) { n.Edges.Statistic = e }); err != nil {
 			return nil, err
 		}
 	}
@@ -481,34 +437,6 @@ func (fq *FlightQuery) loadPilot(ctx context.Context, query *UserQuery, nodes []
 		for i := range nodes {
 			assign(nodes[i], n)
 		}
-	}
-	return nil
-}
-func (fq *FlightQuery) loadStatistic(ctx context.Context, query *FlightStatisticQuery, nodes []*Flight, init func(*Flight), assign func(*Flight, *FlightStatistic)) error {
-	fks := make([]driver.Value, 0, len(nodes))
-	nodeids := make(map[int]*Flight)
-	for i := range nodes {
-		fks = append(fks, nodes[i].ID)
-		nodeids[nodes[i].ID] = nodes[i]
-	}
-	query.withFKs = true
-	query.Where(predicate.FlightStatistic(func(s *sql.Selector) {
-		s.Where(sql.InValues(s.C(flight.StatisticColumn), fks...))
-	}))
-	neighbors, err := query.All(ctx)
-	if err != nil {
-		return err
-	}
-	for _, n := range neighbors {
-		fk := n.flight_statistic
-		if fk == nil {
-			return fmt.Errorf(`foreign-key "flight_statistic" is nil for node %v`, n.ID)
-		}
-		node, ok := nodeids[*fk]
-		if !ok {
-			return fmt.Errorf(`unexpected referenced foreign-key "flight_statistic" returned %v for node %v`, *fk, n.ID)
-		}
-		assign(node, n)
 	}
 	return nil
 }

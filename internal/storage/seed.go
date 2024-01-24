@@ -43,33 +43,33 @@ func WriteSeedData() {
 			flightDates := randomUniqueDays(year, month, numDays)
 
 			for _, flightDate := range flightDates {
-				f, err := client.Flight.
+				_, err := client.Flight.
 					Create().
 					SetDate(flightDate).
-					SetTakeoffLocation("Lieu de décollage").
-					SetIgcFilePath("Chemin/vers/fichier.igc").
+					// SetTakeoffLocation("Lieu de décollage").
+					// SetIgcFilePath("Chemin/vers/fichier.igc").
 					SetPilotID(userID).
 					Save(ctx)
 				if err != nil {
 					log.Fatalf("failed creating flight: %v", err)
 				}
 
-				_, err = client.FlightStatistic.
-					Create().
-					SetTotalThermicTime(random(0, 20000)).
-					SetTotalFlightTime(random(0, 20000)).
-					SetMaxClimb(random(0, 4808)).
-					SetMaxClimbRate(float64(random(1, 9)) + rand.Float64()).
-					SetTotalClimb(random(0, 20000)).
-					SetAverageClimbRate(rand.Float64() * 5).
-					SetNumberOfThermals(random(0, 500)).
-					SetPercentageThermic(rand.Float64() * 100).
-					SetMaxAltitude(random(1100, 4808)).
-					SetFlight(f).
-					Save(ctx)
-				if err != nil {
-					log.Fatalf("failed creating flight statistic: %v", err)
-				}
+				// _, err = client.FlightStatistic.
+				// 	Create().
+				// 	SetTotalThermicTime(random(0, 20000)).
+				// 	SetTotalFlightTime(random(0, 20000)).
+				// 	SetMaxClimb(random(0, 4808)).
+				// 	SetMaxClimbRate(float64(random(1, 9)) + rand.Float64()).
+				// 	SetTotalClimb(random(0, 20000)).
+				// 	SetAverageClimbRate(rand.Float64() * 5).
+				// 	SetNumberOfThermals(random(0, 500)).
+				// 	SetPercentageThermic(rand.Float64() * 100).
+				// 	SetMaxAltitude(random(1100, 4808)).
+				// 	SetFlight(f).
+				// 	Save(ctx)
+				// if err != nil {
+				// 	log.Fatalf("failed creating flight statistic: %v", err)
+				// }
 			}
 		}
 	}

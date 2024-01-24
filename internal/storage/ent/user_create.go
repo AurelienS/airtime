@@ -53,6 +53,14 @@ func (uc *UserCreate) SetTheme(s string) *UserCreate {
 	return uc
 }
 
+// SetNillableTheme sets the "theme" field if the given value is not nil.
+func (uc *UserCreate) SetNillableTheme(s *string) *UserCreate {
+	if s != nil {
+		uc.SetTheme(*s)
+	}
+	return uc
+}
+
 // SetCreatedAt sets the "createdAt" field.
 func (uc *UserCreate) SetCreatedAt(t time.Time) *UserCreate {
 	uc.mutation.SetCreatedAt(t)
@@ -117,6 +125,10 @@ func (uc *UserCreate) ExecX(ctx context.Context) {
 
 // defaults sets the default values of the builder before save.
 func (uc *UserCreate) defaults() {
+	if _, ok := uc.mutation.Theme(); !ok {
+		v := user.DefaultTheme
+		uc.mutation.SetTheme(v)
+	}
 	if _, ok := uc.mutation.CreatedAt(); !ok {
 		v := user.DefaultCreatedAt()
 		uc.mutation.SetCreatedAt(v)

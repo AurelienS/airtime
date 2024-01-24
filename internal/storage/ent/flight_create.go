@@ -12,7 +12,6 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
 	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/flightstatistic"
 	"github.com/AurelienS/cigare/internal/storage/ent/user"
 )
 
@@ -30,15 +29,33 @@ func (fc *FlightCreate) SetDate(t time.Time) *FlightCreate {
 	return fc
 }
 
-// SetTakeoffLocation sets the "takeoffLocation" field.
-func (fc *FlightCreate) SetTakeoffLocation(s string) *FlightCreate {
-	fc.mutation.SetTakeoffLocation(s)
+// SetLocation sets the "location" field.
+func (fc *FlightCreate) SetLocation(s string) *FlightCreate {
+	fc.mutation.SetLocation(s)
 	return fc
 }
 
-// SetIgcFilePath sets the "igcFilePath" field.
-func (fc *FlightCreate) SetIgcFilePath(s string) *FlightCreate {
-	fc.mutation.SetIgcFilePath(s)
+// SetDuration sets the "duration" field.
+func (fc *FlightCreate) SetDuration(i int) *FlightCreate {
+	fc.mutation.SetDuration(i)
+	return fc
+}
+
+// SetDistance sets the "distance" field.
+func (fc *FlightCreate) SetDistance(i int) *FlightCreate {
+	fc.mutation.SetDistance(i)
+	return fc
+}
+
+// SetAltitudeMax sets the "altitudeMax" field.
+func (fc *FlightCreate) SetAltitudeMax(i int) *FlightCreate {
+	fc.mutation.SetAltitudeMax(i)
+	return fc
+}
+
+// SetIgcData sets the "igcData" field.
+func (fc *FlightCreate) SetIgcData(s string) *FlightCreate {
+	fc.mutation.SetIgcData(s)
 	return fc
 }
 
@@ -59,25 +76,6 @@ func (fc *FlightCreate) SetNillablePilotID(id *int) *FlightCreate {
 // SetPilot sets the "pilot" edge to the User entity.
 func (fc *FlightCreate) SetPilot(u *User) *FlightCreate {
 	return fc.SetPilotID(u.ID)
-}
-
-// SetStatisticID sets the "statistic" edge to the FlightStatistic entity by ID.
-func (fc *FlightCreate) SetStatisticID(id int) *FlightCreate {
-	fc.mutation.SetStatisticID(id)
-	return fc
-}
-
-// SetNillableStatisticID sets the "statistic" edge to the FlightStatistic entity by ID if the given value is not nil.
-func (fc *FlightCreate) SetNillableStatisticID(id *int) *FlightCreate {
-	if id != nil {
-		fc = fc.SetStatisticID(*id)
-	}
-	return fc
-}
-
-// SetStatistic sets the "statistic" edge to the FlightStatistic entity.
-func (fc *FlightCreate) SetStatistic(f *FlightStatistic) *FlightCreate {
-	return fc.SetStatisticID(f.ID)
 }
 
 // Mutation returns the FlightMutation object of the builder.
@@ -117,11 +115,20 @@ func (fc *FlightCreate) check() error {
 	if _, ok := fc.mutation.Date(); !ok {
 		return &ValidationError{Name: "date", err: errors.New(`ent: missing required field "Flight.date"`)}
 	}
-	if _, ok := fc.mutation.TakeoffLocation(); !ok {
-		return &ValidationError{Name: "takeoffLocation", err: errors.New(`ent: missing required field "Flight.takeoffLocation"`)}
+	if _, ok := fc.mutation.Location(); !ok {
+		return &ValidationError{Name: "location", err: errors.New(`ent: missing required field "Flight.location"`)}
 	}
-	if _, ok := fc.mutation.IgcFilePath(); !ok {
-		return &ValidationError{Name: "igcFilePath", err: errors.New(`ent: missing required field "Flight.igcFilePath"`)}
+	if _, ok := fc.mutation.Duration(); !ok {
+		return &ValidationError{Name: "duration", err: errors.New(`ent: missing required field "Flight.duration"`)}
+	}
+	if _, ok := fc.mutation.Distance(); !ok {
+		return &ValidationError{Name: "distance", err: errors.New(`ent: missing required field "Flight.distance"`)}
+	}
+	if _, ok := fc.mutation.AltitudeMax(); !ok {
+		return &ValidationError{Name: "altitudeMax", err: errors.New(`ent: missing required field "Flight.altitudeMax"`)}
+	}
+	if _, ok := fc.mutation.IgcData(); !ok {
+		return &ValidationError{Name: "igcData", err: errors.New(`ent: missing required field "Flight.igcData"`)}
 	}
 	return nil
 }
@@ -154,13 +161,25 @@ func (fc *FlightCreate) createSpec() (*Flight, *sqlgraph.CreateSpec) {
 		_spec.SetField(flight.FieldDate, field.TypeTime, value)
 		_node.Date = value
 	}
-	if value, ok := fc.mutation.TakeoffLocation(); ok {
-		_spec.SetField(flight.FieldTakeoffLocation, field.TypeString, value)
-		_node.TakeoffLocation = value
+	if value, ok := fc.mutation.Location(); ok {
+		_spec.SetField(flight.FieldLocation, field.TypeString, value)
+		_node.Location = value
 	}
-	if value, ok := fc.mutation.IgcFilePath(); ok {
-		_spec.SetField(flight.FieldIgcFilePath, field.TypeString, value)
-		_node.IgcFilePath = value
+	if value, ok := fc.mutation.Duration(); ok {
+		_spec.SetField(flight.FieldDuration, field.TypeInt, value)
+		_node.Duration = value
+	}
+	if value, ok := fc.mutation.Distance(); ok {
+		_spec.SetField(flight.FieldDistance, field.TypeInt, value)
+		_node.Distance = value
+	}
+	if value, ok := fc.mutation.AltitudeMax(); ok {
+		_spec.SetField(flight.FieldAltitudeMax, field.TypeInt, value)
+		_node.AltitudeMax = value
+	}
+	if value, ok := fc.mutation.IgcData(); ok {
+		_spec.SetField(flight.FieldIgcData, field.TypeString, value)
+		_node.IgcData = value
 	}
 	if nodes := fc.mutation.PilotIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
@@ -177,22 +196,6 @@ func (fc *FlightCreate) createSpec() (*Flight, *sqlgraph.CreateSpec) {
 			edge.Target.Nodes = append(edge.Target.Nodes, k)
 		}
 		_node.user_flights = &nodes[0]
-		_spec.Edges = append(_spec.Edges, edge)
-	}
-	if nodes := fc.mutation.StatisticIDs(); len(nodes) > 0 {
-		edge := &sqlgraph.EdgeSpec{
-			Rel:     sqlgraph.O2O,
-			Inverse: false,
-			Table:   flight.StatisticTable,
-			Columns: []string{flight.StatisticColumn},
-			Bidi:    false,
-			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(flightstatistic.FieldID, field.TypeInt),
-			},
-		}
-		for _, k := range nodes {
-			edge.Target.Nodes = append(edge.Target.Nodes, k)
-		}
 		_spec.Edges = append(_spec.Edges, edge)
 	}
 	return _node, _spec
@@ -259,27 +262,81 @@ func (u *FlightUpsert) UpdateDate() *FlightUpsert {
 	return u
 }
 
-// SetTakeoffLocation sets the "takeoffLocation" field.
-func (u *FlightUpsert) SetTakeoffLocation(v string) *FlightUpsert {
-	u.Set(flight.FieldTakeoffLocation, v)
+// SetLocation sets the "location" field.
+func (u *FlightUpsert) SetLocation(v string) *FlightUpsert {
+	u.Set(flight.FieldLocation, v)
 	return u
 }
 
-// UpdateTakeoffLocation sets the "takeoffLocation" field to the value that was provided on create.
-func (u *FlightUpsert) UpdateTakeoffLocation() *FlightUpsert {
-	u.SetExcluded(flight.FieldTakeoffLocation)
+// UpdateLocation sets the "location" field to the value that was provided on create.
+func (u *FlightUpsert) UpdateLocation() *FlightUpsert {
+	u.SetExcluded(flight.FieldLocation)
 	return u
 }
 
-// SetIgcFilePath sets the "igcFilePath" field.
-func (u *FlightUpsert) SetIgcFilePath(v string) *FlightUpsert {
-	u.Set(flight.FieldIgcFilePath, v)
+// SetDuration sets the "duration" field.
+func (u *FlightUpsert) SetDuration(v int) *FlightUpsert {
+	u.Set(flight.FieldDuration, v)
 	return u
 }
 
-// UpdateIgcFilePath sets the "igcFilePath" field to the value that was provided on create.
-func (u *FlightUpsert) UpdateIgcFilePath() *FlightUpsert {
-	u.SetExcluded(flight.FieldIgcFilePath)
+// UpdateDuration sets the "duration" field to the value that was provided on create.
+func (u *FlightUpsert) UpdateDuration() *FlightUpsert {
+	u.SetExcluded(flight.FieldDuration)
+	return u
+}
+
+// AddDuration adds v to the "duration" field.
+func (u *FlightUpsert) AddDuration(v int) *FlightUpsert {
+	u.Add(flight.FieldDuration, v)
+	return u
+}
+
+// SetDistance sets the "distance" field.
+func (u *FlightUpsert) SetDistance(v int) *FlightUpsert {
+	u.Set(flight.FieldDistance, v)
+	return u
+}
+
+// UpdateDistance sets the "distance" field to the value that was provided on create.
+func (u *FlightUpsert) UpdateDistance() *FlightUpsert {
+	u.SetExcluded(flight.FieldDistance)
+	return u
+}
+
+// AddDistance adds v to the "distance" field.
+func (u *FlightUpsert) AddDistance(v int) *FlightUpsert {
+	u.Add(flight.FieldDistance, v)
+	return u
+}
+
+// SetAltitudeMax sets the "altitudeMax" field.
+func (u *FlightUpsert) SetAltitudeMax(v int) *FlightUpsert {
+	u.Set(flight.FieldAltitudeMax, v)
+	return u
+}
+
+// UpdateAltitudeMax sets the "altitudeMax" field to the value that was provided on create.
+func (u *FlightUpsert) UpdateAltitudeMax() *FlightUpsert {
+	u.SetExcluded(flight.FieldAltitudeMax)
+	return u
+}
+
+// AddAltitudeMax adds v to the "altitudeMax" field.
+func (u *FlightUpsert) AddAltitudeMax(v int) *FlightUpsert {
+	u.Add(flight.FieldAltitudeMax, v)
+	return u
+}
+
+// SetIgcData sets the "igcData" field.
+func (u *FlightUpsert) SetIgcData(v string) *FlightUpsert {
+	u.Set(flight.FieldIgcData, v)
+	return u
+}
+
+// UpdateIgcData sets the "igcData" field to the value that was provided on create.
+func (u *FlightUpsert) UpdateIgcData() *FlightUpsert {
+	u.SetExcluded(flight.FieldIgcData)
 	return u
 }
 
@@ -337,31 +394,94 @@ func (u *FlightUpsertOne) UpdateDate() *FlightUpsertOne {
 	})
 }
 
-// SetTakeoffLocation sets the "takeoffLocation" field.
-func (u *FlightUpsertOne) SetTakeoffLocation(v string) *FlightUpsertOne {
+// SetLocation sets the "location" field.
+func (u *FlightUpsertOne) SetLocation(v string) *FlightUpsertOne {
 	return u.Update(func(s *FlightUpsert) {
-		s.SetTakeoffLocation(v)
+		s.SetLocation(v)
 	})
 }
 
-// UpdateTakeoffLocation sets the "takeoffLocation" field to the value that was provided on create.
-func (u *FlightUpsertOne) UpdateTakeoffLocation() *FlightUpsertOne {
+// UpdateLocation sets the "location" field to the value that was provided on create.
+func (u *FlightUpsertOne) UpdateLocation() *FlightUpsertOne {
 	return u.Update(func(s *FlightUpsert) {
-		s.UpdateTakeoffLocation()
+		s.UpdateLocation()
 	})
 }
 
-// SetIgcFilePath sets the "igcFilePath" field.
-func (u *FlightUpsertOne) SetIgcFilePath(v string) *FlightUpsertOne {
+// SetDuration sets the "duration" field.
+func (u *FlightUpsertOne) SetDuration(v int) *FlightUpsertOne {
 	return u.Update(func(s *FlightUpsert) {
-		s.SetIgcFilePath(v)
+		s.SetDuration(v)
 	})
 }
 
-// UpdateIgcFilePath sets the "igcFilePath" field to the value that was provided on create.
-func (u *FlightUpsertOne) UpdateIgcFilePath() *FlightUpsertOne {
+// AddDuration adds v to the "duration" field.
+func (u *FlightUpsertOne) AddDuration(v int) *FlightUpsertOne {
 	return u.Update(func(s *FlightUpsert) {
-		s.UpdateIgcFilePath()
+		s.AddDuration(v)
+	})
+}
+
+// UpdateDuration sets the "duration" field to the value that was provided on create.
+func (u *FlightUpsertOne) UpdateDuration() *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateDuration()
+	})
+}
+
+// SetDistance sets the "distance" field.
+func (u *FlightUpsertOne) SetDistance(v int) *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetDistance(v)
+	})
+}
+
+// AddDistance adds v to the "distance" field.
+func (u *FlightUpsertOne) AddDistance(v int) *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.AddDistance(v)
+	})
+}
+
+// UpdateDistance sets the "distance" field to the value that was provided on create.
+func (u *FlightUpsertOne) UpdateDistance() *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateDistance()
+	})
+}
+
+// SetAltitudeMax sets the "altitudeMax" field.
+func (u *FlightUpsertOne) SetAltitudeMax(v int) *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetAltitudeMax(v)
+	})
+}
+
+// AddAltitudeMax adds v to the "altitudeMax" field.
+func (u *FlightUpsertOne) AddAltitudeMax(v int) *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.AddAltitudeMax(v)
+	})
+}
+
+// UpdateAltitudeMax sets the "altitudeMax" field to the value that was provided on create.
+func (u *FlightUpsertOne) UpdateAltitudeMax() *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateAltitudeMax()
+	})
+}
+
+// SetIgcData sets the "igcData" field.
+func (u *FlightUpsertOne) SetIgcData(v string) *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetIgcData(v)
+	})
+}
+
+// UpdateIgcData sets the "igcData" field to the value that was provided on create.
+func (u *FlightUpsertOne) UpdateIgcData() *FlightUpsertOne {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateIgcData()
 	})
 }
 
@@ -582,31 +702,94 @@ func (u *FlightUpsertBulk) UpdateDate() *FlightUpsertBulk {
 	})
 }
 
-// SetTakeoffLocation sets the "takeoffLocation" field.
-func (u *FlightUpsertBulk) SetTakeoffLocation(v string) *FlightUpsertBulk {
+// SetLocation sets the "location" field.
+func (u *FlightUpsertBulk) SetLocation(v string) *FlightUpsertBulk {
 	return u.Update(func(s *FlightUpsert) {
-		s.SetTakeoffLocation(v)
+		s.SetLocation(v)
 	})
 }
 
-// UpdateTakeoffLocation sets the "takeoffLocation" field to the value that was provided on create.
-func (u *FlightUpsertBulk) UpdateTakeoffLocation() *FlightUpsertBulk {
+// UpdateLocation sets the "location" field to the value that was provided on create.
+func (u *FlightUpsertBulk) UpdateLocation() *FlightUpsertBulk {
 	return u.Update(func(s *FlightUpsert) {
-		s.UpdateTakeoffLocation()
+		s.UpdateLocation()
 	})
 }
 
-// SetIgcFilePath sets the "igcFilePath" field.
-func (u *FlightUpsertBulk) SetIgcFilePath(v string) *FlightUpsertBulk {
+// SetDuration sets the "duration" field.
+func (u *FlightUpsertBulk) SetDuration(v int) *FlightUpsertBulk {
 	return u.Update(func(s *FlightUpsert) {
-		s.SetIgcFilePath(v)
+		s.SetDuration(v)
 	})
 }
 
-// UpdateIgcFilePath sets the "igcFilePath" field to the value that was provided on create.
-func (u *FlightUpsertBulk) UpdateIgcFilePath() *FlightUpsertBulk {
+// AddDuration adds v to the "duration" field.
+func (u *FlightUpsertBulk) AddDuration(v int) *FlightUpsertBulk {
 	return u.Update(func(s *FlightUpsert) {
-		s.UpdateIgcFilePath()
+		s.AddDuration(v)
+	})
+}
+
+// UpdateDuration sets the "duration" field to the value that was provided on create.
+func (u *FlightUpsertBulk) UpdateDuration() *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateDuration()
+	})
+}
+
+// SetDistance sets the "distance" field.
+func (u *FlightUpsertBulk) SetDistance(v int) *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetDistance(v)
+	})
+}
+
+// AddDistance adds v to the "distance" field.
+func (u *FlightUpsertBulk) AddDistance(v int) *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.AddDistance(v)
+	})
+}
+
+// UpdateDistance sets the "distance" field to the value that was provided on create.
+func (u *FlightUpsertBulk) UpdateDistance() *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateDistance()
+	})
+}
+
+// SetAltitudeMax sets the "altitudeMax" field.
+func (u *FlightUpsertBulk) SetAltitudeMax(v int) *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetAltitudeMax(v)
+	})
+}
+
+// AddAltitudeMax adds v to the "altitudeMax" field.
+func (u *FlightUpsertBulk) AddAltitudeMax(v int) *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.AddAltitudeMax(v)
+	})
+}
+
+// UpdateAltitudeMax sets the "altitudeMax" field to the value that was provided on create.
+func (u *FlightUpsertBulk) UpdateAltitudeMax() *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateAltitudeMax()
+	})
+}
+
+// SetIgcData sets the "igcData" field.
+func (u *FlightUpsertBulk) SetIgcData(v string) *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.SetIgcData(v)
+	})
+}
+
+// UpdateIgcData sets the "igcData" field to the value that was provided on create.
+func (u *FlightUpsertBulk) UpdateIgcData() *FlightUpsertBulk {
+	return u.Update(func(s *FlightUpsert) {
+		s.UpdateIgcData()
 	})
 }
 

@@ -1,28 +1,19 @@
 package viewmodel
 
 type DashboardStatsView struct {
-	FlightCount       string
-	TotalFlightTime   string
-	TotalDistance     string
-	AverageFlightTime string
-	MaxDuration       string
-	MaxDurationFlight DashboardFlightView
-	MaxDistance       string
-	MaxDistanceFlight DashboardFlightView
-	MaxAltitude       string
-	MaxAltitudeFlight DashboardFlightView
-}
-type DashboardCurrentYearStatsView struct {
-	FlightCount       string
-	TotalFlightTime   string
-	TotalDistance     string
-	AverageFlightTime string
-	MaxDuration       string
-	MaxDurationFlight DashboardFlightView
-	MaxDistance       string
-	MaxDistanceFlight DashboardFlightView
-	MaxAltitude       string
-	MaxAltitudeFlight DashboardFlightView
+	FlightCount     string
+	TotalDuration   string
+	TotalDistance   string
+	AverageDuration string
+
+	DurationMax       string
+	DurationMaxFlight FlightView
+
+	DistanceMax       string
+	DistanceMaxFlight FlightView
+
+	AltitudeMax       string
+	AltitudeMaxFlight FlightView
 }
 
 type DashboardSitesStatsView struct {
@@ -32,22 +23,13 @@ type DashboardSitesStatsView struct {
 	TotalDistance   string
 }
 
-type DashboardFlightView struct {
-	FlightNumber    string
-	Date            string
-	TakeoffLocation string
-	TotalFlightTime string
-	TotalDistance   string
-	MaxAltitude     string
-	Link            string
-}
 type DashboardView struct {
 	User            UserView
-	CurrentYearStat DashboardCurrentYearStatsView
 	CurrentYear     string
 	FirstYear       string
 	LastYear        string
-	LastFlights     []DashboardFlightView
+	LastFlights     []FlightView
+	CurrentYearStat DashboardStatsView
 	AllTimeStats    DashboardStatsView
 	SitesStats      DashboardSitesStatsView
 }
