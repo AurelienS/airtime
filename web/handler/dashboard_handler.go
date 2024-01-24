@@ -35,7 +35,7 @@ func (h DashboardHandler) GetIndex(c echo.Context) error {
 		return err
 	}
 
-	startOfCurrentYear := time.Date(2023, time.January, 1, 0, 0, 0, 0, time.UTC)
+	startOfCurrentYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.UTC)
 	currentYearStats, err := h.statisticService.GetFlightStats(ctx, user, startOfCurrentYear, time.Now())
 	if err != nil {
 		return err
