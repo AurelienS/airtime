@@ -16,20 +16,27 @@ import "fmt"
 
 func ClickableRows() templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_ClickableRows_90a9`,
-		Function: `function __templ_ClickableRows_90a9(){document.addEventListener('DOMContentLoaded', function() {
-    var table = document.getElementById('flight_table');
-    for (var i = 0, row; row = table.rows[i]; i++) {
-        row.onclick = function() {
-            var url = this.getAttribute('data-url');
-            if(url) {
-                window.location.href = url;
-            }
-        };
-    }
-});}`,
-		Call:       templ.SafeScript(`__templ_ClickableRows_90a9`),
-		CallInline: templ.SafeScriptInline(`__templ_ClickableRows_90a9`),
+		Name: `__templ_ClickableRows_65fa`,
+		Function: `function __templ_ClickableRows_65fa(){const clickable = function() {
+		var table = document.getElementById('flight_table');
+		for (var i = 0, row; row = table.rows[i]; i++) {
+			row.onclick = function() {
+				var url = this.getAttribute('data-url');
+				if(url) {
+					window.location.href = url;
+				}
+			};
+		}
+	}
+
+	document.addEventListener('DOMContentLoaded', clickable );
+	document.body.addEventListener('htmx:afterSwap', function(event) {
+		if (event.target.id === 'logbook_page') {
+			clickable();
+		}
+	});}`,
+		Call:       templ.SafeScript(`__templ_ClickableRows_65fa`),
+		CallInline: templ.SafeScriptInline(`__templ_ClickableRows_65fa`),
 	}
 }
 
@@ -52,11 +59,7 @@ func Index(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component 
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = ClickableRows().Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <button class=\"btn justify-self-start w-max\" onclick=\"window.location = &#39;/&#39;\"><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 19l-7-7 7-7\"></path></svg> ")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<button class=\"btn justify-self-start w-max\" onclick=\"window.location = &#39;/&#39;\"><svg xmlns=\"http://www.w3.org/2000/svg\" class=\"h-6 w-6\" fill=\"none\" viewBox=\"0 0 24 24\" stroke=\"currentColor\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M15 19l-7-7 7-7\"></path></svg> ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -73,7 +76,15 @@ func Index(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component 
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<table id=\"flight_table\" class=\"table table-pin-rows overflow-hidden bg-base-100 \"><thead><tr class=\"text-lg\"><th>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<table id=\"flight_table\" class=\"table table-pin-rows overflow-hidden bg-base-100 \">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = ClickableRows().Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<thead><tr class=\"text-lg\"><th>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -138,7 +149,7 @@ func Index(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component 
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Fulldate)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 44, Col: 28}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 51, Col: 28}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 				if templ_7745c5c3_Err != nil {
@@ -151,7 +162,7 @@ func Index(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component 
 				var templ_7745c5c3_Var10 string
 				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Location)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 45, Col: 28}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 52, Col: 28}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 				if templ_7745c5c3_Err != nil {
@@ -164,7 +175,7 @@ func Index(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component 
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Distance)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 46, Col: 28}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 53, Col: 28}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 				if templ_7745c5c3_Err != nil {
@@ -177,7 +188,7 @@ func Index(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component 
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(flight.Duration)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 47, Col: 28}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 54, Col: 28}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 				if templ_7745c5c3_Err != nil {
@@ -190,7 +201,7 @@ func Index(view viewmodel.LogbookView, user viewmodel.UserView) templ.Component 
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(flight.AltitudeMax)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 48, Col: 31}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/index.templ`, Line: 55, Col: 31}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 				if templ_7745c5c3_Err != nil {

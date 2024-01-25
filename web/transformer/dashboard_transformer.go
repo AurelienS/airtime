@@ -10,10 +10,6 @@ import (
 )
 
 func TransformMultipleStatsToViewModel(stats domain.MultipleFlightStats) viewmodel.DashboardStatsView {
-	fmt.Println(
-		"file: dashboard_transformer.go ~ line 15 ~ funcTransformMultipleStatsToViewModel ~ strconv.Itoa(len(stats.Flights)) : ",
-		strconv.Itoa(len(stats.Flights)),
-	)
 	return viewmodel.DashboardStatsView{
 		FlightCount:       strconv.Itoa(len(stats.Flights)),
 		TotalDuration:     PrettyDuration(stats.DurationTotal),
@@ -29,39 +25,27 @@ func TransformMultipleStatsToViewModel(stats domain.MultipleFlightStats) viewmod
 }
 
 func TransformDashboardToViewModel(
-	allTimeStats domain.MultipleFlightStats,
-	currentYearStats domain.MultipleFlightStats,
+	allTimeStats, currentYearStats domain.MultipleFlightStats,
 	lastFlights []domain.Flight,
 	sitesStats viewmodel.DashboardSitesStatsView,
 	user domain.User,
 ) viewmodel.DashboardView {
-	var lastFlightsView []viewmodel.FlightView
-	for _, f := range lastFlights {
-		lastFlightsView = append(lastFlightsView, TransformFlightToViewmodel(f))
+	lastFlightsView := make([]viewmodel.FlightView, len(lastFlights))
+	for i, f := range lastFlights {
+		lastFlightsView[i] = TransformFlightToViewmodel(f)
 	}
 
-	currentYearStatsView := TransformMultipleStatsToViewModel(currentYearStats)
-	allTimeStatsView := TransformMultipleStatsToViewModel(allTimeStats)
-
-	totalFlightCount := len(allTimeStats.Flights)
-	firstYear := time.Now().Year()
-	lastYear := time.Now().Year()
-	if totalFlightCount > 0 {
-		lastYear = allTimeStats.Flights[0].Date.Year()
-	}
-	if totalFlightCount > 1 {
-		firstYear = allTimeStats.Flights[totalFlightCount-1].Date.Year()
-	}
+	currentYear, firstYear, lastYear := deriveYears(allTimeStats)
 
 	return viewmodel.DashboardView{
 		LastFlights:     lastFlightsView,
-		SitesStats:      viewmodel.DashboardSitesStatsView{},
+		SitesStats:      sitesStats,
 		User:            TransformUserToViewModel(user),
-		CurrentYearStat: currentYearStatsView,
-		CurrentYear:     strconv.Itoa(time.Now().Year()),
+		CurrentYearStat: TransformMultipleStatsToViewModel(currentYearStats),
+		CurrentYear:     strconv.Itoa(currentYear),
 		FirstYear:       strconv.Itoa(firstYear),
 		LastYear:        strconv.Itoa(lastYear),
-		AllTimeStats:    allTimeStatsView,
+		AllTimeStats:    TransformMultipleStatsToViewModel(allTimeStats),
 	}
 }
 
@@ -76,4 +60,19 @@ func TransformFlightToViewmodel(flight domain.Flight) viewmodel.FlightView {
 		Link:        fmt.Sprintf("/logbook/flight/%d", flight.ID),
 		ID:          strconv.Itoa(flight.ID),
 	}
+}
+
+func deriveYears(stats domain.MultipleFlightStats) (currentYear, firstYear, lastYear int) {
+	totalFlightCount := len(stats.Flights)
+	currentYear = time.Now().Year()
+
+	if totalFlightCount > 0 {
+		lastYear = stats.Flights[0].Date.Year()
+	}
+
+	if totalFlightCount > 1 {
+		firstYear = stats.Flights[totalFlightCount-1].Date.Year()
+	}
+
+	return currentYear, firstYear, lastYear
 }
