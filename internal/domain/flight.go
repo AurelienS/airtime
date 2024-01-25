@@ -87,7 +87,9 @@ func NewFlightFromIgc(igcData string) (Flight, error) {
 	site := "Inconnu"
 
 	if len(siteName) > 0 {
-		site = siteName[0]
+		if siteName[0] != "" {
+			site = siteName[0]
+		}
 	}
 
 	f.Location = site
