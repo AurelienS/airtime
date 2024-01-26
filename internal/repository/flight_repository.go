@@ -114,29 +114,6 @@ func (r FlightRepository) GetFlights(
 	return converter.DBToDomainFlights(flightsDB), nil
 }
 
-// If there is no last flight, it return nil without an error.
-func (r FlightRepository) GetLastFlight(ctx context.Context, user domain.User) (*domain.Flight, error) {
-	util.Info().Str("user", user.Email).Msg("Getting last flight")
-
-	flt, err := r.client.Flight.
-		Query().
-		Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).
-		Order(ent.Desc(flight.FieldDate)).
-		WithPilot().
-		First(ctx)
-	if err != nil {
-		if ent.IsNotFound(err) {
-			util.Debug().Str("user", user.Email).Msg("No flight found")
-			return nil, nil //nolint:nilnil
-		}
-		util.Error().Err(err).Str("user", user.Email).Msg("Failed querying user")
-		return nil, err
-	}
-
-	domainModel := converter.DBToDomainFlight(flt)
-	return &domainModel, nil
-}
-
 func (r FlightRepository) GetLastFlights(ctx context.Context, count int, user domain.User) ([]domain.Flight, error) {
 	util.Info().Str("user", user.Email).Int("flight count", count).Msg("Getting lasts flight")
 	lastFlights, err := r.client.Flight.

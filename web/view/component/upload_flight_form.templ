@@ -17,10 +17,10 @@ templ UploadFlightForm(style string) {
 	>
 		<input id="igcfile" type="file" name="igcfile" accept=".igc, .zip" style="display:none;" onchange="triggerUpload(this)"/>
 		<div
-			class={ style }
+			class="bg-[#DDE4F1] border-[#A8BEE9] cursor-pointer text-accent border px-2 text-sm leading-none hover:bg-accent-30 flex h-8 flex-none items-center justify-center"
 			onclick="document.getElementById('igcfile').click();"
 		>
-			Enregistrer un vol
+			Ajouter des vols
 		</div>
 	</form>
 }

@@ -10,14 +10,10 @@ func getThemeValue(current string) string {
 }
 
 templ ProfilButton(user viewmodel.UserView) {
-	<div class="flex items-center gap-6">
-		<a class="flex gap-2 text-sm" href="/"><span>Carnet de vol</span></a>
-		<a class="flex gap-2 text-sm" href="/progression"><span>Progression</span></a>
-		<div class="flex items-center gap-2">
-			<span>{ user.Name }</span>
-			<div class="h-full aspect-square mask mask-squircle">
-				<img class="h-9" src={ user.PictureURL }/>
-			</div>
+	<div class="flex items-center gap-2 font-title">
+		<span>{ user.Name }</span>
+		<div class="h-full aspect-square mask mask-squircle">
+			<img class="h-9" src={ user.PictureURL }/>
 		</div>
 	</div>
 }

@@ -33,10 +33,6 @@ func (s FlightService) GetFlight(ctx context.Context, flightID int, user domain.
 	return s.flightRepo.GetFlight(ctx, flightID, user)
 }
 
-func (s FlightService) GetLastFlight(ctx context.Context, user domain.User) (*domain.Flight, error) {
-	return s.flightRepo.GetLastFlight(ctx, user)
-}
-
 func (s FlightService) GetLastFlights(ctx context.Context, count int, user domain.User) ([]domain.Flight, error) {
 	return s.flightRepo.GetLastFlights(ctx, count, user)
 }

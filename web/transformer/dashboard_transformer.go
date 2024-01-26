@@ -37,6 +37,12 @@ func TransformDashboardToViewModel(
 
 	currentYear, firstYear, lastYear := deriveYears(allTimeStats)
 
+	showAlltime := currentYear != firstYear
+	allTimeTitle := fmt.Sprintf("%d - %d", firstYear, lastYear)
+	if firstYear == lastYear {
+		allTimeTitle = fmt.Sprintf("%d", firstYear)
+	}
+
 	return viewmodel.DashboardView{
 		LastFlights:     lastFlightsView,
 		SitesStats:      sitesStats,
@@ -46,6 +52,8 @@ func TransformDashboardToViewModel(
 		FirstYear:       strconv.Itoa(firstYear),
 		LastYear:        strconv.Itoa(lastYear),
 		AllTimeStats:    TransformMultipleStatsToViewModel(allTimeStats),
+		ShowAllTime:     showAlltime,
+		AllTimeTitle:    allTimeTitle,
 	}
 }
 
@@ -68,6 +76,7 @@ func deriveYears(stats domain.MultipleFlightStats) (currentYear, firstYear, last
 
 	if totalFlightCount > 0 {
 		lastYear = stats.Flights[0].Date.Year()
+		firstYear = lastYear
 	}
 
 	if totalFlightCount > 1 {

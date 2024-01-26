@@ -30,6 +30,8 @@ type DashboardView struct {
 	LastYear        string
 	LastFlights     []FlightView
 	CurrentYearStat DashboardStatsView
+	ShowAllTime     bool
+	AllTimeTitle    string
 	AllTimeStats    DashboardStatsView
 	SitesStats      DashboardSitesStatsView
 }

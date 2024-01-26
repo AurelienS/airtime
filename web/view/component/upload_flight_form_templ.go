@@ -38,29 +38,12 @@ func UploadFlightForm(style string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"/logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"none\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc, .zip\" style=\"display:none;\" onchange=\"triggerUpload(this)\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</script><form id=\"uploadForm\" hx-post=\"/logbook/flight\" enctype=\"multipart/form-data\" hx-trigger=\"fileSelected\" hx-swap=\"none\"><input id=\"igcfile\" type=\"file\" name=\"igcfile\" accept=\".igc, .zip\" style=\"display:none;\" onchange=\"triggerUpload(this)\"><div class=\"bg-[#DDE4F1] border-[#A8BEE9] cursor-pointer text-accent border px-2 text-sm leading-none hover:bg-accent-30 flex h-8 flex-none items-center justify-center\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var3 = []any{style}
-		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ.CSSClasses(templ_7745c5c3_Var3).String()))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("\" onclick=\"document.getElementById(&#39;igcfile&#39;).click();\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var4 := `Enregistrer un vol`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+		templ_7745c5c3_Var3 := `Ajouter des vols`
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

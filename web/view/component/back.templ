@@ -1,0 +1,14 @@
+package component
+
+templ Back() {
+	<a
+		class="justify-self-start w-max"
+		hx-get="/"
+		hx-target="#content"
+		hx-select="#content"
+		hx-swap="outerHTML"
+		hx-push-url="true"
+	>
+		← Retour
+	</a>
+}

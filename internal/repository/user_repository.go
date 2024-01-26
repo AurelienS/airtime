@@ -46,7 +46,6 @@ func (r *UserRepository) UpdateUser(ctx context.Context, incomingUser domain.Use
 		return incomingUser, err
 	}
 
-	// Then, update the user
 	u, err = r.client.User.
 		UpdateOneID(u.ID).
 		SetEmail(incomingUser.Email).

@@ -1,0 +1,29 @@
+package component
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+
+templ FlightTable(flights []viewmodel.FlightView) {
+	<div id="flight_table" class="grid grid-cols-5 gap-2 mt-4">
+		<div class="font-text-bold">Date</div>
+		<div class="font-text-bold">Lieu</div>
+		<div class="font-text-bold">Durée</div>
+		<div class="font-text-bold">Distance</div>
+		<div class="font-text-bold">Altitude max</div>
+		for _, flight := range flights {
+			<div
+				class="col-span-5 grid grid-cols-5 hover:bg-accent-15 hover:text-accent cursor-pointer py-2"
+				hx-get={ flight.Link }
+				hx-target="#content"
+				hx-select="#content"
+				hx-swap="outerHTML"
+				hx-push-url="true"
+			>
+				<div>{ flight.Fulldate }</div>
+				<div>{ flight.Location }</div>
+				<div>{ flight.Duration }</div>
+				<div>{ flight.Distance }</div>
+				<div>{ flight.AltitudeMax }</div>
+			</div>
+		}
+	</div>
+}

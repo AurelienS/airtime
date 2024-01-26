@@ -2,14 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --accent-color: rgb(8, 76, 223);
+}
 
 h1, h2, h3, h4, h5, h6 {
-    @apply font-title
+    @apply font-title text-accent;
 }
 
 /* Appliquer TextRegular au reste du texte */
 body {
-    @apply font-text
+    @apply font-text;
 }
 
 * {
@@ -19,6 +22,11 @@ body {
 .bg-neutral {
     background-color: rgb(246 245 240);
 }
+
+a {
+    @apply font-italic text-accent-80 hover:underline cursor-pointer;
+}
+
 
 
 @font-face {
