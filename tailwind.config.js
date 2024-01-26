@@ -2,7 +2,12 @@
 module.exports = {
   content: ["web/view/**/*.templ"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'title': ['TitleRegular', 'sans-serif'],
+        'text': ['TextRegular', 'sans-serif'],
+      }
+    },
   },
   plugins: [],
 }

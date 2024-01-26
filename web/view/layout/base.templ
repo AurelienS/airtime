@@ -6,10 +6,12 @@ templ Base(currentUser viewmodel.UserView, showNavigation bool ) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme="mytheme">
 		@Head()
-		<body class="flex flex-col min-h-screen h-full bg-base-200 overflow-y-scroll">
-			@Navbar(currentUser, showNavigation)
-			<div id="content" class="flex-grow flex flex-col py-4 mt-20 container mx-auto ">
-				{ children... }
+		<body class="bg-neutral text-offgray min-h-screen w-screen overflow-x-hidden">
+			<div class="flex min-h-screen w-screen flex-col flex-none justify-between">
+				<div id="content" class="max-w-screen-sm md:max-w-[1380px] mx-auto w-full px-8">
+					@Navbar(currentUser, showNavigation)
+					{ children... }
+				</div>
 			</div>
 		</body>
 	</html>
