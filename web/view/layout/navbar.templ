@@ -1,16 +1,15 @@
 package layout
 
-import "github.com/AurelienS/cigare/web/view/component"
 import "github.com/AurelienS/cigare/web/view/userview"
 import "github.com/AurelienS/cigare/web/viewmodel"
 
 templ Navbar(currentUser viewmodel.UserView, showNavigation bool) {
 	<div class="navbar shadow bg-base-100 fixed top-0 left-0 right-0 z-50">
 		<div class="navbar-start">
-			@component.UploadFlightForm("btn btn-outline")
+			SoarSquad
 		</div>
 		<div class="navbar-center">
-			<div class="text-2xl font-semibold">SoarSquad</div>
+			<div class="text-2xl font-semibold">?</div>
 		</div>
 		<div class="navbar-end gap-4">
 			@userview.ProfilButton(currentUser)

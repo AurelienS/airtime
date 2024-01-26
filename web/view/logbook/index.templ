@@ -27,32 +27,40 @@ script ClickableRows() {
 
 templ Index(view viewmodel.LogbookView, user viewmodel.UserView) {
 	@layout.Base(user, true) {
-		<button class="btn justify-self-start w-max" onclick="window.location = '/'">
-			<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-				<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-			</svg>
-			retour
-		</button>
-		<div id="logbook_page" class="flex flex-col w-full md:max-w-[1200px] rounded-lg mx-auto">
-			@YearSelection(view.AvailableYears, view.CurrentYear)
-			<table id="flight_table" class="table table-pin-rows overflow-hidden bg-base-100 ">
-				@ClickableRows()
+		<div id="logbook_page" class="flex flex-col w-full md:max-w-[1200px]  mx-auto">
+			<div class="flex justify-between items-center ">
+				<button
+					class="btn btn-outline btn-sm justify-self-start w-max"
+					hx-get="/"
+					hx-target="#content"
+					hx-select="#content"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+				>
+					<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+					</svg>
+					retour
+				</button>
+				@YearSelection(view.AvailableYears, view.CurrentYear)
+			</div>
+			<table id="flight_table" class="table table-pin-rows overflow-hidden bg-base-100 mt-4 ">
 				<thead>
-					<tr class="text-lg">
+					<tr class="text-xl font-normal">
 						<th>Date</th>
 						<th>Lieu</th>
-						<th>Distance</th>
 						<th>Durée</th>
+						<th>Distance</th>
 						<th>Altitude max</th>
 					</tr>
 				</thead>
 				<tbody>
 					for _, flight := range view.Flights {
-						<tr class="hover cursor-pointer" data-url={ flight.Link }>
+						<tr class="hover cursor-pointer text-base" data-url={ flight.Link }>
 							<td>{ flight.Fulldate }</td>
 							<td>{ flight.Location }</td>
-							<td>{ flight.Distance }</td>
 							<td>{ flight.Duration }</td>
+							<td>{ flight.Distance }</td>
 							<td>{ flight.AltitudeMax }</td>
 						</tr>
 					}

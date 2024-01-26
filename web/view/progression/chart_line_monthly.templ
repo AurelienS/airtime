@@ -3,10 +3,9 @@ package progression
 import "github.com/AurelienS/cigare/web/viewmodel"
 
 script setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string) {
-    console.log("ds",datasets);
 	const ctx = document.getElementById(id);
     new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
             datasets: datasets.map((ds, index) => ({
@@ -20,7 +19,7 @@ script setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string)
             }))
         },
         options: {
-            responsive: true,
+            responsive: false,
             maintainAspectRatio: false,
             scales: {
                 y: {
@@ -43,6 +42,6 @@ script setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string)
 }
 
 templ ChartLineMontly(datasets []viewmodel.ChartDataset, id string) {
-	<canvas id={ id }></canvas>
+	<canvas class="w-full h-full" id={ id }></canvas>
 	@setUpChartFlightTimeMonthly(datasets, id)
 }

@@ -49,7 +49,7 @@ func Base(currentUser viewmodel.UserView, showNavigation bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"content\" class=\"flex-grow flex flex-col py-4 mt-20 container mx-auto\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"content\" class=\"flex-grow flex flex-col py-4 mt-20 container mx-auto \">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

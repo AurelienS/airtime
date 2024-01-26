@@ -14,11 +14,10 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 
 func setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setUpChartFlightTimeMonthly_1264`,
-		Function: `function __templ_setUpChartFlightTimeMonthly_1264(datasets, id){console.log("ds",datasets);
-	const ctx = document.getElementById(id);
+		Name: `__templ_setUpChartFlightTimeMonthly_2e30`,
+		Function: `function __templ_setUpChartFlightTimeMonthly_2e30(datasets, id){const ctx = document.getElementById(id);
     new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: {
             labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
             datasets: datasets.map((ds, index) => ({
@@ -32,7 +31,7 @@ func setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string) t
             }))
         },
         options: {
-            responsive: true,
+            responsive: false,
             maintainAspectRatio: false,
             scales: {
                 y: {
@@ -50,8 +49,8 @@ func setUpChartFlightTimeMonthly(datasets []viewmodel.ChartDataset, id string) t
             }
         }
     });}`,
-		Call:       templ.SafeScript(`__templ_setUpChartFlightTimeMonthly_1264`, datasets, id),
-		CallInline: templ.SafeScriptInline(`__templ_setUpChartFlightTimeMonthly_1264`, datasets, id),
+		Call:       templ.SafeScript(`__templ_setUpChartFlightTimeMonthly_2e30`, datasets, id),
+		CallInline: templ.SafeScriptInline(`__templ_setUpChartFlightTimeMonthly_2e30`, datasets, id),
 	}
 }
 
@@ -68,7 +67,7 @@ func ChartLineMontly(datasets []viewmodel.ChartDataset, id string) templ.Compone
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<canvas id=\"")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<canvas class=\"w-full h-full\" id=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

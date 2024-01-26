@@ -106,7 +106,6 @@ templ Index(view viewmodel.DashboardView) {
 									<span class="text-sm">({ view.CurrentYearStat.AltitudeMaxFlight.Date })</span>
 								</p>
 							</div>
-
 						}
 					</div>
 					<div class="rounded-2xl p-4 bg-base-100">
@@ -117,7 +116,7 @@ templ Index(view viewmodel.DashboardView) {
 						@ClickableRows()
 						<table id="flight_table" class="table table-pin-rows overflow-hidden bg-base-100 mt-4 ">
 							<thead>
-								<tr class="text-lg font-normal">
+								<tr class="text-xl font-normal">
 									<th>Date</th>
 									<th>Lieu</th>
 									<th>Durée</th>
@@ -127,7 +126,7 @@ templ Index(view viewmodel.DashboardView) {
 							</thead>
 							<tbody>
 								for _, flight := range view.LastFlights {
-									<tr class="hover cursor-pointer" data-url={ flight.Link }>
+									<tr class="hover cursor-pointer text-base" data-url={ flight.Link }>
 										<td>{ flight.Fulldate }</td>
 										<td>{ flight.Location }</td>
 										<td>{ flight.Duration }</td>
@@ -138,7 +137,14 @@ templ Index(view viewmodel.DashboardView) {
 							</tbody>
 						</table>
 						<div class="flex justify-end mt-2">
-							<a class="btn btn-xs btn-primary btn-outline" href="/logbook/2023">voir tous mes vols</a>
+							<div
+								class="btn btn-xs btn-primary btn-outline"
+								hx-get="/logbook/2023"
+								hx-target="#content"
+								hx-select="#content"
+								hx-swap="outerHTML"
+								hx-push-url="true"
+							>voir tous mes vols</div>
 						</div>
 					</div>
 				</div>

@@ -7,7 +7,7 @@ script AddGeoJson(geoJSONstring string) {
 	var map = L.map('map');
 
 	L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-		maxZoom: 19,
+		maxZoom: 18,
 		attribution: '© OpenTopoMap contributors'
 	}).addTo(map);
 
@@ -40,7 +40,6 @@ script goBack() {
 }
 
 templ Flight(view viewmodel.FlightDetailView) {
-	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 	@layout.Base(view.UserView, true) {
 		<link
 			rel="stylesheet"
