@@ -19,6 +19,13 @@ tmux send-keys -t cigareSession:0.1 'air' C-m
 # Run 'make browser-refresh' in the bottom right pane
 tmux send-keys -t cigareSession:0.2 'make browser-refresh' C-m
 
+# Split the bottom right pane horizontally to create a third row
+tmux select-pane -t 2
+tmux split-window -h
+
+# Run 'npx tailwindcss -i ./web/view/styles.css -o ./web/static/styles.css --watch' in the new pane
+tmux send-keys -t cigareSession:0.3 'npx tailwindcss -i ./web/view/styles.css -o ./web/static/styles.css --watch' C-m
+
 # Resize the bottom right pane to be smaller
 tmux resize-pane -t 2 -y 20%
 
