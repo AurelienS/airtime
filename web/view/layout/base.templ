@@ -4,7 +4,7 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 
 templ Base(currentUser viewmodel.UserView, showNavigation bool ) {
 	<!DOCTYPE html>
-	<html lang="en" data-theme={ currentUser.Theme }>
+	<html lang="en" data-theme="mytheme">
 		@Head()
 		<body class="flex flex-col min-h-screen h-full bg-base-200 overflow-y-scroll">
 			@Navbar(currentUser, showNavigation)
