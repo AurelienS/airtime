@@ -27,8 +27,14 @@ templ Index(view viewmodel.DashboardView) {
 						<div class="my-8 mx-auto h-[1px] bg-accent-30 w-1/4"></div>
 						@YearInfo(view.AllTimeTitle , view.AllTimeStats)
 					}
-					<div class="flex justify-end mt-4">
-						<a class="ml-12" href="/progression">plus de statistiques →</a>
+					<div class="flex justify-end mt-4 ml-12">
+						<a
+							hx-get="/statistics"
+							hx-target="#content"
+							hx-select="#content"
+							hx-swap="outerHTML"
+							hx-push-url="true"
+						>mes statistiques →</a>
 					</div>
 				</div>
 				<div class="flex  flex-grow gap-10">

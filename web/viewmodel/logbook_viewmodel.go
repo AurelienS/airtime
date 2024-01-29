@@ -33,20 +33,31 @@ type StatView struct {
 	CurrentYearValue string
 }
 
-type ProgressionView struct {
+type StatisticsView struct {
 	User UserView
 
-	FlightTimeMonthlyData  []ChartDataset
-	FlightCountMonthlyData []ChartDataset
+	FlightTimeMonthlyData  []CountDataset
+	FlightCountMonthlyData []CountDataset
 }
 
-type ChartDataset struct {
+type CountDataset struct {
 	Label string
 	Data  []int
 	Color string
 }
 
-type ChartData struct {
+type CountData struct {
 	Labels   []string
-	Datasets []ChartDataset
+	Datasets []CountDataset
+}
+
+type TimeDataset struct {
+	Label string
+	Data  []float64
+	Color string
+}
+
+type TimeData struct {
+	Labels   []string
+	Datasets []TimeDataset
 }

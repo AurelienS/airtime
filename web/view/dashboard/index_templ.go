@@ -90,11 +90,11 @@ func Index(view viewmodel.DashboardView) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-end mt-4\"><a class=\"ml-12\" href=\"/progression\">")
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex justify-end mt-4 ml-12\"><a hx-get=\"/statistics\" hx-target=\"#content\" hx-select=\"#content\" hx-swap=\"outerHTML\" hx-push-url=\"true\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Var5 := `plus de statistiques →`
+				templ_7745c5c3_Var5 := `mes statistiques →`
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

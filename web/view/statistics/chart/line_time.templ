@@ -1,0 +1,65 @@
+package chart
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+
+script setupLineTime(data viewmodel.TimeData, id string) {
+	const ctx = document.getElementById(id).getContext('2d');
+
+    const scalesConfig = {
+        y: {
+            grid: { display: false },
+            title: {
+                display: true,
+                text: 'heures'
+            },
+        },
+        x: {
+            grid: { display: false }
+        }
+    };
+
+    const pluginsConfig = {
+        legend: { display: false },
+        tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {}
+        }
+    };
+
+    const animationConfig = { duration: 1000 };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: scalesConfig,
+        plugins: pluginsConfig,
+        animation: animationConfig
+    };
+
+    const chartData = {
+        labels: data.Labels,
+        datasets: data.Datasets.map((ds, index) => ({
+            label: ds.Label,
+            data: ds.Data,
+            backgroundColor: ds.Color,
+            borderColor: ds.Color,
+            borderWidth: 1,
+            cubicInterpolationMode: 'default',
+        }))
+    };
+
+    new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: chartOptions
+    });
+
+}
+
+templ LineTime(data viewmodel.TimeData, id string) {
+	<div class="h-full w-full">
+		<canvas id={ id }></canvas>
+		@setupLineTime(data, id)
+	</div>
+}

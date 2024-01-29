@@ -10,7 +10,10 @@ module.exports = {
         'italic': ['TextItalic', 'sans-serif'],
       },
       borderColor: {
-        'accent': 'var(--accent-color)',
+        'accent': {
+          DEFAULT: 'var(--accent-color)',
+          '30': 'rgba(8, 76, 223, 0.3)',
+        }
       },
       colors: {
         'accent': {

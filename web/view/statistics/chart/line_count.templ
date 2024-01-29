@@ -1,0 +1,61 @@
+package chart
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+
+script setupLineCount(data viewmodel.CountData, id string) {
+	const ctx = document.getElementById(id).getContext('2d');
+
+    const scalesConfig = {
+        y: {
+            grid: { display: false }
+        },
+        x: {
+            grid: { display: false }
+        }
+    };
+
+    const pluginsConfig = {
+        legend: { display: false },
+        tooltip: {
+            mode: 'index',
+            intersect: false,
+            callbacks: {}
+        }
+    };
+
+    const animationConfig = { duration: 1000 };
+
+    const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: scalesConfig,
+        plugins: pluginsConfig,
+        animation: animationConfig
+    };
+
+    const chartData = {
+        labels: data.Labels,
+        datasets: data.Datasets.map((ds, index) => ({
+            label: ds.Label,
+            data: ds.Data,
+            backgroundColor: ds.Color,
+            borderColor: ds.Color,
+            borderWidth: 1,
+            cubicInterpolationMode: 'default',
+        }))
+    };
+
+    new Chart(ctx, {
+        type: 'line',
+        data: chartData,
+        options: chartOptions
+    });
+
+}
+
+templ LineCount(data viewmodel.CountData, id string) {
+	<div class="h-full w-full">
+		<canvas id={ id }></canvas>
+		@setupLineCount(data, id)
+	</div>
+}

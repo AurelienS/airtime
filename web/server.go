@@ -28,7 +28,7 @@ func NewServer(client *ent.Client, store sessions.Store) *Server {
 
 	indexHandler := handler.NewIndexHandler(flightService)
 	logbookHandler := handler.NewLogbookHandler(logbookService, statisticService, flightService)
-	progressionHandler := handler.NewProgressionHandler(statisticService)
+	statisticsHandler := handler.NewStatisticsHandler(statisticService)
 	dashboardHandler := handler.NewDashboardHandler(flightService, statisticService)
 	userHandler := handler.NewUserHandler(userService)
 	authHandler := handler.NewAuthHandler(userService)
@@ -37,7 +37,7 @@ func NewServer(client *ent.Client, store sessions.Store) *Server {
 	router := NewRouter(
 		authHandler,
 		logbookHandler,
-		progressionHandler,
+		statisticsHandler,
 		dashboardHandler,
 		userHandler,
 		indexHandler,

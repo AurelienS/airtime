@@ -9,7 +9,7 @@ import (
 type Router struct {
 	authHandler        handler.AuthHandler
 	logbookHandler     handler.LogbookHandler
-	progressionHandler handler.ProgressionHandler
+	statisticsHandler handler.StatisticsHandler
 	userHandler        handler.UserHandler
 	indexHandler       handler.IndexHandler
 	onboardingHandler  handler.OnboardingHandler
@@ -19,7 +19,7 @@ type Router struct {
 func NewRouter(
 	authHandler handler.AuthHandler,
 	logbookHandler handler.LogbookHandler,
-	progressionHandler handler.ProgressionHandler,
+	statisticsHandler handler.StatisticsHandler,
 	dashboardHandler handler.DashboardHandler,
 	userHandler handler.UserHandler,
 	indexHandler handler.IndexHandler,
@@ -28,7 +28,7 @@ func NewRouter(
 	return Router{
 		authHandler:        authHandler,
 		logbookHandler:     logbookHandler,
-		progressionHandler: progressionHandler,
+		statisticsHandler: statisticsHandler,
 		dashboardHandler:   dashboardHandler,
 		userHandler:        userHandler,
 		indexHandler:       indexHandler,
@@ -62,7 +62,11 @@ func (r *Router) Initialize(e *echo.Echo) {
 
 	authGroup.GET("dashboard", r.dashboardHandler.GetIndex)
 
-	authGroup.GET("progression", r.progressionHandler.GetProgression)
+	authGroup.GET("statistics", r.statisticsHandler.GetIndex)
+	authGroup.GET("statistics/count/distinct", r.statisticsHandler.GetCountDistinct)
+	authGroup.GET("statistics/count/cumulative", r.statisticsHandler.GetCountCumul)
+	authGroup.GET("statistics/time/distinct", r.statisticsHandler.GetTimeDistinct)
+	authGroup.GET("statistics/time/cumulative", r.statisticsHandler.GetTimeCumul)
 
 	authGroup.GET("logout", r.authHandler.GetLogout)
 }

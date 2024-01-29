@@ -1,0 +1,72 @@
+package chart
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+
+script setupBarCount(datasets []viewmodel.CountDataset, id string) {
+	const ctx = document.getElementById(id).getContext('2d');
+
+    const scaleConfig = {
+        y: {
+            beginAtZero: true,
+            grid: { display: false },
+            title: {
+                display: true,
+                text: 'Heures',
+            },
+        },
+        x: {
+            grid: { display: false }
+        }
+    }
+    const legendConfig = {
+        display: true,
+        position: 'left',
+    };
+
+    const tooltipConfig = {
+        mode: 'index',
+        intersect: false,
+        callbacks: {}
+    };
+
+    const animationConfig = { duration: 1000 };
+
+    const options = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: scaleConfig,
+        plugins: {
+            legend: legendConfig,
+            tooltip: tooltipConfig
+        },
+        animation: animationConfig
+    };
+
+    const chartData = {
+        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
+        datasets: datasets.map((ds, index) => ({
+            label: ds.Label,
+            data: ds.Data,
+            backgroundColor: ds.Color,
+            borderColor: ds.Color,
+            borderWidth: 1,
+            borderRadius: 0,
+            hidden: index > 1,
+            barThickness: 12,
+        }))
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: options
+    });
+
+}
+
+templ BarCount(datasets []viewmodel.CountDataset, id string) {
+	<div class="h-full w-full">
+		<canvas id={ id }></canvas>
+		@setupBarCount(datasets, id)
+	</div>
+}

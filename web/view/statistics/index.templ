@@ -1,0 +1,23 @@
+package statistics
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/layout"
+import "github.com/AurelienS/cigare/web/view/component"
+
+templ Index(view viewmodel.StatisticsView) {
+	@layout.Base(view.User, true) {
+		@component.Back()
+		<div class="flex flex-col gap-6 mx-20">
+			<div
+				hx-get="/statistics/count/distinct"
+				hx-trigger="load"
+				hx-swap="outerHTML"
+			></div>
+			<div
+				hx-get="/statistics/time/distinct"
+				hx-trigger="load"
+				hx-swap="outerHTML"
+			></div>
+		</div>
+	}
+}

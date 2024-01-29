@@ -1,6 +1,5 @@
 package layout
 
-import "github.com/AurelienS/cigare/web/view/userview"
 import "github.com/AurelienS/cigare/web/viewmodel"
 
 templ Navbar(currentUser viewmodel.UserView, showNavigation bool) {
@@ -10,9 +9,23 @@ templ Navbar(currentUser viewmodel.UserView, showNavigation bool) {
 		</div>
 		<div>
 			<div class="flex items-center gap-6">
-				<a class="flex gap-2 text-black font-title not-italic hover:no-underline" href="/"><span>Carnet de vol</span></a>
-				<a class="flex gap-2 text-black font-title not-italic hover:no-underline" href="/progression"><span>Progression</span></a>
-				@userview.ProfilButton(currentUser)
+				<a
+					class="flex text-black font-title not-italic hover:no-underline"
+					hx-get="/"
+					hx-target="#content"
+					hx-select="#content"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+				><span>Carnet de vol</span></a>
+				<a
+					class="flex text-black font-title not-italic hover:no-underline "
+					hx-get="/statistics"
+					hx-target="#content"
+					hx-select="#content"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+				><span>Statistiques</span></a>
+				// @userview.ProfilButton(currentUser)
 			</div>
 		</div>
 	</nav>
