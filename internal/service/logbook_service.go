@@ -51,7 +51,7 @@ func (s *LogbookService) processZipFile(
 	}
 
 	var wg sync.WaitGroup
-	flightChan, errChan := s.setupChannels(len(zr.File), &wg)
+	flightChan, errChan := s.setupChannels(len(zr.File))
 
 	for _, f := range zr.File {
 		if isIgcFile(f.Name) {
@@ -59,6 +59,10 @@ func (s *LogbookService) processZipFile(
 			go s.processIgcZipFile(f, flightChan, errChan, &wg)
 		}
 	}
+
+	wg.Wait()
+	close(flightChan)
+	close(errChan)
 
 	return s.collectAndInsertFlights(ctx, flightChan, errChan, user)
 }
@@ -69,6 +73,7 @@ func (s *LogbookService) processIgcZipFile(
 	errChan chan<- error,
 	wg *sync.WaitGroup,
 ) {
+	defer wg.Done()
 	rc, err := file.Open()
 	if err != nil {
 		errChan <- err
@@ -94,8 +99,6 @@ func (s *LogbookService) processIgcZipFile(
 		return
 	}
 	flightChan <- flight
-
-	wg.Done()
 }
 
 func (s *LogbookService) processSingleFile(
@@ -125,17 +128,10 @@ func (s *LogbookService) processSingleFile(
 
 func (s *LogbookService) setupChannels(
 	fileCount int,
-	wg *sync.WaitGroup,
 ) (chan domain.Flight, chan error) {
 	util.Debug().Int("fileCount", fileCount).Msg("Setting up channels")
 	flightChan := make(chan domain.Flight, fileCount)
 	errChan := make(chan error, fileCount)
-
-	go func() {
-		wg.Wait()
-		close(flightChan)
-		close(errChan)
-	}()
 
 	return flightChan, errChan
 }
@@ -167,10 +163,16 @@ func (s *LogbookService) collectAndInsertFlights(
 	}
 
 	if len(errors) > 0 {
-		util.Warn().Str("user", user.Email).Errs("errors", errors).Msg("Errors during processing files")
+		util.Warn().
+			Str("user", user.Email).
+			Int("count", len(errors)).
+			Errs("errors", errors).
+			Msg("Errors during processing files")
 	}
 
-	return s.logbookRepo.InsertFlights(ctx, flights, user)
+	err := s.logbookRepo.InsertFlights(ctx, flights, user)
+	util.Debug().Str("user", user.Email).Msg("Finished processing files")
+	return err
 }
 
 func isZipFile(filename string) bool {
