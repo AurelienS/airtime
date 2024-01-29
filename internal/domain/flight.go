@@ -39,7 +39,6 @@ func NewFlightFromIgc(igcData string) (Flight, error) {
 
 	track, err := igc.Parse(igcData)
 	if err != nil {
-		util.Error().Err(err).Msg("Error parsing IGC data")
 		return f, err
 	}
 
@@ -70,6 +69,7 @@ func NewFlightFromIgc(igcData string) (Flight, error) {
 	loc, err := time.LoadLocation("Europe/Paris")
 	if err != nil {
 		util.Warn().Msg("Error loading location Europe/Paris for")
+		return f, err
 	}
 
 	correctDate := time.Date(
