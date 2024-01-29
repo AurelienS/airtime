@@ -9,7 +9,6 @@ import (
 	"github.com/AurelienS/cigare/web/transformer"
 	"github.com/AurelienS/cigare/web/view/statistics"
 	"github.com/AurelienS/cigare/web/view/statistics/chart"
-	"github.com/AurelienS/cigare/web/viewmodel"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,26 +22,8 @@ func NewStatisticsHandler(statisticService service.StatisticService) StatisticsH
 
 func (h *StatisticsHandler) GetIndex(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	statsYearMonth, err := h.statisticService.GetStatisticsByYearAndMonth(
-		c.Request().Context(),
-		user)
-	if err != nil {
-		return err
-	}
 
-	totalFlightTimeExtractor := func(stats domain.MultipleFlightStats) int {
-		return int(stats.DurationTotal.Hours())
-	}
-	flightCountExtractor := func(stats domain.MultipleFlightStats) int {
-		return len(stats.Flights)
-	}
-
-	view := viewmodel.StatisticsView{
-		User:                   transformer.TransformUserToViewModel(user),
-		FlightTimeMonthlyData:  transformer.TransformChartViewModel(statsYearMonth, totalFlightTimeExtractor),
-		FlightCountMonthlyData: transformer.TransformChartViewModel(statsYearMonth, flightCountExtractor),
-	}
-	return Render(c, statistics.Index(view))
+	return Render(c, statistics.Index(transformer.TransformUserToViewModel(user)))
 }
 
 func (h *StatisticsHandler) GetCountDistinct(c echo.Context) error {

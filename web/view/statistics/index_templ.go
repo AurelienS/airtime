@@ -14,7 +14,7 @@ import "github.com/AurelienS/cigare/web/viewmodel"
 import "github.com/AurelienS/cigare/web/view/layout"
 import "github.com/AurelienS/cigare/web/view/component"
 
-func Index(view viewmodel.StatisticsView) templ.Component {
+func Index(user viewmodel.UserView) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -46,7 +46,7 @@ func Index(view viewmodel.StatisticsView) templ.Component {
 			}
 			return templ_7745c5c3_Err
 		})
-		templ_7745c5c3_Err = layout.Base(view.User, true).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Base(user, true).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

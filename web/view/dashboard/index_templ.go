@@ -171,7 +171,7 @@ func EmptyDashboard() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var9 := `Ajoute tes expériences de vol`
+		templ_7745c5c3_Var9 := `Enregistre tes expériences de vol`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -180,7 +180,7 @@ func EmptyDashboard() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var10 := `Appuie ici pour partager tes aventures aériennes.`
+		templ_7745c5c3_Var10 := `Appuie ici pour enregistrer tes aventures aériennes.`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -189,7 +189,7 @@ func EmptyDashboard() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var11 := `Tu peux envoyer un enregistrement de vol ou un groupe de fichiers compressés (zip).`
+		templ_7745c5c3_Var11 := `Tu peux utiliser un enregistrement de vol (igc) ou un groupe de fichiers compressés (zip).`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
