@@ -35,17 +35,20 @@ func (h *LogbookHandler) GetLogbook(c echo.Context) error {
 	ctx := c.Request().Context()
 	user := session.GetUserFromContext(c)
 
-	yearParam := c.Param("year")
-	year, err := strconv.Atoi(yearParam)
-	if err != nil {
-		return err
-	}
-
 	flyingYears, err := h.statisticService.GetFlyingYears(ctx, user)
 	if err != nil {
 		return err
 	}
 
+	yearParam := c.Param("year")
+	year, err := strconv.Atoi(yearParam)
+	if err != nil {
+		if yearParam == "" && len(flyingYears) > 0 {
+			year = flyingYears[len(flyingYears)-1]
+		} else {
+			return err
+		}
+	}
 	startOfYear := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
 	endOfYear := time.Date(year, time.December, 31, 23, 59, 0, 0, time.UTC)
 	yearFlights, err := h.flightService.GetFlights(
@@ -104,7 +107,6 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 
 	err = h.logbookService.AddIGCFlight(c.Request().Context(), file, user)
 	if err != nil {
-		util.Error().Err(err).Str("user", user.Email).Msg("Failed to process and insert flight")
 		return err
 	}
 

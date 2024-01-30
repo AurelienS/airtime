@@ -73,7 +73,11 @@ func (s *LogbookService) processIgcZipFile(
 	errChan chan<- error,
 	wg *sync.WaitGroup,
 ) {
-	defer wg.Done()
+	util.Debug().Str("filename", file.Name).Msg("Processing IGC file")
+	defer func() {
+		util.Debug().Str("filename", file.Name).Msg("Done processing IGC file")
+		wg.Done()
+	}()
 	rc, err := file.Open()
 	if err != nil {
 		errChan <- err

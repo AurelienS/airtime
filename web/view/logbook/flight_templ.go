@@ -16,13 +16,34 @@ import "github.com/AurelienS/cigare/web/view/component"
 
 func AddGeoJson(geoJSONstring string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_AddGeoJson_579f`,
-		Function: `function __templ_AddGeoJson_579f(geoJSONstring){var map = L.map('map');
+		Name: `__templ_AddGeoJson_b37a`,
+		Function: `function __templ_AddGeoJson_b37a(geoJSONstring){var map = L.map('map');
 
-	L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-		maxZoom: 18,
-		attribution: '© OpenTopoMap contributors'
-	}).addTo(map);
+	const openTopoMapLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+		maxZoom: 17,
+		attribution: 'Map data © OpenTopoMap contributors'
+	});
+
+	// OpenStreetMap layer
+	const openStreetMapLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		maxZoom: 19,
+		attribution: 'Map data © OpenStreetMap contributors'
+	});
+
+	// Satellite layer
+	const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+		maxZoom: 19,
+		attribution: 'Tiles © Esri'
+	});
+
+	const baseLayers = {
+		"OpenStreetMap": openStreetMapLayer,
+		"OpenTopoMap": openTopoMapLayer,
+		"Satellite": satelliteLayer
+	};
+
+	L.control.layers(baseLayers).addTo(map);
+	openStreetMapLayer.addTo(map);
 
 	const geoJSON = JSON.parse(geoJSONstring);
 	const geojsonLayer = L.geoJSON(geoJSON, {color:"rgb(8, 76, 223)"}).addTo(map);
@@ -46,8 +67,8 @@ func AddGeoJson(geoJSONstring string) templ.ComponentScript {
 
     L.marker([startCoord[1], startCoord[0]], {icon: startIcon}).addTo(map);
     L.marker([endCoord[1], endCoord[0]], {icon: endIcon}).addTo(map);}`,
-		Call:       templ.SafeScript(`__templ_AddGeoJson_579f`, geoJSONstring),
-		CallInline: templ.SafeScriptInline(`__templ_AddGeoJson_579f`, geoJSONstring),
+		Call:       templ.SafeScript(`__templ_AddGeoJson_b37a`, geoJSONstring),
+		CallInline: templ.SafeScriptInline(`__templ_AddGeoJson_b37a`, geoJSONstring),
 	}
 }
 
@@ -94,7 +115,7 @@ func Flight(view viewmodel.FlightDetailView) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(view.Fulldate)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 43, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 64, Col: 41}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -116,7 +137,7 @@ func Flight(view viewmodel.FlightDetailView) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(view.Location)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 44, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 65, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -138,7 +159,7 @@ func Flight(view viewmodel.FlightDetailView) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(view.Duration)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 45, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 66, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -160,7 +181,7 @@ func Flight(view viewmodel.FlightDetailView) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(view.Distance)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 46, Col: 45}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 67, Col: 45}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -182,7 +203,7 @@ func Flight(view viewmodel.FlightDetailView) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(view.AltitudeMax)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 47, Col: 52}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `web/view/logbook/flight.templ`, Line: 68, Col: 52}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
