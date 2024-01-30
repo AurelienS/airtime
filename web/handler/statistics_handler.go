@@ -28,7 +28,7 @@ func (h *StatisticsHandler) GetIndex(c echo.Context) error {
 
 func (h *StatisticsHandler) GetCountDistinct(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	statsYearMonth, err := h.statisticService.GetMonthlyStatisticsByYear(
+	monthlyStatsByYear, err := h.statisticService.GetMonthlyStatisticsByYear(
 		c.Request().Context(),
 		user)
 	if err != nil {
@@ -39,7 +39,7 @@ func (h *StatisticsHandler) GetCountDistinct(c echo.Context) error {
 		return len(stats.Flights)
 	}
 
-	view := transformer.TransformChartViewModel(statsYearMonth, flightCountExtractor)
+	view := transformer.TransformMonthlyCountToViewmodel(monthlyStatsByYear, flightCountExtractor)
 	return Render(c, chart.CountDistinct(view))
 }
 
@@ -62,7 +62,7 @@ func (h *StatisticsHandler) GetCountCumul(c echo.Context) error {
 
 func (h *StatisticsHandler) GetTimeDistinct(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	statsYearMonth, err := h.statisticService.GetMonthlyStatisticsByYear(
+	monthlyStatsByYear, err := h.statisticService.GetMonthlyStatisticsByYear(
 		c.Request().Context(),
 		user)
 	if err != nil {
@@ -73,7 +73,7 @@ func (h *StatisticsHandler) GetTimeDistinct(c echo.Context) error {
 		return stats.DurationTotal.Hours()
 	}
 
-	view := transformer.TransformChartTimeViewModel(statsYearMonth, totalFlightTimeExtractor)
+	view := transformer.TransformMonthlyTimeToViewmodel(monthlyStatsByYear, totalFlightTimeExtractor)
 	return Render(c, chart.TimeDistinct(view))
 }
 
