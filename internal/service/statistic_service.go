@@ -24,7 +24,7 @@ func NewStatisticService(
 	}
 }
 
-func (s StatisticService) GetStatisticsByYearAndMonth(
+func (s StatisticService) GetMonthlyStatisticsByYear(
 	ctx context.Context,
 	user domain.User,
 ) (StatsYearMonth, error) {
@@ -73,12 +73,27 @@ type FlightDuration struct {
 	Duration time.Duration
 }
 
-func reverse(s []domain.Flight) {
-	for i, j := 0, len(s)-1; i < j; i, j = i+1, j-1 {
-		s[i], s[j] = s[j], s[i]
+func initializeFlightData(flights []domain.Flight) (map[time.Time]int, time.Time) {
+	if len(flights) == 0 {
+		return nil, time.Time{}
 	}
+
+	sort.Slice(flights, func(i, j int) bool {
+		return flights[i].Date.Before(flights[j].Date)
+	})
+
+	firstFlight := flights[0].Date
+	lastFlight := flights[len(flights)-1].Date
+
+	flightData := make(map[time.Time]int)
+	for d := firstFlight; !d.After(lastFlight); d = d.AddDate(0, 1, 0) {
+		flightData[time.Date(d.Year(), d.Month(), 1, 0, 0, 0, 0, time.UTC)] = 0
+	}
+
+	return flightData, lastFlight
 }
 
+// GetCumulativeFlightCount function with refactored logic.
 func (s StatisticService) GetCumulativeFlightCount(
 	ctx context.Context,
 	user domain.User,
@@ -87,36 +102,25 @@ func (s StatisticService) GetCumulativeFlightCount(
 ) ([]FlightCount, error) {
 	flights, err := s.flightService.GetFlights(ctx, start, end, user)
 	if err != nil {
-		return []FlightCount{}, err
+		return nil, err
 	}
 
-	reverse(flights)
+	flightCounts, lastFlight := initializeFlightData(flights)
+	if flightCounts == nil {
+		return []FlightCount{}, nil
+	}
 
-	type Year = int
-	type MonthCount = map[time.Month]int
-	type YearMonthCount map[Year]MonthCount
-	flightCounts := make(YearMonthCount)
-	var totalCount int
-	for _, f := range flights {
-		year := f.Date.Year()
-		month := f.Date.Month()
-
-		if _, ok := flightCounts[year]; !ok {
-			flightCounts[year] = make(MonthCount)
-		}
-
+	totalCount := 0
+	for _, flight := range flights {
 		totalCount++
-		flightCounts[year][month] = totalCount
+		for d := flight.Date; !d.After(lastFlight); d = d.AddDate(0, 1, 0) {
+			flightCounts[time.Date(d.Year(), d.Month(), 1, 0, 0, 0, 0, time.UTC)] = totalCount
+		}
 	}
 
 	yearFlightCounts := make([]FlightCount, 0, len(flightCounts))
-	for year, monthCount := range flightCounts {
-		for month, count := range monthCount {
-			yearFlightCounts = append(yearFlightCounts, FlightCount{
-				Date:  time.Date(year, month, 1, 0, 0, 0, 0, time.UTC),
-				Count: count,
-			})
-		}
+	for date, count := range flightCounts {
+		yearFlightCounts = append(yearFlightCounts, FlightCount{Date: date, Count: count})
 	}
 
 	sort.Slice(yearFlightCounts, func(i, j int) bool {
@@ -126,6 +130,7 @@ func (s StatisticService) GetCumulativeFlightCount(
 	return yearFlightCounts, nil
 }
 
+// GetCumulativeFlightDuration function with refactored logic.
 func (s StatisticService) GetCumulativeFlightDuration(
 	ctx context.Context,
 	user domain.User,
@@ -134,37 +139,25 @@ func (s StatisticService) GetCumulativeFlightDuration(
 ) ([]FlightDuration, error) {
 	flights, err := s.flightService.GetFlights(ctx, start, end, user)
 	if err != nil {
-		return []FlightDuration{}, err
+		return nil, err
 	}
 
-	// Assuming reverse function is defined elsewhere
-	reverse(flights)
+	flightDurationsMap, lastFlight := initializeFlightData(flights)
+	if flightDurationsMap == nil {
+		return []FlightDuration{}, nil
+	}
 
-	type Year = int
-	type MonthDuration = map[time.Month]time.Duration
-	type YearMonthDuration map[Year]MonthDuration
-	flightDurations := make(YearMonthDuration)
 	var totalDuration time.Duration
-	for _, f := range flights {
-		year := f.Date.Year()
-		month := f.Date.Month()
-
-		if _, ok := flightDurations[year]; !ok {
-			flightDurations[year] = make(MonthDuration)
+	for _, flight := range flights {
+		totalDuration += flight.Duration
+		for d := flight.Date; !d.After(lastFlight); d = d.AddDate(0, 1, 0) {
+			flightDurationsMap[time.Date(d.Year(), d.Month(), 1, 0, 0, 0, 0, time.UTC)] = int(totalDuration)
 		}
-
-		totalDuration += f.Duration
-		flightDurations[year][month] = totalDuration
 	}
 
-	yearFlightDurations := make([]FlightDuration, 0, len(flightDurations))
-	for year, monthDuration := range flightDurations {
-		for month, duration := range monthDuration {
-			yearFlightDurations = append(yearFlightDurations, FlightDuration{
-				Date:     time.Date(year, month, 1, 0, 0, 0, 0, time.UTC),
-				Duration: duration,
-			})
-		}
+	yearFlightDurations := make([]FlightDuration, 0, len(flightDurationsMap))
+	for date, duration := range flightDurationsMap {
+		yearFlightDurations = append(yearFlightDurations, FlightDuration{Date: date, Duration: time.Duration(duration)})
 	}
 
 	sort.Slice(yearFlightDurations, func(i, j int) bool {

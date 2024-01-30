@@ -28,7 +28,7 @@ func (h *StatisticsHandler) GetIndex(c echo.Context) error {
 
 func (h *StatisticsHandler) GetCountDistinct(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	statsYearMonth, err := h.statisticService.GetStatisticsByYearAndMonth(
+	statsYearMonth, err := h.statisticService.GetMonthlyStatisticsByYear(
 		c.Request().Context(),
 		user)
 	if err != nil {
@@ -62,7 +62,7 @@ func (h *StatisticsHandler) GetCountCumul(c echo.Context) error {
 
 func (h *StatisticsHandler) GetTimeDistinct(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	statsYearMonth, err := h.statisticService.GetStatisticsByYearAndMonth(
+	statsYearMonth, err := h.statisticService.GetMonthlyStatisticsByYear(
 		c.Request().Context(),
 		user)
 	if err != nil {
