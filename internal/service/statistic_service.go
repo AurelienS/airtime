@@ -103,7 +103,7 @@ func (s StatisticService) GetFlyingYears(ctx context.Context, user domain.User) 
 	return s.flightRepo.GetFlyingYears(ctx, user)
 }
 
-func (s StatisticService) GetFlightStats(
+func (s StatisticService) GetGlobalStats(
 	ctx context.Context,
 	user domain.User,
 	start time.Time,

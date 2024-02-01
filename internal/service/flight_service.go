@@ -36,31 +36,3 @@ func (s FlightService) GetFlight(ctx context.Context, flightID int, user domain.
 func (s FlightService) GetLastFlights(ctx context.Context, count int, user domain.User) ([]domain.Flight, error) {
 	return s.flightRepo.GetLastFlights(ctx, count, user)
 }
-
-func (s FlightService) GetFlightsForDateRanges(
-	flights []domain.Flight,
-	dateRanges []domain.DateRange,
-) [][]domain.Flight {
-	flightsForRanges := make([][]domain.Flight, len(dateRanges))
-
-	for _, flight := range flights {
-		for i, dateRange := range dateRanges {
-			if (flight.Date.Equal(dateRange.Start) || flight.Date.After(dateRange.Start)) &&
-				(flight.Date.Equal(dateRange.End) || flight.Date.Before(dateRange.End)) {
-				flightsForRanges[i] = append(flightsForRanges[i], flight)
-			}
-		}
-	}
-
-	return flightsForRanges
-}
-
-func (s FlightService) GetFlightsForYear(year int, flights []domain.Flight) []domain.Flight {
-	dateRanges := []domain.DateRange{
-		{
-			Start: time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC),
-			End:   time.Date(year, time.December, 31, 23, 59, 59, 0, time.UTC),
-		},
-	}
-	return s.GetFlightsForDateRanges(flights, dateRanges)[0]
-}

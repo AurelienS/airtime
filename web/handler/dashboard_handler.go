@@ -30,13 +30,13 @@ func (h DashboardHandler) GetIndex(c echo.Context) error {
 	user := session.GetUserFromContext(c)
 	ctx := c.Request().Context()
 
-	allTimeStats, err := h.statisticService.GetFlightStats(ctx, user, time.Time{}, time.Now())
+	allTimeStats, err := h.statisticService.GetGlobalStats(ctx, user, time.Time{}, time.Now())
 	if err != nil {
 		return err
 	}
 
 	startOfCurrentYear := time.Date(time.Now().Year(), time.January, 1, 0, 0, 0, 0, time.UTC)
-	currentYearStats, err := h.statisticService.GetFlightStats(ctx, user, startOfCurrentYear, time.Now())
+	currentYearStats, err := h.statisticService.GetGlobalStats(ctx, user, startOfCurrentYear, time.Now())
 	if err != nil {
 		return err
 	}

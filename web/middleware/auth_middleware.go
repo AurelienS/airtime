@@ -14,7 +14,7 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		user, err := session.GetUserOrErrorFromContext(c)
 		if err != nil {
-			util.Warn().Msg("user not logged in. Will be redirected soonA")
+			util.Warn().Msg("user not logged in. Will be redirected soon")
 
 			if c.Request().Header.Get("HX-Request") != "" {
 				c.Response().Header().Set("HX-Redirect", "/login")

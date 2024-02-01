@@ -69,7 +69,7 @@ func Login() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"h-screen flex items-center justify-center bg-cover\"><div class=\"hero min-h-screen bg-base-200 bg-transparent \"><div class=\"hero-content flex-col lg:flex-row-reverse\"><div class=\"text-center lg:text-left text-black\"><h1 class=\"text-5xl font-bold\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</style></head><body class=\"h-screen flex items-center justify-center bg-cover\"><div class=\"hero min-h-screen bg-base-200 bg-transparent \"><div class=\"hero-content flex-col lg:flex-row-reverse\"><div class=\"text-center lg:text-left text-offgray\"><h1 class=\"text-5xl font-bold\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

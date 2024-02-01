@@ -10,7 +10,7 @@ templ Navbar(currentUser viewmodel.UserView, showNavigation bool) {
 		<div>
 			<div class="flex items-center gap-6">
 				<a
-					class="flex text-black font-title not-italic hover:no-underline"
+					class="flex text-offgray font-title not-italic hover:no-underline"
 					hx-get="/"
 					hx-target="#content"
 					hx-select="#content"
@@ -18,7 +18,7 @@ templ Navbar(currentUser viewmodel.UserView, showNavigation bool) {
 					hx-push-url="true"
 				><span>Carnet de vol</span></a>
 				<a
-					class="flex text-black font-title not-italic hover:no-underline "
+					class="flex text-offgray font-title not-italic hover:no-underline "
 					hx-get="/statistics"
 					hx-target="#content"
 					hx-select="#content"

@@ -34,7 +34,7 @@ func Navbar(currentUser viewmodel.UserView, showNavigation bool) templ.Component
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><div class=\"flex items-center gap-6\"><a class=\"flex text-black font-title not-italic hover:no-underline\" hx-get=\"/\" hx-target=\"#content\" hx-select=\"#content\" hx-swap=\"outerHTML\" hx-push-url=\"true\"><span>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div><div><div class=\"flex items-center gap-6\"><a class=\"flex text-offgray font-title not-italic hover:no-underline\" hx-get=\"/\" hx-target=\"#content\" hx-select=\"#content\" hx-swap=\"outerHTML\" hx-push-url=\"true\"><span>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -43,7 +43,7 @@ func Navbar(currentUser viewmodel.UserView, showNavigation bool) templ.Component
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></a> <a class=\"flex text-black font-title not-italic hover:no-underline \" hx-get=\"/statistics\" hx-target=\"#content\" hx-select=\"#content\" hx-swap=\"outerHTML\" hx-push-url=\"true\"><span>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</span></a> <a class=\"flex text-offgray font-title not-italic hover:no-underline \" hx-get=\"/statistics\" hx-target=\"#content\" hx-select=\"#content\" hx-swap=\"outerHTML\" hx-push-url=\"true\"><span>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -12,7 +12,7 @@ templ YearInfo(title string, stat viewmodel.DashboardStatsView ) {
 		<div>
 			{ stat.DistanceMax } le
 			<a
-				class="text-black"
+				class="text-offgray"
 				hx-get={ stat.DistanceMaxFlight.Link }
 				hx-target="#content"
 				hx-select="#content"
@@ -25,7 +25,7 @@ templ YearInfo(title string, stat viewmodel.DashboardStatsView ) {
 		<div>
 			{ stat.DurationMax } le
 			<a
-				class="text-black"
+				class="text-offgray"
 				hx-get={ stat.DurationMaxFlight.Link }
 				hx-target="#content"
 				hx-select="#content"
@@ -38,7 +38,7 @@ templ YearInfo(title string, stat viewmodel.DashboardStatsView ) {
 		<div>
 			{ stat.AltitudeMax } le
 			<a
-				class="text-black"
+				class="text-offgray"
 				hx-get={ stat.AltitudeMaxFlight.Link }
 				hx-target="#content"
 				hx-select="#content"
