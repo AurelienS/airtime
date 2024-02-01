@@ -2,7 +2,7 @@ package chart
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-script setupBarCount(datasets []viewmodel.CountDataset, id string) {
+script setupBarCount(data viewmodel.CountData, id string) {
 	const ctx = document.getElementById(id).getContext('2d');
 
     const scaleConfig = {
@@ -43,8 +43,8 @@ script setupBarCount(datasets []viewmodel.CountDataset, id string) {
     };
 
     const chartData = {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-        datasets: datasets.map((ds, index) => ({
+        labels: data.Labels,
+        datasets: data.Datasets.map((ds, index) => ({
             label: ds.Label,
             data: ds.Data,
             backgroundColor: ds.Color,
@@ -64,9 +64,9 @@ script setupBarCount(datasets []viewmodel.CountDataset, id string) {
 
 }
 
-templ BarCount(datasets []viewmodel.CountDataset, id string) {
+templ BarCount(data viewmodel.CountData, id string) {
 	<div class="h-full w-full">
 		<canvas id={ id }></canvas>
-		@setupBarCount(datasets, id)
+		@setupBarCount(data, id)
 	</div>
 }

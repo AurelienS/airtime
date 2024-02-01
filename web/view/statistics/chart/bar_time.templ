@@ -2,7 +2,7 @@ package chart
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-script setupBarTime(datasets []viewmodel.TimeDataset, id string) {
+script setupBarTime(data viewmodel.TimeData, id string) {
 	const ctx = document.getElementById(id).getContext('2d');
 
     const scaleConfig = {
@@ -43,8 +43,8 @@ script setupBarTime(datasets []viewmodel.TimeDataset, id string) {
     };
 
     const chartData = {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-        datasets: datasets.map((ds, index) => ({
+        labels: data.Labels,
+        datasets: data.Datasets.map((ds, index) => ({
             label: ds.Label,
             data: ds.Data,
             backgroundColor: ds.Color,
@@ -64,9 +64,9 @@ script setupBarTime(datasets []viewmodel.TimeDataset, id string) {
 
 }
 
-templ BarTime(datasets []viewmodel.TimeDataset, id string) {
+templ BarTime(data viewmodel.TimeData, id string) {
 	<div class="h-full w-full">
 		<canvas id={ id }></canvas>
-		@setupBarTime(datasets, id)
+		@setupBarTime(data, id)
 	</div>
 }

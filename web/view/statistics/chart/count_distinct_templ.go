@@ -12,7 +12,7 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-func CountDistinct(data []viewmodel.CountDataset) templ.Component {
+func CountDistinct(data viewmodel.CountData) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

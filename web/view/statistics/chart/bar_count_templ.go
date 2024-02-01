@@ -12,10 +12,10 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-func setupBarCount(datasets []viewmodel.CountDataset, id string) templ.ComponentScript {
+func setupBarCount(data viewmodel.CountData, id string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setupBarCount_857a`,
-		Function: `function __templ_setupBarCount_857a(datasets, id){const ctx = document.getElementById(id).getContext('2d');
+		Name: `__templ_setupBarCount_a26b`,
+		Function: `function __templ_setupBarCount_a26b(data, id){const ctx = document.getElementById(id).getContext('2d');
 
     const scaleConfig = {
         y: {
@@ -55,8 +55,8 @@ func setupBarCount(datasets []viewmodel.CountDataset, id string) templ.Component
     };
 
     const chartData = {
-        labels: ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"],
-        datasets: datasets.map((ds, index) => ({
+        labels: data.Labels,
+        datasets: data.Datasets.map((ds, index) => ({
             label: ds.Label,
             data: ds.Data,
             backgroundColor: ds.Color,
@@ -73,12 +73,12 @@ func setupBarCount(datasets []viewmodel.CountDataset, id string) templ.Component
         data: chartData,
         options: options
     });}`,
-		Call:       templ.SafeScript(`__templ_setupBarCount_857a`, datasets, id),
-		CallInline: templ.SafeScriptInline(`__templ_setupBarCount_857a`, datasets, id),
+		Call:       templ.SafeScript(`__templ_setupBarCount_a26b`, data, id),
+		CallInline: templ.SafeScriptInline(`__templ_setupBarCount_a26b`, data, id),
 	}
 }
 
-func BarCount(datasets []viewmodel.CountDataset, id string) templ.Component {
+func BarCount(data viewmodel.CountData, id string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -103,7 +103,7 @@ func BarCount(datasets []viewmodel.CountDataset, id string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = setupBarCount(datasets, id).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = setupBarCount(data, id).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

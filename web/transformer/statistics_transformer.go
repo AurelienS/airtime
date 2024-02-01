@@ -60,7 +60,7 @@ func TransformChartTimeCumulative(cumulativeMonthlyDuration map[int]map[time.Mon
 
 func TransformMonthlyCountToViewmodel(
 	monthlyCountByYear map[int]map[time.Month]int,
-) []viewmodel.CountDataset {
+) viewmodel.CountData {
 	var datasets []viewmodel.CountDataset
 	colorCounter := 0
 
@@ -76,12 +76,15 @@ func TransformMonthlyCountToViewmodel(
 		datasets = append(datasets, dataset)
 	}
 
-	return datasets
+	return viewmodel.CountData{
+		Datasets: datasets,
+		Labels:   getSortedMonths(),
+	}
 }
 
 func TransformMonthlyTimeToViewmodel(
 	monthlyDurationByYear map[int]map[time.Month]time.Duration,
-) []viewmodel.TimeDataset {
+) viewmodel.TimeData {
 	var datasets []viewmodel.TimeDataset
 	colorCounter := 0
 
@@ -97,7 +100,10 @@ func TransformMonthlyTimeToViewmodel(
 		datasets = append(datasets, dataset)
 	}
 
-	return datasets
+	return viewmodel.TimeData{
+		Datasets: datasets,
+		Labels:   getSortedMonths(),
+	}
 }
 
 var datasetColors = []string{
@@ -121,6 +127,14 @@ var datasetColors = []string{
 	"rgb(128, 223, 128)",
 	"rgb(223, 128, 128)",
 	"rgb(128, 128, 223)",
+}
+
+func getSortedMonths() []string {
+	months := make([]string, 0, 12)
+	for month := time.January; month <= time.December; month++ {
+		months = append(months, month.String())
+	}
+	return months
 }
 
 func sortYearsInt(yearMap map[int]map[time.Month]int) []int {
