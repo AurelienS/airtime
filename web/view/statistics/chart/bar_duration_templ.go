@@ -12,10 +12,10 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-func setupBarTime(data viewmodel.TimeData, id string) templ.ComponentScript {
+func setupBarDuration(data viewmodel.ChartData, id string, yearDateOnly bool) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setupBarTime_a26b`,
-		Function: `function __templ_setupBarTime_a26b(data, id){const ctx = document.getElementById(id).getContext('2d');
+		Name: `__templ_setupBarDuration_6951`,
+		Function: `function __templ_setupBarDuration_6951(data, id, yearDateOnly){const ctx = document.getElementById(id).getContext('2d');
 
     const scaleConfig = {
         y: {
@@ -31,7 +31,7 @@ func setupBarTime(data viewmodel.TimeData, id string) templ.ComponentScript {
         }
     }
     const legendConfig = {
-        display: true,
+        display: data.Datasets.length > 1,
         position: 'left',
     };
 
@@ -55,7 +55,7 @@ func setupBarTime(data viewmodel.TimeData, id string) templ.ComponentScript {
     };
 
     const chartData = {
-        labels: data.Labels,
+        labels: yearDateOnly ? data.Labels.map(l => l.slice(-4)) : data.Labels,
         datasets: data.Datasets.map((ds, index) => ({
             label: ds.Label,
             data: ds.Data,
@@ -73,12 +73,12 @@ func setupBarTime(data viewmodel.TimeData, id string) templ.ComponentScript {
         data: chartData,
         options: options
     });}`,
-		Call:       templ.SafeScript(`__templ_setupBarTime_a26b`, data, id),
-		CallInline: templ.SafeScriptInline(`__templ_setupBarTime_a26b`, data, id),
+		Call:       templ.SafeScript(`__templ_setupBarDuration_6951`, data, id, yearDateOnly),
+		CallInline: templ.SafeScriptInline(`__templ_setupBarDuration_6951`, data, id, yearDateOnly),
 	}
 }
 
-func BarTime(data viewmodel.TimeData, id string) templ.Component {
+func BarDuration(data viewmodel.ChartData, id string, yearDateOnly bool) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -103,7 +103,7 @@ func BarTime(data viewmodel.TimeData, id string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = setupBarTime(data, id).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = setupBarDuration(data, id, yearDateOnly).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

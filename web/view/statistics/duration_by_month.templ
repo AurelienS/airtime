@@ -1,0 +1,17 @@
+package statistics
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/statistics/chart"
+import "github.com/AurelienS/cigare/web/view/component"
+
+templ DurationByMonth(data viewmodel.ChartData) {
+	<div id="chart_duration">
+		<div class="flex justify-between">
+			<h2 class="text-2xl">Temps de vol</h2>
+			@chart.Scale("byMonth","statistics/duration", "#chart_duration")
+		</div>
+		@component.Card() {
+			@chart.BarDuration(data, "chart_duration_canvas",false)
+		}
+	</div>
+}

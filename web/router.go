@@ -7,13 +7,13 @@ import (
 )
 
 type Router struct {
-	authHandler        handler.AuthHandler
-	logbookHandler     handler.LogbookHandler
+	authHandler       handler.AuthHandler
+	logbookHandler    handler.LogbookHandler
 	statisticsHandler handler.StatisticsHandler
-	userHandler        handler.UserHandler
-	indexHandler       handler.IndexHandler
-	onboardingHandler  handler.OnboardingHandler
-	dashboardHandler   handler.DashboardHandler
+	userHandler       handler.UserHandler
+	indexHandler      handler.IndexHandler
+	onboardingHandler handler.OnboardingHandler
+	dashboardHandler  handler.DashboardHandler
 }
 
 func NewRouter(
@@ -26,13 +26,13 @@ func NewRouter(
 	onboardingHandler handler.OnboardingHandler,
 ) Router {
 	return Router{
-		authHandler:        authHandler,
-		logbookHandler:     logbookHandler,
+		authHandler:       authHandler,
+		logbookHandler:    logbookHandler,
 		statisticsHandler: statisticsHandler,
-		dashboardHandler:   dashboardHandler,
-		userHandler:        userHandler,
-		indexHandler:       indexHandler,
-		onboardingHandler:  onboardingHandler,
+		dashboardHandler:  dashboardHandler,
+		userHandler:       userHandler,
+		indexHandler:      indexHandler,
+		onboardingHandler: onboardingHandler,
 	}
 }
 
@@ -63,10 +63,12 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.GET("dashboard", r.dashboardHandler.GetIndex)
 
 	authGroup.GET("statistics", r.statisticsHandler.GetIndex)
-	authGroup.GET("statistics/count/distinct", r.statisticsHandler.GetCountDistinct)
-	authGroup.GET("statistics/count/cumulative", r.statisticsHandler.GetCountCumul)
-	authGroup.GET("statistics/time/distinct", r.statisticsHandler.GetTimeDistinct)
-	authGroup.GET("statistics/time/cumulative", r.statisticsHandler.GetTimeCumul)
+	authGroup.GET("statistics/count/byMonth", r.statisticsHandler.GetCountByMonth)
+	authGroup.GET("statistics/count/byYear", r.statisticsHandler.GetCountByYear)
+	authGroup.GET("statistics/count/cumulative", r.statisticsHandler.GetCountCumulative)
+	authGroup.GET("statistics/duration/byMonth", r.statisticsHandler.GetDurationByMonth)
+	authGroup.GET("statistics/duration/byYear", r.statisticsHandler.GetDurationByYear)
+	authGroup.GET("statistics/duration/cumulative", r.statisticsHandler.GetDurationCumulative)
 
 	authGroup.GET("logout", r.authHandler.GetLogout)
 }

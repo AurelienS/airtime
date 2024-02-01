@@ -9,12 +9,12 @@ templ Index(user viewmodel.UserView) {
 		@component.Back()
 		<div class="flex flex-col gap-6 mx-20">
 			<div
-				hx-get="/statistics/count/distinct"
+				hx-get="/statistics/count/byYear"
 				hx-trigger="load"
 				hx-swap="outerHTML"
 			></div>
 			<div
-				hx-get="/statistics/time/distinct"
+				hx-get="/statistics/duration/byYear"
 				hx-trigger="load"
 				hx-swap="outerHTML"
 			></div>

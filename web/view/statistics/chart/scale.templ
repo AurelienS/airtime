@@ -1,0 +1,55 @@
+package chart
+
+
+templ Scale(value string, baseRoute string, target string) {
+	<div class="self-end flex flex-wrap items-center gap-1 mb-1">
+		<label
+			class={ "cursor-pointer px-2 py-0.5 hover:bg-accent-10 ", templ.KV("text-accent bg-accent-5", value == "cumul") }
+		>
+			cumulé
+			<input
+				class="hidden"
+				type="radio"
+				value="cumul"
+				checked?={ value == "cumul" }
+				hx-get={ baseRoute + "/cumulative" }
+				hx-trigger="change"
+				hx-target={target}
+				hx-select={target}
+				hx-swap="outerHTML"
+			/>
+		</label>
+		<label
+			class={ "cursor-pointer px-2 py-0.5 hover:bg-accent-10 ", templ.KV("text-accent bg-accent-5", value == "byMonth") }
+		>
+			par mois
+			<input
+				class="hidden"
+				type="radio"
+				value="byMonth"
+				checked?={ value == "byMonth" }
+				hx-get={ baseRoute + "/byMonth" }
+				hx-trigger="change"
+				hx-target={target}
+				hx-select={target}
+				hx-swap="outerHTML"
+			/>
+		</label>
+		<label
+			class={ "cursor-pointer px-2 py-0.5 hover:bg-accent-10 ", templ.KV("text-accent bg-accent-5", value == "byYear") }
+		>
+			par année
+			<input
+				class="hidden"
+				type="radio"
+				value="byYear"
+				checked?={ value == "byYear" }
+				hx-get={ baseRoute + "/byYear" }
+				hx-trigger="change"
+				hx-target={target}
+				hx-select={target}
+				hx-swap="outerHTML"
+			/>
+		</label>
+	</div>
+}

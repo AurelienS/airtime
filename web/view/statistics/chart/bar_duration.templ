@@ -2,7 +2,7 @@ package chart
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-script setupBarTime(data viewmodel.TimeData, id string) {
+script setupBarDuration(data viewmodel.ChartData, id string, yearDateOnly bool) {
 	const ctx = document.getElementById(id).getContext('2d');
 
     const scaleConfig = {
@@ -19,7 +19,7 @@ script setupBarTime(data viewmodel.TimeData, id string) {
         }
     }
     const legendConfig = {
-        display: true,
+        display: data.Datasets.length > 1,
         position: 'left',
     };
 
@@ -43,7 +43,7 @@ script setupBarTime(data viewmodel.TimeData, id string) {
     };
 
     const chartData = {
-        labels: data.Labels,
+        labels: yearDateOnly ? data.Labels.map(l => l.slice(-4)) : data.Labels,
         datasets: data.Datasets.map((ds, index) => ({
             label: ds.Label,
             data: ds.Data,
@@ -64,9 +64,9 @@ script setupBarTime(data viewmodel.TimeData, id string) {
 
 }
 
-templ BarTime(data viewmodel.TimeData, id string) {
+templ BarDuration(data viewmodel.ChartData, id string, yearDateOnly bool) {
 	<div class="h-full w-full">
 		<canvas id={ id }></canvas>
-		@setupBarTime(data, id)
+		@setupBarDuration(data, id, yearDateOnly)
 	</div>
 }

@@ -32,32 +32,3 @@ type StatView struct {
 	AlltimeValue     string
 	CurrentYearValue string
 }
-
-type StatisticsView struct {
-	User UserView
-
-	FlightTimeMonthlyData  []CountDataset
-	FlightCountMonthlyData []CountDataset
-}
-
-type CountDataset struct {
-	Label string
-	Data  []int
-	Color string
-}
-
-type CountData struct {
-	Labels   []string
-	Datasets []CountDataset
-}
-
-type TimeDataset struct {
-	Label string
-	Data  []float64
-	Color string
-}
-
-type TimeData struct {
-	Labels   []string
-	Datasets []TimeDataset
-}

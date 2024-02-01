@@ -12,10 +12,10 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-func setupLineTime(data viewmodel.TimeData, id string) templ.ComponentScript {
+func setupLineDuration(data viewmodel.ChartData, id string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setupLineTime_7499`,
-		Function: `function __templ_setupLineTime_7499(data, id){const ctx = document.getElementById(id).getContext('2d');
+		Name: `__templ_setupLineDuration_7499`,
+		Function: `function __templ_setupLineDuration_7499(data, id){const ctx = document.getElementById(id).getContext('2d');
 
     const scalesConfig = {
         y: {
@@ -66,12 +66,12 @@ func setupLineTime(data viewmodel.TimeData, id string) templ.ComponentScript {
         data: chartData,
         options: chartOptions
     });}`,
-		Call:       templ.SafeScript(`__templ_setupLineTime_7499`, data, id),
-		CallInline: templ.SafeScriptInline(`__templ_setupLineTime_7499`, data, id),
+		Call:       templ.SafeScript(`__templ_setupLineDuration_7499`, data, id),
+		CallInline: templ.SafeScriptInline(`__templ_setupLineDuration_7499`, data, id),
 	}
 }
 
-func LineTime(data viewmodel.TimeData, id string) templ.Component {
+func LineDuration(data viewmodel.ChartData, id string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -96,7 +96,7 @@ func LineTime(data viewmodel.TimeData, id string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = setupLineTime(data, id).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = setupLineDuration(data, id).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

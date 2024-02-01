@@ -2,7 +2,7 @@ package chart
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-script setupLineTime(data viewmodel.TimeData, id string) {
+script setupLineDuration(data viewmodel.ChartData, id string) {
 	const ctx = document.getElementById(id).getContext('2d');
 
     const scalesConfig = {
@@ -57,9 +57,9 @@ script setupLineTime(data viewmodel.TimeData, id string) {
 
 }
 
-templ LineTime(data viewmodel.TimeData, id string) {
+templ LineDuration(data viewmodel.ChartData, id string) {
 	<div class="h-full w-full">
 		<canvas id={ id }></canvas>
-		@setupLineTime(data, id)
+		@setupLineDuration(data, id)
 	</div>
 }

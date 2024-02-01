@@ -2,7 +2,7 @@ package chart
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-script setupBarCount(data viewmodel.CountData, id string) {
+script setupBarCount(data viewmodel.ChartData, id string, yearDateOnly bool) {
 	const ctx = document.getElementById(id).getContext('2d');
 
     const scaleConfig = {
@@ -19,7 +19,7 @@ script setupBarCount(data viewmodel.CountData, id string) {
         }
     }
     const legendConfig = {
-        display: true,
+        display: data.Datasets.length > 1,
         position: 'left',
     };
 
@@ -43,9 +43,9 @@ script setupBarCount(data viewmodel.CountData, id string) {
     };
 
     const chartData = {
-        labels: data.Labels,
+        labels: yearDateOnly ? data.Labels.map(l => l.slice(-4)) : data.Labels,
         datasets: data.Datasets.map((ds, index) => ({
-            label: ds.Label,
+            label:ds.Label,
             data: ds.Data,
             backgroundColor: ds.Color,
             borderColor: ds.Color,
@@ -64,9 +64,9 @@ script setupBarCount(data viewmodel.CountData, id string) {
 
 }
 
-templ BarCount(data viewmodel.CountData, id string) {
+templ BarCount(data viewmodel.ChartData, id string, yearDateOnly bool) {
 	<div class="h-full w-full">
 		<canvas id={ id }></canvas>
-		@setupBarCount(data, id)
+		@setupBarCount(data, id, yearDateOnly)
 	</div>
 }

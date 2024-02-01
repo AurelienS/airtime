@@ -1,108 +1,74 @@
 package transformer
 
 import (
+	"fmt"
 	"sort"
-	"strconv"
 	"time"
 
+	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/web/viewmodel"
 )
 
-func TransformCumulativeCount(cumulativeCount map[int]map[time.Month]int) viewmodel.CountData {
-	var labels []string
-	var values []int
+func TransformMultiDatasetsToViewmodel(dataItems []domain.ChartDataItem) viewmodel.ChartData {
+	yearlyData := make(map[int][]float64)
 
-	for _, year := range sortYearsInt(cumulativeCount) {
-		yearMap := cumulativeCount[year]
-		for _, month := range sortMonthsInt(yearMap) {
-			count := yearMap[month]
-			labels = append(labels, generateDateLabel(year, month))
-			values = append(values, count)
+	for _, item := range dataItems {
+		year, month, _ := item.GetDate().Date()
+		if _, exists := yearlyData[year]; !exists {
+			yearlyData[year] = make([]float64, 12)
 		}
+		yearlyData[year][month-1] = item.GetValue()
 	}
 
-	dataset := viewmodel.CountDataset{
-		Label: "count",
-		Data:  values,
-		Color: "rgb(8,76,223)",
+	// Sort years
+	var years []int
+	for year := range yearlyData {
+		years = append(years, year)
+	}
+	sort.Slice(years, func(i, j int) bool { return years[i] > years[j] })
+
+	// Generate labels for months
+	labels := make([]string, 0, 12)
+	for i := 1; i <= 12; i++ {
+		month := time.Month(i)
+		labels = append(labels, month.String())
 	}
 
-	return viewmodel.CountData{
+	// Create datasets based on sorted years
+	datasets := make([]viewmodel.ChartDataset, 0, len(yearlyData))
+	colorIndex := 0
+	for _, year := range years {
+		datasets = append(datasets, viewmodel.ChartDataset{
+			Label: fmt.Sprintf("%d", year),
+			Data:  yearlyData[year],
+			Color: datasetColors[colorIndex%len(datasetColors)],
+		})
+		colorIndex++
+	}
+
+	return viewmodel.ChartData{
 		Labels:   labels,
-		Datasets: []viewmodel.CountDataset{dataset},
+		Datasets: datasets,
 	}
 }
 
-func TransformChartTimeCumulative(cumulativeMonthlyDuration map[int]map[time.Month]time.Duration) viewmodel.TimeData {
+func TransformSingleDatasetToViewmodel(dataItems []domain.ChartDataItem) viewmodel.ChartData {
 	var labels []string
-	var values []float64
+	var data []float64
 
-	for _, year := range sortYearsDuration(cumulativeMonthlyDuration) {
-		yearMap := cumulativeMonthlyDuration[year]
-		for _, month := range sortMonthsDuration(yearMap) {
-			duration := yearMap[month]
-			labels = append(labels, generateDateLabel(year, month))
-			values = append(values, duration.Hours())
-		}
+	for _, item := range dataItems {
+		labels = append(labels, item.GetDate().Format("Jan 2006"))
+		data = append(data, item.GetValue())
 	}
 
-	dataset := viewmodel.TimeDataset{
-		Label: "Time",
-		Data:  values,
-		Color: "rgb(8,76,223)",
+	dataset := viewmodel.ChartDataset{
+		Data:  data,
+		Color: datasetColors[0],
 	}
 
-	return viewmodel.TimeData{
+	return viewmodel.ChartData{
 		Labels:   labels,
-		Datasets: []viewmodel.TimeDataset{dataset},
-	}
-}
-
-func TransformMonthlyCountToViewmodel(
-	monthlyCountByYear map[int]map[time.Month]int,
-) viewmodel.CountData {
-	var datasets []viewmodel.CountDataset
-	colorCounter := 0
-
-	for _, year := range getSortedYears(monthlyCountByYear) {
-		dataset := initCountDataset(year, colorCounter)
-		colorCounter++
-
-		for month := time.January; month <= time.December; month++ {
-			count := monthlyCountByYear[year][month]
-			dataset.Data[int(month)-1] = count
-		}
-
-		datasets = append(datasets, dataset)
-	}
-
-	return viewmodel.CountData{
-		Datasets: datasets,
-		Labels:   getSortedMonths(),
-	}
-}
-
-func TransformMonthlyTimeToViewmodel(
-	monthlyDurationByYear map[int]map[time.Month]time.Duration,
-) viewmodel.TimeData {
-	var datasets []viewmodel.TimeDataset
-	colorCounter := 0
-
-	for _, year := range getSortedYears2(monthlyDurationByYear) {
-		dataset := initTimeDataset(year, colorCounter)
-		colorCounter++
-
-		for month := time.January; month <= time.December; month++ {
-			duration := monthlyDurationByYear[year][month]
-			dataset.Data[int(month)-1] = duration.Hours()
-		}
-
-		datasets = append(datasets, dataset)
-	}
-
-	return viewmodel.TimeData{
-		Datasets: datasets,
-		Labels:   getSortedMonths(),
+		Datasets: []viewmodel.ChartDataset{dataset},
 	}
 }
 
@@ -127,87 +93,4 @@ var datasetColors = []string{
 	"rgb(128, 223, 128)",
 	"rgb(223, 128, 128)",
 	"rgb(128, 128, 223)",
-}
-
-func getSortedMonths() []string {
-	months := make([]string, 0, 12)
-	for month := time.January; month <= time.December; month++ {
-		months = append(months, month.String())
-	}
-	return months
-}
-
-func sortYearsInt(yearMap map[int]map[time.Month]int) []int {
-	years := make([]int, 0, len(yearMap))
-	for year := range yearMap {
-		years = append(years, year)
-	}
-	sort.Ints(years)
-	return years
-}
-
-func sortYearsDuration(yearMap map[int]map[time.Month]time.Duration) []int {
-	years := make([]int, 0, len(yearMap))
-	for year := range yearMap {
-		years = append(years, year)
-	}
-	sort.Ints(years)
-	return years
-}
-
-func sortMonthsInt(monthMap map[time.Month]int) []time.Month {
-	months := make([]time.Month, 0, len(monthMap))
-	for month := range monthMap {
-		months = append(months, month)
-	}
-	sort.Slice(months, func(i, j int) bool { return months[i] < months[j] })
-	return months
-}
-
-func sortMonthsDuration(monthMap map[time.Month]time.Duration) []time.Month {
-	months := make([]time.Month, 0, len(monthMap))
-	for month := range monthMap {
-		months = append(months, month)
-	}
-	sort.Slice(months, func(i, j int) bool { return months[i] < months[j] })
-	return months
-}
-
-func generateDateLabel(year int, month time.Month) string {
-	date := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
-	return date.Format("01/06")
-}
-
-func getSortedYears(yearMap map[int]map[time.Month]int) []int {
-	years := make([]int, 0, len(yearMap))
-	for year := range yearMap {
-		years = append(years, year)
-	}
-	sort.Sort(sort.Reverse(sort.IntSlice(years)))
-	return years
-}
-
-func getSortedYears2(yearMap map[int]map[time.Month]time.Duration) []int {
-	years := make([]int, 0, len(yearMap))
-	for year := range yearMap {
-		years = append(years, year)
-	}
-	sort.Sort(sort.Reverse(sort.IntSlice(years)))
-	return years
-}
-
-func initTimeDataset(year, colorCounter int) viewmodel.TimeDataset {
-	return viewmodel.TimeDataset{
-		Label: strconv.Itoa(year),
-		Color: datasetColors[colorCounter%len(datasetColors)],
-		Data:  make([]float64, 12),
-	}
-}
-
-func initCountDataset(year, colorCounter int) viewmodel.CountDataset {
-	return viewmodel.CountDataset{
-		Label: strconv.Itoa(year),
-		Color: datasetColors[colorCounter%len(datasetColors)],
-		Data:  make([]int, 12),
-	}
 }

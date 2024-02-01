@@ -2,7 +2,7 @@ package chart
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-script setupLineCount(data viewmodel.CountData, id string) {
+script setupLineCount(data viewmodel.ChartData, id string) {
 	const ctx = document.getElementById(id).getContext('2d');
 
     const scalesConfig = {
@@ -36,12 +36,14 @@ script setupLineCount(data viewmodel.CountData, id string) {
     const chartData = {
         labels: data.Labels,
         datasets: data.Datasets.map((ds, index) => ({
-            label: ds.Label,
+            label:ds.Label,
             data: ds.Data,
             backgroundColor: ds.Color,
             borderColor: ds.Color,
             borderWidth: 1,
-            cubicInterpolationMode: 'default',
+            borderRadius: 0,
+            hidden: index > 1,
+            barThickness: 12,
         }))
     };
 
@@ -53,7 +55,7 @@ script setupLineCount(data viewmodel.CountData, id string) {
 
 }
 
-templ LineCount(data viewmodel.CountData, id string) {
+templ LineCount(data viewmodel.ChartData, id string) {
 	<div class="h-full w-full">
 		<canvas id={ id }></canvas>
 		@setupLineCount(data, id)

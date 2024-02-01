@@ -104,7 +104,7 @@ func (r FlightRepository) GetFlights(
 		Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).
 		Where(flight.DateGTE(startDate), flight.DateLTE(endDate)).
 		WithPilot().
-		Order(ent.Desc(flight.FieldDate)).
+		Order(ent.Asc(flight.FieldDate)).
 		All(ctx)
 	if err != nil {
 		util.Error().Err(err).Str("user", user.Email).Msg("Failed to get flights")

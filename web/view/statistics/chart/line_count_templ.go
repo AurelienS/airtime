@@ -12,10 +12,10 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-func setupLineCount(data viewmodel.CountData, id string) templ.ComponentScript {
+func setupLineCount(data viewmodel.ChartData, id string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setupLineCount_a131`,
-		Function: `function __templ_setupLineCount_a131(data, id){const ctx = document.getElementById(id).getContext('2d');
+		Name: `__templ_setupLineCount_497d`,
+		Function: `function __templ_setupLineCount_497d(data, id){const ctx = document.getElementById(id).getContext('2d');
 
     const scalesConfig = {
         y: {
@@ -48,12 +48,14 @@ func setupLineCount(data viewmodel.CountData, id string) templ.ComponentScript {
     const chartData = {
         labels: data.Labels,
         datasets: data.Datasets.map((ds, index) => ({
-            label: ds.Label,
+            label:ds.Label,
             data: ds.Data,
             backgroundColor: ds.Color,
             borderColor: ds.Color,
             borderWidth: 1,
-            cubicInterpolationMode: 'default',
+            borderRadius: 0,
+            hidden: index > 1,
+            barThickness: 12,
         }))
     };
 
@@ -62,12 +64,12 @@ func setupLineCount(data viewmodel.CountData, id string) templ.ComponentScript {
         data: chartData,
         options: chartOptions
     });}`,
-		Call:       templ.SafeScript(`__templ_setupLineCount_a131`, data, id),
-		CallInline: templ.SafeScriptInline(`__templ_setupLineCount_a131`, data, id),
+		Call:       templ.SafeScript(`__templ_setupLineCount_497d`, data, id),
+		CallInline: templ.SafeScriptInline(`__templ_setupLineCount_497d`, data, id),
 	}
 }
 
-func LineCount(data viewmodel.CountData, id string) templ.Component {
+func LineCount(data viewmodel.ChartData, id string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {

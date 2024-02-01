@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"sort"
 	"time"
 
 	"github.com/AurelienS/cigare/internal/domain"
@@ -24,55 +23,25 @@ func NewStatisticService(
 	}
 }
 
-type StatisticType int
+func AddEveryDateInBetween(start, end time.Time) *domain.Statistics {
+	stats := &domain.Statistics{}
 
-const (
-	MonthlyCount StatisticType = iota
-	MonthlyDuration
-	YearlyCount
-	YearlyDuration
-	CumulativeMonthlyCount
-	CumulativeMonthlyDuration
-)
-
-type Statistics struct {
-	MonthlyCount              map[int]map[time.Month]int
-	MonthlyDuration           map[int]map[time.Month]time.Duration
-	CumulativeMonthlyCount    map[int]map[time.Month]int
-	CumulativeMonthlyDuration map[int]map[time.Month]time.Duration
-	YearlyCount               map[int]int
-	YearlyDuration            map[int]time.Duration
-}
-
-func initializeYearMonthStats(start, end time.Time) *Statistics {
-	stats := &Statistics{
-		MonthlyCount:              make(map[int]map[time.Month]int),
-		MonthlyDuration:           make(map[int]map[time.Month]time.Duration),
-		CumulativeMonthlyCount:    make(map[int]map[time.Month]int),
-		CumulativeMonthlyDuration: make(map[int]map[time.Month]time.Duration),
-		YearlyCount:               make(map[int]int),
-		YearlyDuration:            make(map[int]time.Duration),
+	// Iterate over years from start year to end year
+	for year := start.Year(); year <= end.Year(); year++ {
+		stats.YearlyCount = append(
+			stats.YearlyCount,
+			domain.DateCount{Date: time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC), Count: 0},
+		)
+		stats.YearlyDuration = append(
+			stats.YearlyDuration,
+			domain.DateDuration{Date: time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC), Duration: 0},
+		)
 	}
 
-	for y := start.Year(); y <= end.Year(); y++ {
-		stats.MonthlyCount[y] = make(map[time.Month]int)
-		stats.MonthlyDuration[y] = make(map[time.Month]time.Duration)
-		stats.CumulativeMonthlyCount[y] = make(map[time.Month]int)
-		stats.CumulativeMonthlyDuration[y] = make(map[time.Month]time.Duration)
-		for m := time.January; m <= time.December; m++ {
-			if y == start.Year() && m < start.Month() {
-				continue
-			}
-			if y == end.Year() && m > end.Month() {
-				break
-			}
-			stats.MonthlyCount[y][m] = 0
-			stats.MonthlyDuration[y][m] = 0
-			stats.CumulativeMonthlyCount[y][m] = 0
-			stats.CumulativeMonthlyDuration[y][m] = 0
-		}
-		stats.YearlyCount[y] = 0
-		stats.YearlyDuration[y] = 0
+	// Iterate over each month from start to end
+	for date := time.Date(start.Year(), start.Month(), 1, 0, 0, 0, 0, time.UTC); !date.After(end); date = date.AddDate(0, 1, 0) {
+		stats.MonthlyCount = append(stats.MonthlyCount, domain.DateCount{Date: date, Count: 0})
+		stats.MonthlyDuration = append(stats.MonthlyDuration, domain.DateDuration{Date: date, Duration: 0})
 	}
 
 	return stats
@@ -81,55 +50,51 @@ func initializeYearMonthStats(start, end time.Time) *Statistics {
 func (s StatisticService) ComputeStatistics(
 	ctx context.Context,
 	user domain.User,
-	statTypes []StatisticType,
-) (*Statistics, error) {
+) (*domain.Statistics, error) {
 	flights, err := s.flightService.GetFlights(ctx, time.Time{}, time.Now(), user)
 	if err != nil {
 		return nil, err
 	}
-
-	sort.Slice(flights, func(i, j int) bool {
-		return flights[i].Date.Before(flights[j].Date)
-	})
 
 	var firstDate, lastDate time.Time
 	if len(flights) > 0 {
 		firstDate = flights[0].Date
 		lastDate = flights[len(flights)-1].Date
 	} else {
-		// Use the current year if there are no flights
 		currentYear := time.Now().Year()
 		firstDate = time.Date(currentYear, time.January, 1, 0, 0, 0, 0, time.UTC)
 		lastDate = time.Date(currentYear, time.December, 31, 0, 0, 0, 0, time.UTC)
 	}
 
-	stats := initializeYearMonthStats(firstDate, lastDate)
+	stats := AddEveryDateInBetween(firstDate, lastDate)
 
+	flightIndex := 0
 	cumulativeCount := 0
 	cumulativeDuration := time.Duration(0)
 
-	for _, flight := range flights {
-		year, month, _ := flight.Date.Date()
+	for i := range stats.MonthlyCount {
+		for flightIndex < len(flights) && flights[flightIndex].Date.Before(stats.MonthlyCount[i].Date.AddDate(0, 1, 0)) {
+			flight := flights[flightIndex]
+			stats.MonthlyCount[i].Count++
+			stats.MonthlyDuration[i].Duration += flight.Duration
+			cumulativeCount++
+			cumulativeDuration += flight.Duration
 
-		// Update normal statistics
-		stats.MonthlyCount[year][month]++
-		stats.MonthlyDuration[year][month] += flight.Duration
-		stats.YearlyCount[year]++
-		stats.YearlyDuration[year] += flight.Duration
+			yearIndex := flight.Date.Year() - firstDate.Year()
+			stats.YearlyCount[yearIndex].Count++
+			stats.YearlyDuration[yearIndex].Duration += flight.Duration
 
-		// Update cumulative statistics
-		cumulativeCount++
-		cumulativeDuration += flight.Duration
-		for yr := year; yr <= lastDate.Year(); yr++ {
-			startMonth := time.January
-			if yr == year {
-				startMonth = month
-			}
-			for mth := startMonth; mth <= time.December; mth++ {
-				stats.CumulativeMonthlyCount[yr][mth] = cumulativeCount
-				stats.CumulativeMonthlyDuration[yr][mth] = cumulativeDuration
-			}
+			flightIndex++
 		}
+
+		stats.CumulativeMonthlyCount = append(
+			stats.CumulativeMonthlyCount,
+			domain.DateCount{Date: stats.MonthlyCount[i].Date, Count: cumulativeCount},
+		)
+		stats.CumulativeMonthlyDuration = append(
+			stats.CumulativeMonthlyDuration,
+			domain.DateDuration{Date: stats.MonthlyDuration[i].Date, Duration: cumulativeDuration},
+		)
 	}
 
 	return stats, nil

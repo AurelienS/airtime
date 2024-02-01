@@ -1,0 +1,17 @@
+package statistics
+
+import "github.com/AurelienS/cigare/web/viewmodel"
+import "github.com/AurelienS/cigare/web/view/statistics/chart"
+import "github.com/AurelienS/cigare/web/view/component"
+
+templ CountByYear(data viewmodel.ChartData) {
+	<div id="chart_count">
+		<div class="flex justify-between">
+			<h2 class="text-2xl">Nombre de vol</h2>
+			@chart.Scale("byYear", "statistics/count", "#chart_count")
+		</div>
+		@component.Card() {
+			@chart.BarCount(data, "chart_count_canvas", true)
+		}
+	</div>
+}

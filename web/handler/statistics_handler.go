@@ -1,11 +1,11 @@
 package handler
 
 import (
+	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/transformer"
 	"github.com/AurelienS/cigare/web/view/statistics"
-	"github.com/AurelienS/cigare/web/view/statistics/chart"
 	"github.com/labstack/echo/v4"
 )
 
@@ -23,67 +23,98 @@ func (h *StatisticsHandler) GetIndex(c echo.Context) error {
 	return Render(c, statistics.Index(transformer.TransformUserToViewModel(user)))
 }
 
-func (h *StatisticsHandler) GetCountDistinct(c echo.Context) error {
+func (h *StatisticsHandler) GetCountByMonth(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	monthlyCountByYear, err := h.statisticService.ComputeStatistics(
+	stats, err := h.statisticService.ComputeStatistics(
 		c.Request().Context(),
 		user,
-		[]service.StatisticType{service.MonthlyCount},
 	)
 	if err != nil {
 		return err
 	}
 
-	view := transformer.TransformMonthlyCountToViewmodel(monthlyCountByYear.MonthlyCount)
+	chartItems := domain.ConvertDateCountToChartDataItem(stats.MonthlyCount)
+	view := transformer.TransformMultiDatasetsToViewmodel(chartItems)
 
-	return Render(c, chart.CountDistinct(view))
+	return Render(c, statistics.CountByMonth(view))
 }
 
-func (h *StatisticsHandler) GetCountCumul(c echo.Context) error {
+func (h *StatisticsHandler) GetCountByYear(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-
-	cumulativeMonthlyCount, err := h.statisticService.ComputeStatistics(
+	stats, err := h.statisticService.ComputeStatistics(
 		c.Request().Context(),
 		user,
-		[]service.StatisticType{service.CumulativeMonthlyCount},
 	)
 	if err != nil {
 		return err
 	}
 
-	chartData := transformer.TransformCumulativeCount(cumulativeMonthlyCount.CumulativeMonthlyCount)
-	return Render(c, chart.CountCumul(chartData))
+	chartItems := domain.ConvertDateCountToChartDataItem(stats.YearlyCount)
+	view := transformer.TransformSingleDatasetToViewmodel(chartItems)
+
+	return Render(c, statistics.CountByYear(view))
 }
 
-func (h *StatisticsHandler) GetTimeDistinct(c echo.Context) error {
+func (h *StatisticsHandler) GetCountCumulative(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	monthlyDurationByYear, err := h.statisticService.ComputeStatistics(
+	stats, err := h.statisticService.ComputeStatistics(
 		c.Request().Context(),
 		user,
-		[]service.StatisticType{
-			service.MonthlyDuration,
-		},
 	)
 	if err != nil {
 		return err
 	}
 
-	view := transformer.TransformMonthlyTimeToViewmodel(monthlyDurationByYear.MonthlyDuration)
-	return Render(c, chart.TimeDistinct(view))
+	chartItems := domain.ConvertDateCountToChartDataItem(stats.CumulativeMonthlyCount)
+	view := transformer.TransformSingleDatasetToViewmodel(chartItems)
+
+	return Render(c, statistics.CountCumul(view))
 }
 
-func (h *StatisticsHandler) GetTimeCumul(c echo.Context) error {
+func (h *StatisticsHandler) GetDurationByMonth(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-
-	cumulativeMonthlyDuration, err := h.statisticService.ComputeStatistics(
+	stats, err := h.statisticService.ComputeStatistics(
 		c.Request().Context(),
 		user,
-		[]service.StatisticType{service.CumulativeMonthlyDuration},
 	)
 	if err != nil {
 		return err
 	}
 
-	chartData := transformer.TransformChartTimeCumulative(cumulativeMonthlyDuration.CumulativeMonthlyDuration)
-	return Render(c, chart.TimeCumul(chartData))
+	chartItems := domain.ConvertDateDurationToChartDataItem(stats.MonthlyDuration)
+	view := transformer.TransformMultiDatasetsToViewmodel(chartItems)
+
+	return Render(c, statistics.DurationByMonth(view))
+}
+
+func (h *StatisticsHandler) GetDurationByYear(c echo.Context) error {
+	user := session.GetUserFromContext(c)
+	stats, err := h.statisticService.ComputeStatistics(
+		c.Request().Context(),
+		user,
+	)
+	if err != nil {
+		return err
+	}
+
+	chartItems := domain.ConvertDateDurationToChartDataItem(stats.YearlyDuration)
+	view := transformer.TransformSingleDatasetToViewmodel(chartItems)
+
+	return Render(c, statistics.DurationByYear(view))
+}
+
+func (h *StatisticsHandler) GetDurationCumulative(c echo.Context) error {
+	user := session.GetUserFromContext(c)
+	stats, err := h.statisticService.ComputeStatistics(
+		c.Request().Context(),
+		user,
+	)
+	if err != nil {
+		return err
+	}
+
+	chartItems := domain.ConvertDateDurationToChartDataItem(stats.CumulativeMonthlyDuration)
+	view := transformer.TransformSingleDatasetToViewmodel(chartItems)
+
+	return Render(c, statistics.DurationCumul(view))
 }
