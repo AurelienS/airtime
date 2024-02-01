@@ -23,28 +23,6 @@ func NewStatisticService(
 	}
 }
 
-func AddEveryDateInBetween(start, end time.Time) *domain.Statistics {
-	stats := &domain.Statistics{}
-
-	for year := start.Year(); year <= end.Year(); year++ {
-		stats.YearlyCount = append(
-			stats.YearlyCount,
-			domain.DateCount{Date: time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC), Count: 0},
-		)
-		stats.YearlyDuration = append(
-			stats.YearlyDuration,
-			domain.DateDuration{Date: time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC), Duration: 0},
-		)
-	}
-
-	for date := time.Date(start.Year(), start.Month(), 1, 0, 0, 0, 0, time.UTC); !date.After(end); date = date.AddDate(0, 1, 0) {
-		stats.MonthlyCount = append(stats.MonthlyCount, domain.DateCount{Date: date, Count: 0})
-		stats.MonthlyDuration = append(stats.MonthlyDuration, domain.DateDuration{Date: date, Duration: 0})
-	}
-
-	return stats
-}
-
 func (s StatisticService) ComputeStatistics(
 	ctx context.Context,
 	user domain.User,
@@ -64,7 +42,7 @@ func (s StatisticService) ComputeStatistics(
 		lastDate = time.Date(currentYear, time.December, 31, 0, 0, 0, 0, time.UTC)
 	}
 
-	stats := AddEveryDateInBetween(firstDate, lastDate)
+	stats := addEveryDateInBetween(firstDate, lastDate)
 
 	flightIndex := 0
 	cumulativeCount := 0
@@ -98,14 +76,32 @@ func (s StatisticService) ComputeStatistics(
 	return stats, nil
 }
 
+func addEveryDateInBetween(start, end time.Time) *domain.Statistics {
+	stats := &domain.Statistics{}
+
+	for year := start.Year(); year <= end.Year(); year++ {
+		stats.YearlyCount = append(
+			stats.YearlyCount,
+			domain.DateCount{Date: time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC), Count: 0},
+		)
+		stats.YearlyDuration = append(
+			stats.YearlyDuration,
+			domain.DateDuration{Date: time.Date(year, 1, 1, 0, 0, 0, 0, time.UTC), Duration: 0},
+		)
+	}
+
+	startDate := time.Date(start.Year(), start.Month(), 1, 0, 0, 0, 0, time.UTC)
+	for date := startDate; !date.After(end); date = date.AddDate(0, 1, 0) {
+		stats.MonthlyCount = append(stats.MonthlyCount, domain.DateCount{Date: date, Count: 0})
+		stats.MonthlyDuration = append(stats.MonthlyDuration, domain.DateDuration{Date: date, Duration: 0})
+	}
+
+	return stats
+}
+
 func (s StatisticService) GetFlyingYears(ctx context.Context, user domain.User) ([]int, error) {
 	return s.flightRepo.GetFlyingYears(ctx, user)
 }
-
-type (
-	Year           = int
-	StatsYearMonth = map[Year]map[time.Month]domain.MultipleFlightStats
-)
 
 func (s StatisticService) GetFlightStats(
 	ctx context.Context,
