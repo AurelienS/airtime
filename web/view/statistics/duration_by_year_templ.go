@@ -54,7 +54,7 @@ func DurationByYear(data viewmodel.ChartData) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = chart.BarDuration(data, "chart_duration_canvas", true).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = chart.Bar(data, "chart_duration_canvas", true, "heures").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

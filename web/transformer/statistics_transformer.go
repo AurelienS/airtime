@@ -10,31 +10,28 @@ import (
 )
 
 func TransformMultiDatasetsToViewmodel(dataItems []domain.ChartDataItem) viewmodel.ChartData {
-	yearlyData := make(map[int][]float64)
+	yearlyData := make(map[int][]string)
 
 	for _, item := range dataItems {
 		year, month, _ := item.GetDate().Date()
 		if _, exists := yearlyData[year]; !exists {
-			yearlyData[year] = make([]float64, 12)
+			yearlyData[year] = make([]string, 12)
 		}
 		yearlyData[year][month-1] = item.GetValue()
 	}
 
-	// Sort years
 	var years []int
 	for year := range yearlyData {
 		years = append(years, year)
 	}
 	sort.Slice(years, func(i, j int) bool { return years[i] > years[j] })
 
-	// Generate labels for months
 	labels := make([]string, 0, 12)
 	for i := 1; i <= 12; i++ {
 		month := time.Month(i)
-		labels = append(labels, month.String())
+		labels = append(labels, frenchMonthName(month))
 	}
 
-	// Create datasets based on sorted years
 	datasets := make([]viewmodel.ChartDataset, 0, len(yearlyData))
 	colorIndex := 0
 	for _, year := range years {
@@ -54,7 +51,7 @@ func TransformMultiDatasetsToViewmodel(dataItems []domain.ChartDataItem) viewmod
 
 func TransformSingleDatasetToViewmodel(dataItems []domain.ChartDataItem) viewmodel.ChartData {
 	var labels []string
-	var data []float64
+	var data []string
 
 	for _, item := range dataItems {
 		labels = append(labels, item.GetDate().Format("Jan 2006"))
@@ -93,4 +90,23 @@ var datasetColors = []string{
 	"rgb(128, 223, 128)",
 	"rgb(223, 128, 128)",
 	"rgb(128, 128, 223)",
+}
+
+func frenchMonthName(month time.Month) string {
+	frenchMonths := map[time.Month]string{
+		time.January:   "Janvier",
+		time.February:  "Février",
+		time.March:     "Mars",
+		time.April:     "Avril",
+		time.May:       "Mai",
+		time.June:      "Juin",
+		time.July:      "Juillet",
+		time.August:    "Août",
+		time.September: "Septembre",
+		time.October:   "Octobre",
+		time.November:  "Novembre",
+		time.December:  "Décembre",
+	}
+
+	return frenchMonths[month]
 }

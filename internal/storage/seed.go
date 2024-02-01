@@ -8,12 +8,10 @@ import (
 	"time"
 )
 
-// random génère un nombre aléatoire entre min et max.
 func random(min, max int) int {
 	return rand.Intn(max-min+1) + min
 }
 
-// randomUniqueDays génère un ensemble unique de jours dans un mois.
 func randomUniqueDays(year, month, numDays int) []time.Time {
 	days := make(map[int]bool)
 	var dates []time.Time

@@ -11,7 +11,7 @@ templ CountByYear(data viewmodel.ChartData) {
 			@chart.Scale("byYear", "statistics/count", "#chart_count")
 		</div>
 		@component.Card() {
-			@chart.BarCount(data, "chart_count_canvas", true)
+			@chart.Bar(data, "chart_count_canvas", true, "nombre")
 		}
 	</div>
 }

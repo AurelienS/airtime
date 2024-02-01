@@ -26,7 +26,6 @@ func NewStatisticService(
 func AddEveryDateInBetween(start, end time.Time) *domain.Statistics {
 	stats := &domain.Statistics{}
 
-	// Iterate over years from start year to end year
 	for year := start.Year(); year <= end.Year(); year++ {
 		stats.YearlyCount = append(
 			stats.YearlyCount,
@@ -38,7 +37,6 @@ func AddEveryDateInBetween(start, end time.Time) *domain.Statistics {
 		)
 	}
 
-	// Iterate over each month from start to end
 	for date := time.Date(start.Year(), start.Month(), 1, 0, 0, 0, 0, time.UTC); !date.After(end); date = date.AddDate(0, 1, 0) {
 		stats.MonthlyCount = append(stats.MonthlyCount, domain.DateCount{Date: date, Count: 0})
 		stats.MonthlyDuration = append(stats.MonthlyDuration, domain.DateDuration{Date: date, Duration: 0})

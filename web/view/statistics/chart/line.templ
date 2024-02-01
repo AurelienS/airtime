@@ -2,12 +2,16 @@ package chart
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-script setupLineCount(data viewmodel.ChartData, id string) {
+script setupLine(data viewmodel.ChartData, id string, unit string) {
 	const ctx = document.getElementById(id).getContext('2d');
 
     const scalesConfig = {
         y: {
-            grid: { display: false }
+            grid: { display: false },
+            title: {
+                display: true,
+                text: unit,
+            },
         },
         x: {
             grid: { display: false }
@@ -55,9 +59,9 @@ script setupLineCount(data viewmodel.ChartData, id string) {
 
 }
 
-templ LineCount(data viewmodel.ChartData, id string) {
+templ Line(data viewmodel.ChartData, id string, unit string) {
 	<div class="h-full w-full">
 		<canvas id={ id }></canvas>
-		@setupLineCount(data, id)
+		@setupLine(data, id, unit)
 	</div>
 }

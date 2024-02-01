@@ -2,7 +2,7 @@ package viewmodel
 
 type ChartDataset struct {
 	Label string
-	Data  []float64
+	Data  []string
 	Color string
 }
 

@@ -12,17 +12,17 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-func setupLineDuration(data viewmodel.ChartData, id string) templ.ComponentScript {
+func setupLine(data viewmodel.ChartData, id string, unit string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setupLineDuration_7499`,
-		Function: `function __templ_setupLineDuration_7499(data, id){const ctx = document.getElementById(id).getContext('2d');
+		Name: `__templ_setupLine_3b10`,
+		Function: `function __templ_setupLine_3b10(data, id, unit){const ctx = document.getElementById(id).getContext('2d');
 
     const scalesConfig = {
         y: {
             grid: { display: false },
             title: {
                 display: true,
-                text: 'heures'
+                text: unit,
             },
         },
         x: {
@@ -52,12 +52,14 @@ func setupLineDuration(data viewmodel.ChartData, id string) templ.ComponentScrip
     const chartData = {
         labels: data.Labels,
         datasets: data.Datasets.map((ds, index) => ({
-            label: ds.Label,
+            label:ds.Label,
             data: ds.Data,
             backgroundColor: ds.Color,
             borderColor: ds.Color,
             borderWidth: 1,
-            cubicInterpolationMode: 'default',
+            borderRadius: 0,
+            hidden: index > 1,
+            barThickness: 12,
         }))
     };
 
@@ -66,12 +68,12 @@ func setupLineDuration(data viewmodel.ChartData, id string) templ.ComponentScrip
         data: chartData,
         options: chartOptions
     });}`,
-		Call:       templ.SafeScript(`__templ_setupLineDuration_7499`, data, id),
-		CallInline: templ.SafeScriptInline(`__templ_setupLineDuration_7499`, data, id),
+		Call:       templ.SafeScript(`__templ_setupLine_3b10`, data, id, unit),
+		CallInline: templ.SafeScriptInline(`__templ_setupLine_3b10`, data, id, unit),
 	}
 }
 
-func LineDuration(data viewmodel.ChartData, id string) templ.Component {
+func Line(data viewmodel.ChartData, id string, unit string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -96,7 +98,7 @@ func LineDuration(data viewmodel.ChartData, id string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = setupLineDuration(data, id).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = setupLine(data, id, unit).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

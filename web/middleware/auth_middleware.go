@@ -17,11 +17,9 @@ func AuthMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 			util.Warn().Msg("user not logged in. Will be redirected soonA")
 
 			if c.Request().Header.Get("HX-Request") != "" {
-				// Instruct HTMX to redirect the full page
 				c.Response().Header().Set("HX-Redirect", "/login")
 				return nil
 			}
-			// Standard full-page redirect
 			return c.Redirect(http.StatusFound, "/login")
 		}
 

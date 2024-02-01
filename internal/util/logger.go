@@ -27,7 +27,6 @@ func SetupLogger() {
 		},
 	)
 
-	// Return the configured global logger
 	logger = zerolog.New(multi).With().Timestamp().Logger()
 }
 

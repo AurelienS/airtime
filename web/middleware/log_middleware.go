@@ -22,7 +22,7 @@ func LoggerMiddleware() echo.MiddlewareFunc {
 				Str("path", c.Request().URL.Path).
 				Msgf("Request %s", requestID)
 
-			err := next(c) // Call the next handler.
+			err := next(c)
 
 			var logLevel *zerolog.Event
 			if err != nil {
@@ -38,7 +38,7 @@ func LoggerMiddleware() echo.MiddlewareFunc {
 				Dur("latency", time.Since(start)).
 				Msgf("Response %s", requestID)
 
-			return err // Return any errors from the handler.
+			return err
 		}
 	}
 }

@@ -32,7 +32,6 @@ func Open() *ent.Client {
 		log.Fatal(err)
 	}
 
-	// Create an ent.Driver from `db`.
 	drv := entsql.OpenDB(dialect.Postgres, db)
 	return ent.NewClient(ent.Driver(drv))
 }

@@ -11,7 +11,7 @@ templ DurationByMonth(data viewmodel.ChartData) {
 			@chart.Scale("byMonth","statistics/duration", "#chart_duration")
 		</div>
 		@component.Card() {
-			@chart.BarDuration(data, "chart_duration_canvas",false)
+			@chart.Bar(data, "chart_duration_canvas",false, "heures")
 		}
 	</div>
 }

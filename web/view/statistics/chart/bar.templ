@@ -2,7 +2,7 @@ package chart
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-script setupBarCount(data viewmodel.ChartData, id string, yearDateOnly bool) {
+script setupBar(data viewmodel.ChartData, id string, yearDateOnly bool, unit string) {
 	const ctx = document.getElementById(id).getContext('2d');
 
     const scaleConfig = {
@@ -11,7 +11,7 @@ script setupBarCount(data viewmodel.ChartData, id string, yearDateOnly bool) {
             grid: { display: false },
             title: {
                 display: true,
-                text: 'Heures',
+                text: unit,
             },
         },
         x: {
@@ -64,9 +64,9 @@ script setupBarCount(data viewmodel.ChartData, id string, yearDateOnly bool) {
 
 }
 
-templ BarCount(data viewmodel.ChartData, id string, yearDateOnly bool) {
+templ Bar(data viewmodel.ChartData, id string, yearDateOnly bool, unit string) {
 	<div class="h-full w-full">
 		<canvas id={ id }></canvas>
-		@setupBarCount(data, id, yearDateOnly)
+		@setupBar(data, id, yearDateOnly, unit)
 	</div>
 }

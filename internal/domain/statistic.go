@@ -1,6 +1,10 @@
 package domain
 
-import "time"
+import (
+	"fmt"
+	"strconv"
+	"time"
+)
 
 type DateCount struct {
 	Date  time.Time
@@ -11,8 +15,8 @@ func (dc DateCount) GetDate() time.Time {
 	return dc.Date
 }
 
-func (dc DateCount) GetValue() float64 {
-	return float64(dc.Count)
+func (dc DateCount) GetValue() string {
+	return strconv.Itoa(dc.Count)
 }
 
 type DateDuration struct {
@@ -24,8 +28,8 @@ func (dd DateDuration) GetDate() time.Time {
 	return dd.Date
 }
 
-func (dd DateDuration) GetValue() float64 {
-	return dd.Duration.Hours()
+func (dd DateDuration) GetValue() string {
+	return fmt.Sprintf("%d", int(dd.Duration.Hours()))
 }
 
 type Statistics struct {
@@ -39,7 +43,7 @@ type Statistics struct {
 
 type ChartDataItem interface {
 	GetDate() time.Time
-	GetValue() float64
+	GetValue() string
 }
 
 func ConvertDateCountToChartDataItem(dateCounts []DateCount) []ChartDataItem {

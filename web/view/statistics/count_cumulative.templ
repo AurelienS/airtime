@@ -11,7 +11,7 @@ templ CountCumul(data viewmodel.ChartData) {
 			@chart.Scale("cumul","statistics/count", "#chart_count")
 		</div>
 		@component.Card() {
-			@chart.LineCount(data, "chart_count_canvas")
+			@chart.Line(data, "chart_count_canvas", "nombre")
 		}
 	</div>
 }

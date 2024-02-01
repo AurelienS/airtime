@@ -12,41 +12,50 @@ import "bytes"
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-func setupLineCount(data viewmodel.ChartData, id string) templ.ComponentScript {
+func setupBar(data viewmodel.ChartData, id string, yearDateOnly bool, unit string) templ.ComponentScript {
 	return templ.ComponentScript{
-		Name: `__templ_setupLineCount_497d`,
-		Function: `function __templ_setupLineCount_497d(data, id){const ctx = document.getElementById(id).getContext('2d');
+		Name: `__templ_setupBar_d5d4`,
+		Function: `function __templ_setupBar_d5d4(data, id, yearDateOnly, unit){const ctx = document.getElementById(id).getContext('2d');
 
-    const scalesConfig = {
+    const scaleConfig = {
         y: {
-            grid: { display: false }
+            beginAtZero: true,
+            grid: { display: false },
+            title: {
+                display: true,
+                text: unit,
+            },
         },
         x: {
             grid: { display: false }
         }
+    }
+    const legendConfig = {
+        display: data.Datasets.length > 1,
+        position: 'left',
     };
 
-    const pluginsConfig = {
-        legend: { display: false },
-        tooltip: {
-            mode: 'index',
-            intersect: false,
-            callbacks: {}
-        }
+    const tooltipConfig = {
+        mode: 'index',
+        intersect: false,
+        callbacks: {}
     };
 
     const animationConfig = { duration: 1000 };
 
-    const chartOptions = {
+    const options = {
         responsive: true,
         maintainAspectRatio: false,
-        scales: scalesConfig,
-        plugins: pluginsConfig,
+        scales: scaleConfig,
+        plugins: {
+            legend: legendConfig,
+            tooltip: tooltipConfig
+        },
         animation: animationConfig
     };
 
     const chartData = {
-        labels: data.Labels,
+        labels: yearDateOnly ? data.Labels.map(l => l.slice(-4)) : data.Labels,
         datasets: data.Datasets.map((ds, index) => ({
             label:ds.Label,
             data: ds.Data,
@@ -60,16 +69,16 @@ func setupLineCount(data viewmodel.ChartData, id string) templ.ComponentScript {
     };
 
     new Chart(ctx, {
-        type: 'line',
+        type: 'bar',
         data: chartData,
-        options: chartOptions
+        options: options
     });}`,
-		Call:       templ.SafeScript(`__templ_setupLineCount_497d`, data, id),
-		CallInline: templ.SafeScriptInline(`__templ_setupLineCount_497d`, data, id),
+		Call:       templ.SafeScript(`__templ_setupBar_d5d4`, data, id, yearDateOnly, unit),
+		CallInline: templ.SafeScriptInline(`__templ_setupBar_d5d4`, data, id, yearDateOnly, unit),
 	}
 }
 
-func LineCount(data viewmodel.ChartData, id string) templ.Component {
+func Bar(data viewmodel.ChartData, id string, yearDateOnly bool, unit string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, templ_7745c5c3_W io.Writer) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templ_7745c5c3_W.(*bytes.Buffer)
 		if !templ_7745c5c3_IsBuffer {
@@ -94,7 +103,7 @@ func LineCount(data viewmodel.ChartData, id string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = setupLineCount(data, id).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = setupBar(data, id, yearDateOnly, unit).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -54,7 +54,7 @@ func CountByMonth(data viewmodel.ChartData) templ.Component {
 				templ_7745c5c3_Buffer = templ.GetBuffer()
 				defer templ.ReleaseBuffer(templ_7745c5c3_Buffer)
 			}
-			templ_7745c5c3_Err = chart.BarCount(data, "chart_count_canvas", false).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = chart.Bar(data, "chart_count_canvas", false, "nombre").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
