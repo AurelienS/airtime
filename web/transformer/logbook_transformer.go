@@ -28,8 +28,3 @@ func TransformLogbookToViewModel(
 		Flights:        flightViews,
 	}
 }
-
-type (
-	StatIntExtractor   func(stats domain.MultipleFlightStats) int
-	StatFloatExtractor func(stats domain.MultipleFlightStats) float64
-)

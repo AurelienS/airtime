@@ -1,9 +1,6 @@
 package handler
 
 import (
-	"time"
-
-	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/internal/service"
 	"github.com/AurelienS/cigare/web/session"
 	"github.com/AurelienS/cigare/web/transformer"
@@ -28,68 +25,65 @@ func (h *StatisticsHandler) GetIndex(c echo.Context) error {
 
 func (h *StatisticsHandler) GetCountDistinct(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	monthlyStatsByYear, err := h.statisticService.GetMonthlyStatisticsByYear(
+	monthlyCountByYear, err := h.statisticService.ComputeStatistics(
 		c.Request().Context(),
-		user)
+		user,
+		[]service.StatisticType{service.MonthlyCount},
+	)
 	if err != nil {
 		return err
 	}
 
-	flightCountExtractor := func(stats domain.MultipleFlightStats) int {
-		return len(stats.Flights)
-	}
+	view := transformer.TransformMonthlyCountToViewmodel(monthlyCountByYear.MonthlyCount)
 
-	view := transformer.TransformMonthlyCountToViewmodel(monthlyStatsByYear, flightCountExtractor)
 	return Render(c, chart.CountDistinct(view))
 }
 
 func (h *StatisticsHandler) GetCountCumul(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	start := time.Time{}
-	end := time.Now()
-	flightCounts, err := h.statisticService.GetCumulativeFlightCount(
+
+	cumulativeMonthlyCount, err := h.statisticService.ComputeStatistics(
 		c.Request().Context(),
 		user,
-		start,
-		end)
+		[]service.StatisticType{service.CumulativeMonthlyCount},
+	)
 	if err != nil {
 		return err
 	}
 
-	chartData := transformer.TransformChartCountCumulative(flightCounts)
+	chartData := transformer.TransformCumulativeCount(cumulativeMonthlyCount.CumulativeMonthlyCount)
 	return Render(c, chart.CountCumul(chartData))
 }
 
 func (h *StatisticsHandler) GetTimeDistinct(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	monthlyStatsByYear, err := h.statisticService.GetMonthlyStatisticsByYear(
+	monthlyDurationByYear, err := h.statisticService.ComputeStatistics(
 		c.Request().Context(),
-		user)
+		user,
+		[]service.StatisticType{
+			service.MonthlyDuration,
+		},
+	)
 	if err != nil {
 		return err
 	}
 
-	totalFlightTimeExtractor := func(stats domain.MultipleFlightStats) float64 {
-		return stats.DurationTotal.Hours()
-	}
-
-	view := transformer.TransformMonthlyTimeToViewmodel(monthlyStatsByYear, totalFlightTimeExtractor)
+	view := transformer.TransformMonthlyTimeToViewmodel(monthlyDurationByYear.MonthlyDuration)
 	return Render(c, chart.TimeDistinct(view))
 }
 
 func (h *StatisticsHandler) GetTimeCumul(c echo.Context) error {
 	user := session.GetUserFromContext(c)
-	start := time.Time{}
-	end := time.Now()
-	flightDurations, err := h.statisticService.GetCumulativeFlightDuration(
+
+	cumulativeMonthlyDuration, err := h.statisticService.ComputeStatistics(
 		c.Request().Context(),
 		user,
-		start,
-		end)
+		[]service.StatisticType{service.CumulativeMonthlyDuration},
+	)
 	if err != nil {
 		return err
 	}
 
-	chartData := transformer.TransformChartTimeCumulative(flightDurations)
+	chartData := transformer.TransformChartTimeCumulative(cumulativeMonthlyDuration.CumulativeMonthlyDuration)
 	return Render(c, chart.TimeCumul(chartData))
 }
