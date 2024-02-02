@@ -114,3 +114,18 @@ func (h *LogbookHandler) PostFlight(c echo.Context) error {
 	c.Response().Header().Set("HX-Redirect", "/")
 	return nil
 }
+
+func (h *LogbookHandler) DeleteFlight(c echo.Context) error {
+	user := session.GetUserFromContext(c)
+
+	id := c.Param("id")
+	flightID, err := strconv.Atoi(id)
+	if err != nil {
+		return err
+	}
+	err = h.flightService.RemoveFlight(c.Request().Context(), flightID, user)
+	if err != nil {
+		return err
+	}
+	return nil
+}

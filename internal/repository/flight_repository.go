@@ -114,6 +114,19 @@ func (r FlightRepository) GetFlights(
 	return converter.DBToDomainFlights(flightsDB), nil
 }
 
+func (r FlightRepository) RemoveFlight(
+	ctx context.Context,
+	flightID int,
+	user domain.User,
+) error {
+	err := r.client.Flight.DeleteOneID(flightID).Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r FlightRepository) GetLastFlights(ctx context.Context, count int, user domain.User) ([]domain.Flight, error) {
 	util.Info().Str("user", user.Email).Int("flight count", count).Msg("Getting lasts flight")
 	lastFlights, err := r.client.Flight.

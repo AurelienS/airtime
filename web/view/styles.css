@@ -35,6 +35,14 @@ body {
   color: #4b5361;
 }
 
+.hidden-delete {
+  display: none;
+}
+
+.hoverable:hover .hidden-delete {
+  display: flex;
+}
+
 a {
   @apply font-italic text-accent-80 hover:underline cursor-pointer;
 }

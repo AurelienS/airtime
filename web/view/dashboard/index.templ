@@ -43,7 +43,7 @@ templ Index(view viewmodel.DashboardView) {
 							<h1 class="text-2xl">Mes derniers vols</h1>
 							@component.UploadFlightForm("btn btn-sm btn-primary")
 						</div>
-						@component.FlightTable(view.LastFlights)
+						@component.FlightTable(view.LastFlights, false)
 						<div class="flex justify-end mt-2">
 							<a
 								hx-get="/logbook"

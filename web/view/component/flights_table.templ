@@ -2,7 +2,7 @@ package component
 
 import "github.com/AurelienS/cigare/web/viewmodel"
 
-templ FlightTable(flights []viewmodel.FlightView) {
+templ FlightTable(flights []viewmodel.FlightView, canDelete bool) {
 	<div id="flight_table" class="grid grid-cols-5 gap-2 mt-4">
 		<div class="font-text-bold">Date</div>
 		<div class="font-text-bold">Lieu</div>
@@ -11,7 +11,8 @@ templ FlightTable(flights []viewmodel.FlightView) {
 		<div class="font-text-bold">Altitude max</div>
 		for _, flight := range flights {
 			<div
-				class="col-span-5 grid grid-cols-5 hover:bg-accent-15 hover:text-accent cursor-pointer py-2"
+				id={ "flight_" + flight.ID }
+				class="col-span-5 grid grid-cols-5 gap-2 hover:bg-accent-15 hover:text-accent cursor-pointer py-2 hoverable"
 				hx-get={ flight.Link }
 				hx-target="#content"
 				hx-select="#content"
@@ -22,7 +23,24 @@ templ FlightTable(flights []viewmodel.FlightView) {
 				<div>{ flight.Location }</div>
 				<div>{ flight.Duration }</div>
 				<div>{ flight.Distance }</div>
-				<div>{ flight.AltitudeMax }</div>
+				<div class="flex justify-between">
+					<div>
+						{ flight.AltitudeMax }
+					</div>
+					if canDelete {
+						<div
+							class="hidden-delete w-1/3 flex justify-center hover:text-red-500"
+							hx-delete={ flight.Link }
+							hx-target={ "#flight_" + flight.ID }
+							hx-swap="outerHTML"
+							hx-push-url="false"
+							hx-confirm={ "Vous allez supprimer le vol du "+ flight.Fulldate }
+							onclick="event.stopPropagation()"
+						>
+							✖
+						</div>
+					}
+				</div>
 			</div>
 		}
 	</div>
