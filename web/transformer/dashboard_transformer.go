@@ -30,11 +30,6 @@ func TransformDashboardToViewModel(
 	sitesStats viewmodel.DashboardSitesStatsView,
 	user domain.User,
 ) viewmodel.DashboardView {
-	lastFlightsView := make([]viewmodel.FlightView, len(lastFlights))
-	for i, f := range lastFlights {
-		lastFlightsView[i] = TransformFlightToViewmodel(f)
-	}
-
 	currentYear, firstYear, lastYear := deriveYears(allTimeStats)
 
 	showAlltime := currentYear != firstYear
@@ -43,6 +38,10 @@ func TransformDashboardToViewModel(
 		allTimeTitle = fmt.Sprintf("%d", firstYear)
 	}
 
+	lastFlightsView := make([]viewmodel.FlightView, len(lastFlights))
+	for i, f := range lastFlights {
+		lastFlightsView[i] = TransformFlightToViewmodel(f)
+	}
 	return viewmodel.DashboardView{
 		LastFlights:     lastFlightsView,
 		SitesStats:      sitesStats,
