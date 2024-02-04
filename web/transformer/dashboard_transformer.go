@@ -72,14 +72,12 @@ func TransformFlightToViewmodel(flight domain.Flight) viewmodel.FlightView {
 func deriveYears(stats domain.MultipleFlightStats) (currentYear, firstYear, lastYear int) {
 	totalFlightCount := len(stats.Flights)
 	currentYear = time.Now().Year()
+	lastYear = currentYear
+	firstYear = currentYear
 
 	if totalFlightCount > 0 {
-		lastYear = stats.Flights[0].Date.Year()
-		firstYear = lastYear
-	}
-
-	if totalFlightCount > 1 {
-		firstYear = stats.Flights[totalFlightCount-1].Date.Year()
+		firstYear = stats.Flights[0].Date.Year()
+		lastYear = stats.Flights[totalFlightCount-1].Date.Year()
 	}
 
 	return currentYear, firstYear, lastYear
