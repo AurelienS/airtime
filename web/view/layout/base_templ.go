@@ -33,7 +33,7 @@ func Base(currentUser viewmodel.UserView, showNavigation bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<body class=\"bg-neutral text-offgray min-h-screen w-screen overflow-x-hidden\"><div class=\"flex flex-col h-screen w-screen  flex-none justify-between\"><div id=\"page\" class=\"flex flex-col max-w-screen-sm md:max-w-[1380px] min-h-screen mx-auto w-full px-8\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<body class=\"bg-neutral text-offgray min-h-screen w-screen overflow-x-hidden\"><div class=\"flex flex-col h-screen w-screen  flex-none justify-between\"><div id=\"page\" class=\"flex flex-col max-w-screen-sm min-h-screen md:max-w-[1380px]  mx-auto w-full\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -49,7 +49,15 @@ func Base(currentUser viewmodel.UserView, showNavigation bool) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div></div></body></html>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = Footer().Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</div></body></html>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

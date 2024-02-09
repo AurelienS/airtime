@@ -27,6 +27,10 @@ body {
   background-color: rgb(246 245 240);
 }
 
+.bg-footer {
+  background-color: rgba(8, 76, 223);
+}
+
 .bg-card {
   background-color: rgb(245, 238, 208);
 }

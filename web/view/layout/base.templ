@@ -8,12 +8,13 @@ templ Base(currentUser viewmodel.UserView, showNavigation bool ) {
 		@Head()
 		<body class="bg-neutral text-offgray min-h-screen w-screen overflow-x-hidden">
 			<div class="flex flex-col h-screen w-screen  flex-none justify-between">
-				<div id="page" class="flex flex-col max-w-screen-sm md:max-w-[1380px] min-h-screen mx-auto w-full px-8">
+				<div id="page" class="flex flex-col max-w-screen-sm min-h-screen md:max-w-[1380px]  mx-auto w-full">
 					@Navbar(currentUser, showNavigation)
 					<div id="content" class="mt-16 flex-grow">
 						{ children... }
 					</div>
 				</div>
+				@Footer()
 			</div>
 		</body>
 	</html>
