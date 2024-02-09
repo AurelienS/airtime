@@ -26,6 +26,7 @@ DB_PORT=postgres_port
 ```
 
 ### dev
-Mettre les mêmes varaible dans le fichier `dev.env`
-si vous utilisez le script `dev.sh`
+si vous utilisez le script `dev.sh` -> mettre les mêmes variables dans le fichier `dev.env`
+sinon les loader autrement
+
 
