@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"os"
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
@@ -11,20 +12,18 @@ import (
 	_ "github.com/jackc/pgx/v5/stdlib" // for postgres driver
 )
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "tennis"
-	dbname   = "cigare"
+var (
+	port     = os.Getenv("DB_PORT")
+	user     = os.Getenv("DB_USER")
+	password = os.Getenv("DB_PASSWORD")
+	dbname   = os.Getenv("DB_NAME")
 )
 
 func Open() *ent.Client {
-	databaseURL := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host,
-		port,
+	databaseURL := fmt.Sprintf("postgres://%s:%s@db:%s/%s",
 		user,
 		password,
+		port,
 		dbname,
 	)
 	db, err := sql.Open("pgx", databaseURL)

@@ -7,7 +7,7 @@ watch: templ build trigger-refresh
 dev:
 	./dev.sh
 
-build:
+build: templ css
 	@go build -o ./tmp/main ./cmd/server/main.go
 
 seed:
@@ -15,6 +15,9 @@ seed:
 
 templ:
 	@templ generate
+
+css:
+	@npx tailwindcss -i ./web/view/styles.css -o ./web/static/styles.css
 
 ent:
 	@go run -mod=mod entgo.io/ent/cmd/ent generate --feature sql/upsert ./internal/storage/ent/schema

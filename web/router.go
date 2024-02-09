@@ -39,7 +39,7 @@ func NewRouter(
 func (r *Router) Initialize(e *echo.Echo) {
 	e.Use(middleware.LoggerMiddleware())
 
-	e.Static("/static", "web/static/")
+	e.Static("/static", "app/static/")
 
 	e.GET("/login", r.authHandler.GetLogin)
 	e.GET("/dummy", r.indexHandler.Dummy)
