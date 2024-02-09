@@ -17,12 +17,14 @@ make gen
 dans le fichier `.env`
 
 ```
-clientId=google_oauth_client_id
-clientSecret=google_oauth_secret
-DB_USER=postgres_username
-DB_PASSWORD=postgres_password
-DB_NAME=postgres_dbname
-DB_PORT=postgres_port
+GOOGLE_CLIENT_ID=id
+GOOGLE_SECRET=secret
+GOOGLE_CALLBACK_URL=callback
+DB_USER=username
+DB_PASSWORD=password
+DB_NAME=dbname
+DB_PORT=port
+LOG_PATH=logpath
 ENV=production
 ```
 

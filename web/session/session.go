@@ -3,6 +3,7 @@ package session
 import (
 	"encoding/gob"
 	"errors"
+	"os"
 
 	"github.com/AurelienS/cigare/internal/domain"
 	"github.com/AurelienS/cigare/internal/util"
@@ -28,13 +29,14 @@ func NewStore(isProd bool) sessions.Store {
 }
 
 func ConfigureGoth(store sessions.Store) {
+	googleClientID := os.Getenv("GOOGLE_CLIENT_ID")
+	googleSecret := os.Getenv("GOOGLE_SECRET")
+	callbackURL := os.Getenv("GOOGLE_CALLBACK_URL")
+
 	goth.UseProviders(
-		google.New("267580147813-11e4e5d00rboa7udei9mbiu50hht2c7q.apps.googleusercontent.com",
-			"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",
-			"http://localhost:3000/auth/google/callback",
-			"email",
-			"profile"),
+		google.New(googleClientID, googleSecret, callbackURL, "email", "profile"),
 	)
+
 	gothic.Store = store
 }
 
