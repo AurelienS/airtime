@@ -1,4 +1,5 @@
 #!/bin/bash
+export $(cat dev.env | xargs)
 
 # Start a new tmux session
 tmux new-session -d -s cigareSession
