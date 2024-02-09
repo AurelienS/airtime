@@ -1,6 +1,8 @@
 package web
 
 import (
+	"os"
+
 	"github.com/AurelienS/cigare/web/handler"
 	"github.com/AurelienS/cigare/web/middleware"
 	"github.com/labstack/echo/v4"
@@ -39,7 +41,11 @@ func NewRouter(
 func (r *Router) Initialize(e *echo.Echo) {
 	e.Use(middleware.LoggerMiddleware())
 
-	e.Static("/static", "app/static/")
+	if os.Getenv("ENV") == "production" {
+		e.Static("/static", "app/static/")
+	} else {
+		e.Static("/static", "web/static/")
+	}
 
 	e.GET("/login", r.authHandler.GetLogin)
 	e.GET("/dummy", r.indexHandler.Dummy)
