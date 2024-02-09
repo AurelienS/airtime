@@ -4,4 +4,3 @@ build-errors.log
 logs/
 *.zip
 *.env
-.env
