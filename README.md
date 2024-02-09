@@ -23,10 +23,12 @@ DB_USER=postgres_username
 DB_PASSWORD=postgres_password
 DB_NAME=postgres_dbname
 DB_PORT=postgres_port
+ENV=production
 ```
 
 ### dev
-si vous utilisez le script `dev.sh` -> mettre les mêmes variables dans le fichier `dev.env`
+si vous utilisez le script `dev.sh` -> mettre les mêmes variables dans le fichier `dev.env` sauf :
+`ENV=dev`
 sinon les loader autrement
 
 
