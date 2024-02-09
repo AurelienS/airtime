@@ -50,7 +50,7 @@ func Footer() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h4><a class=\"text-sm mt-2 hover:text-gray-300 text-white\" href=\"https://github.com/zed-industries/zed\" target=\"_blank\" rel=\"noopener noreferrer\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h4><a class=\"text-sm mt-2 hover:text-gray-300 text-white\" href=\"https://github.com/AurelienS/airtime\" target=\"_blank\" rel=\"noopener noreferrer\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -68,21 +68,12 @@ func Footer() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h4><!--")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("</h4><a class=\"text-sm mt-2 hover:text-gray-300 text-white\" href=\"mailto:aurelien.sberro@gmail.com\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var7 := ` Assurez-vous de mettre à jour le lien href avec votre adresse e-mail réelle `
+		templ_7745c5c3_Var7 := `Mail`
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("--><a class=\"text-sm mt-2 hover:text-gray-300 text-white\" href=\"mailto:votre_email@exemple.com\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Var8 := `Mail`
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
