@@ -3,4 +3,4 @@ build-errors.log
 *.tif
 logs/
 *.zip
-.env
+*.env
