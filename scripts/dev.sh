@@ -1,5 +1,5 @@
 #!/bin/bash
-export $(cat dev.env | xargs)
+export $(cat configs/dev.env | xargs)
 
 tmux new-session -d -s cigareSession
 tmux bind-key -n C-x kill-session

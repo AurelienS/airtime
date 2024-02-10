@@ -9,9 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
-
     - name: Setup SSH connection
       uses: webfactory/ssh-agent@v0.5.3
       with:
@@ -23,6 +20,7 @@ jobs:
           cd /home/aurel/cigare
           git checkout main
           git pull
+          cd deployments
           docker compose down
           docker compose up --build -d
         EOF
