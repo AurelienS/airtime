@@ -30,8 +30,6 @@ jobs:
           exit 1
         fi
 
-        cd deployments
-
         if ! docker compose down; then
           echo "Échec de docker compose down"
           exit 1
