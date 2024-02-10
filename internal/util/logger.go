@@ -2,6 +2,7 @@ package util
 
 import (
 	"os"
+	"path"
 
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/pkgerrors"
@@ -16,10 +17,11 @@ func SetupLogger() {
 	zerolog.MessageFieldName = "message"
 	zerolog.ErrorStackMarshaler = pkgerrors.MarshalStack //nolint:reassign
 
+	logPath := os.Getenv("LOG_PATH")
 	multi := zerolog.MultiLevelWriter(
 		zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "15:04:05"},
 		&lumberjack.Logger{
-			Filename:   os.Getenv("LOG_PATH"),
+			Filename:   path.Join(logPath, "airtime.log"),
 			MaxSize:    1,    // Max size in MB before log is rotated
 			MaxBackups: 3,    // Max number of old log files to keep
 			MaxAge:     28,   // Max age in days to retain log files

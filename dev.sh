@@ -1,5 +1,4 @@
 #!/bin/bash
-export $(cat configs/dev.env | xargs)
 
 tmux new-session -d -s cigareSession
 tmux bind-key -n C-x kill-session
@@ -8,7 +7,7 @@ tmux split-window -h
 tmux select-pane -t 1
 tmux split-window -v
 
-tmux send-keys -t cigareSession:0.1 'air' C-m
+tmux send-keys -t cigareSession:0.1 'export $(cat dev.env | xargs) && air' C-m
 
 tmux send-keys -t cigareSession:0.2 'make browser-refresh' C-m
 
