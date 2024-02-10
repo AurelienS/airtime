@@ -21,6 +21,7 @@ jobs:
       run: |
         ssh -o StrictHostKeyChecking=no -p 2024 ${{ secrets.SSH_USER }}@${{ secrets.HOST }} << 'EOF'
           cd /home/aurel/cigare
+          git checkout main
           git pull
           docker compose down
           docker compose up --build -d
