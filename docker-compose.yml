@@ -1,4 +1,4 @@
-version: "3.8"
+version: '3.8'
 services:
   app:
     build:
@@ -10,11 +10,13 @@ services:
       - db
     volumes:
       - ./airtime/logs:/app/logs
+      - ./wait-for-postgres.sh:/usr/wait-for-postgres.sh
     env_file:
       - .env
     environment:
       DB_NAME: db
       DB_PORT: 5432
+    command: ["/bin/bash", "-c", "/usr/wait-for-postgres.sh db && /app/main"]
   db:
     image: postgres:16.1
     environment:
