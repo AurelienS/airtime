@@ -16,11 +16,39 @@ jobs:
 
     - name: Deploy to Server
       run: |
-        ssh -o StrictHostKeyChecking=no -p 2024 ${{ secrets.SSH_USER }}@${{ secrets.HOST }} << 'EOF'
-          cd /home/aurel/cigare
-          git checkout main
-          git pull
-          cd deployments
-          docker compose down
-          docker compose up --build -d
+        ssh -o StrictHostKeyChecking=no -p 2024 ${{ secrets.SSH_USER }}@${{ secrets.HOST }} bash -s << 'EOF'
+        set -e # Arrêter le script en cas d'erreur
+
+        cd /home/aurel/cigare
+        if ! git checkout main; then
+          echo "Échec du git checkout main"
+          exit 1
+        fi
+
+        if ! git pull; then
+          echo "Échec du git pull"
+          exit 1
+        fi
+
+        cd deployments
+
+        if ! docker compose down; then
+          echo "Échec de docker compose down"
+          exit 1
+        fi
+
+        if ! docker compose up --build -d; then
+          echo "Échec de docker compose up"
+          exit 1
+        fi
+
+        sleep 10 # Ajustez ce délai selon le temps de démarrage de vos conteneurs
+
+        UP_CONTAINERS=$(docker compose ps | grep "Up" | wc -l)
+        if [ "$UP_CONTAINERS" -ne 2 ]; then # Remplacez 2 par le nombre attendu de conteneurs "up"
+          echo "Erreur : le nombre attendu de conteneurs 'Up' n'a pas été atteint."
+          exit 1
+        fi
+
+        echo "Déploiement réussi."
         EOF
