@@ -9,7 +9,7 @@ services:
     depends_on:
       - db
     volumes:
-      - ${LOG_PATH}:${LOG_PATH}
+      - ${LOG_PATH}:/logs
     environment:
       DB_NAME: ${DB_NAME}
       DB_USER: ${DB_USER}
