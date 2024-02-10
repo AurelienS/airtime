@@ -41,8 +41,8 @@ func NewRouter(
 func (r *Router) Initialize(e *echo.Echo) {
 	e.Use(middleware.LoggerMiddleware())
 
-	if os.Getenv("ENV") == "prod" {
-		e.Static("/static", "app/static/")
+	if os.Getenv("ENV") == "docker" {
+		e.Static("/static", "/app/static/")
 	} else {
 		e.Static("/static", "web/static/")
 	}
