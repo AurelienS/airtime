@@ -6,9 +6,9 @@ templ Base(currentUser viewmodel.UserView, showNavigation bool ) {
 	<!DOCTYPE html>
 	<html lang="en" data-theme="mytheme">
 		@Head()
-		<body class="bg-neutral text-offgray min-h-screen w-screen overflow-x-hidden">
-			<div class="flex flex-col h-screen w-screen">
-				<div id="page" class="flex flex-col max-w-screen-sm md:max-w-[1380px] mx-auto w-full grow mb-4">
+		<body class="bg-neutral text-offgray min-h-screen w-max-screen overflow-x-hidden ">
+			<div class="flex flex-col h-screen w-full ">
+				<div id="page" class="flex flex-col grow max-w-screen-sm md:max-w-[1380px] mb-4 mx-2 md:mx-auto">
 					@Navbar(currentUser, showNavigation)
 					<div id="content" class="mt-16 flex-grow">
 						{ children... }

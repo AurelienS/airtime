@@ -9,8 +9,8 @@ templ Index(view viewmodel.DashboardView) {
 		if view.AllTimeStats.FlightCount == "0" {
 			@EmptyDashboard()
 		} else {
-			<div class="flex gap-14">
-				<div class="flex flex-col w-max h-max pr-6">
+			<div class="flex gap-14 flex-col md:flex-row">
+				<div class="flex flex-row-reverse justify-between md:justify-start md:flex-col w-screen md:w-max h-max pr-0 md:pr-6">
 					<div>
 						if view.CurrentYearStat.FlightCount == "0" {
 							<div>
@@ -24,10 +24,10 @@ templ Index(view viewmodel.DashboardView) {
 						}
 					</div>
 					if view.ShowAllTime {
-						<div class="my-8 mx-auto h-[1px] bg-accent-30 w-1/4"></div>
+						<div class="my-8 mx-auto hidden md:block h-[1px] bg-accent-30 w-1/4"></div>
 						@YearInfo(view.AllTimeTitle , view.AllTimeStats)
 					}
-					<div class="flex justify-end mt-4 ml-12">
+					<div class="hidden md:flex justify-end mt-4 ml-12">
 						<a
 							hx-get="/statistics"
 							hx-target="#content"

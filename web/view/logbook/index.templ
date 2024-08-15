@@ -33,7 +33,7 @@ templ Index(view viewmodel.LogbookView, user viewmodel.UserView) {
 				@component.Back()
 				@YearSelection(view.AvailableYears, view.CurrentYear)
 			</div>
-			<div class="px-16">
+			<div class="px-0 md:px-16">
 				@component.FlightTable(view.Flights, true)
 			</div>
 		</div>

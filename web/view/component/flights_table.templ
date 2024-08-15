@@ -19,7 +19,7 @@ templ FlightTable(flights []viewmodel.FlightView, canDelete bool) {
 				hx-swap="outerHTML"
 				hx-push-url="true"
 			>
-				<div>{ flight.Fulldate }</div>
+				<div class="break-words">{ flight.Fulldate }</div>
 				<div>{ flight.Location }</div>
 				<div>{ flight.Duration }</div>
 				<div>{ flight.Distance }</div>
@@ -34,7 +34,7 @@ templ FlightTable(flights []viewmodel.FlightView, canDelete bool) {
 							hx-target={ "#flight_" + flight.ID }
 							hx-swap="outerHTML"
 							hx-push-url="false"
-							hx-confirm={ "Vous allez supprimer le vol du "+ flight.Fulldate }
+							hx-confirm={ "Vous allez supprimer le vol du " + flight.Fulldate }
 							onclick="event.stopPropagation()"
 						>
 							✖

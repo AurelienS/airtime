@@ -3,52 +3,54 @@ package dashboard
 import "github.com/AurelienS/cigare/web/viewmodel"
 
 templ YearInfo(title string, stat viewmodel.DashboardStatsView ) {
-	<h2 class="text-2xl">{ title } </h2>
 	<div>
-		{ stat.FlightCount } vols - { stat.TotalDuration }
-	</div>
-	<div class="flex flex-col gap-y-2 mt-6">
-		<h3 class="text-lg">Records</h3>
+		<h2 class="text-2xl">{ title } </h2>
 		<div>
-			{ stat.DistanceMax } le
-			<a
-				class="text-offgray"
-				hx-get={ stat.DistanceMaxFlight.Link }
-				hx-target="#content"
-				hx-select="#content"
-				hx-swap="outerHTML"
-				hx-push-url="true"
-			>
-				{ stat.DistanceMaxFlight.Date }
-			</a>
+			{ stat.FlightCount } vols - { stat.TotalDuration }
 		</div>
-		<div>
-			{ stat.DurationMax } le
-			<a
-				class="text-offgray"
-				hx-get={ stat.DurationMaxFlight.Link }
-				hx-target="#content"
-				hx-select="#content"
-				hx-swap="outerHTML"
-				hx-push-url="true"
-			>
-				{ stat.DurationMaxFlight.Date }
-			</a>
+		<div class="flex flex-col gap-y-2 mt-6">
+			<h3 class="text-lg">Records</h3>
+			<div>
+				{ stat.DistanceMax } le
+				<a
+					class="text-offgray"
+					hx-get={ stat.DistanceMaxFlight.Link }
+					hx-target="#content"
+					hx-select="#content"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+				>
+					{ stat.DistanceMaxFlight.Date }
+				</a>
+			</div>
+			<div>
+				{ stat.DurationMax } le
+				<a
+					class="text-offgray"
+					hx-get={ stat.DurationMaxFlight.Link }
+					hx-target="#content"
+					hx-select="#content"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+				>
+					{ stat.DurationMaxFlight.Date }
+				</a>
+			</div>
+			<div>
+				{ stat.AltitudeMax } le
+				<a
+					class="text-offgray"
+					hx-get={ stat.AltitudeMaxFlight.Link }
+					hx-target="#content"
+					hx-select="#content"
+					hx-swap="outerHTML"
+					hx-push-url="true"
+				>
+					{ stat.AltitudeMaxFlight.Date }
+				</a>
+			</div>
+			<h3 class="mt-2 text-lg">En moyenne</h3>
+			<div>{ stat.AverageDuration }</div>
 		</div>
-		<div>
-			{ stat.AltitudeMax } le
-			<a
-				class="text-offgray"
-				hx-get={ stat.AltitudeMaxFlight.Link }
-				hx-target="#content"
-				hx-select="#content"
-				hx-swap="outerHTML"
-				hx-push-url="true"
-			>
-				{ stat.AltitudeMaxFlight.Date }
-			</a>
-		</div>
-		<h3 class="mt-2 text-lg">En moyenne</h3>
-		<div>{ stat.AverageDuration }</div>
 	</div>
 }
