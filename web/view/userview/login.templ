@@ -1,51 +1,19 @@
 package userview
 
+import "github.com/AurelienS/cigare/web/view/layout"
+
 templ Login() {
 	<!DOCTYPE html>
 	<html lang="en" data-theme="dark">
-		<head>
-			<meta charset="UTF-8"/>
-			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<title>Login | Airtime</title>
-			<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Outlined" rel="stylesheet"/>
-			<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900&display=swap" rel="stylesheet"/>
-			<script src="/static/htmx.min.js"></script>
-			<link href="https://cdn.jsdelivr.net/npm/daisyui@4.6.0/dist/full.min.css" rel="stylesheet" type="text/css"/>
-			<script src="https://cdn.tailwindcss.com"></script>
-			<style>
-            * {
-                box-sizing: border-box;
-            }
-            body {
-                background: url('/static/background.png') no-repeat center center ;
-            }
-            .blur-bg {
-                backdrop-filter: blur(8px);
-            }
-        </style>
-		</head>
-		<body class="h-screen flex items-center justify-center bg-cover">
-			<div class="hero min-h-screen bg-base-200 bg-transparent ">
-				<div class="hero-content flex-col lg:flex-row-reverse">
-					<div class="text-center lg:text-left text-offgray">
-						<h1 class="text-5xl font-bold">Login now!</h1>
-						<p class="py-6">Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda excepturi exercitationem quasi. In deleniti eaque aut repudiandae et a id nisi.</p>
-					</div>
-					<div class="card shrink-0 w-full max-w-sm shadow-2xl bg-base-100">
-						<form class="card-body">
-							<div class="form-control">
-								Google ONLY for now
-							</div>
-							<div class="form-control mt-6">
-								<a href="/auth/google" class="flex items-center justify-center bg-base-300 text-white font-bold py-2 px-4 rounded-full shadow transition duration-300 ease-in-out">
-									<svg class="w-6 h-6 mr-3" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24">
-										<path d="M21.35 11.1h-8.9v3.25h5.3c-.55 2.85-3.05 4.9-5.8 4.9-3.45 0-6.25-2.8-6.25-6.25s2.8-6.25 6.25-6.25c1.55 0 2.95.6 4.05 1.6l2.75-2.75C18.2 5.55 16.25 4.6 14 4.6c-4.8 0-8.7 3.9-8.7 8.7s3.9 8.7 8.7 8.7c5.05 0 8.55-3.55 8.55-8.7 0-.6-.05-1.1-.15-1.65z"></path>
-									</svg>
-									Sign in with Google
-								</a>
-							</div>
-						</form>
-					</div>
+		@layout.Head()
+		<body class="flex flex-col bg-neutral items-center h-screen w-screen">
+			<h1 class="text-8xl font-bold mt-16">Airtime</h1>
+			<div class="flex-grow flex items-center justify-center">
+				<div
+					class="bg-[#DDE4F1] border-[#A8BEE9] cursor-pointer text-accent border px-4 py-2 text-sm leading-none hover:bg-accent-30 flex items-center justify-center"
+					onclick="document.getElementById('igcfile').click();"
+				>
+					<a href="/auth/google" class="hover:no-underline">Sign in with Google</a>
 				</div>
 			</div>
 		</body>
