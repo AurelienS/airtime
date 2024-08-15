@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"net/http"
 	"strconv"
 	"time"
 
@@ -128,4 +129,14 @@ func (h *LogbookHandler) DeleteFlight(c echo.Context) error {
 		return err
 	}
 	return nil
+}
+
+func (h *LogbookHandler) DeleteFlights(c echo.Context) error {
+	user := session.GetUserFromContext(c)
+
+	err := h.flightService.RemoveAllFlightsOfUser(c.Request().Context(), user)
+	if err != nil {
+		return err
+	}
+	return c.Redirect(http.StatusFound, "/")
 }

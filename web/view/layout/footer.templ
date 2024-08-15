@@ -5,7 +5,9 @@ templ Footer() {
 		<div class="flex flex-wrap justify-between items-center max-w-screen-sm md:max-w-[1380px] mx-auto py-4 ">
 			<h4 class="text-lg text-white">© 2024 Airtime</h4>
 			<div class="flex">
-				<a class="text-xs text-white" href="/logout">Sign out</a>
+				<a class="text-xs text-white" href="/logout">Deconnexion</a>
+				<p class="text-xs text-white mx-4">·</p>
+				<a class="text-xs text-white" href="/logbook/reset_flights" onclick="return confirm('Confirmation de la suppression de tous les vols?');">Reset</a>
 				<p class="text-xs text-white mx-4">·</p>
 				<a class="text-xs text-white" href="mailto:aurelien.sberro@gmail.com">Contact</a>
 			</div>

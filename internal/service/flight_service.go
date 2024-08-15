@@ -40,3 +40,7 @@ func (s FlightService) GetLastFlights(ctx context.Context, count int, user domai
 func (s FlightService) RemoveFlight(ctx context.Context, flightID int, user domain.User) error {
 	return s.flightRepo.RemoveFlight(ctx, flightID, user)
 }
+
+func (s FlightService) RemoveAllFlightsOfUser(ctx context.Context, user domain.User) error {
+	return s.flightRepo.RemoveAllFlightsOfUser(ctx, user)
+}

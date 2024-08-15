@@ -127,6 +127,18 @@ func (r FlightRepository) RemoveFlight(
 	return nil
 }
 
+func (r FlightRepository) RemoveAllFlightsOfUser(
+	ctx context.Context,
+	user domain.User,
+) error {
+	_, err := r.client.Flight.Delete().Where(flight.HasPilotWith(userDB.IDEQ(user.ID))).Exec(ctx)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r FlightRepository) GetLastFlights(ctx context.Context, count int, user domain.User) ([]domain.Flight, error) {
 	util.Info().Str("user", user.Email).Int("flight count", count).Msg("Getting lasts flight")
 	lastFlights, err := r.client.Flight.

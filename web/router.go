@@ -66,6 +66,7 @@ func (r *Router) Initialize(e *echo.Echo) {
 	authGroup.GET("logbook/flight/:flight", r.logbookHandler.GetFlight)
 	authGroup.POST("logbook/flight", r.logbookHandler.PostFlight)
 	authGroup.DELETE("logbook/flight/:id", r.logbookHandler.DeleteFlight)
+	authGroup.GET("logbook/reset_flights", r.logbookHandler.DeleteFlights)
 
 	authGroup.GET("dashboard", r.dashboardHandler.GetIndex)
 
