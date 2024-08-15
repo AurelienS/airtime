@@ -8,7 +8,7 @@ templ Base(currentUser viewmodel.UserView, showNavigation bool ) {
 		@Head()
 		<body class="bg-neutral text-offgray min-h-screen w-screen overflow-x-hidden">
 			<div class="flex flex-col h-screen w-screen">
-				<div id="page" class="flex flex-col max-w-screen-sm md:max-w-[1380px]  mx-auto w-full">
+				<div id="page" class="flex flex-col max-w-screen-sm md:max-w-[1380px] mx-auto w-full grow mb-4">
 					@Navbar(currentUser, showNavigation)
 					<div id="content" class="mt-16 flex-grow">
 						{ children... }

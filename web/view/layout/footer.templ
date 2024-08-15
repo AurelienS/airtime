@@ -1,19 +1,13 @@
 package layout
 
 templ Footer() {
-	<footer class="bg-footer mt-8">
+	<footer class="bg-footer">
 		<div class="flex flex-wrap justify-between items-center max-w-screen-sm md:max-w-[1380px] mx-auto py-4 ">
-			<div class="flex flex-col mb-4 md:mb-0">
-				<h4 class="text-lg text-white">© 2024 Airtime</h4>
-				<a class="text-sm leading-5 mt-2 hover:text-gray-300 text-white" href="/sign_in">Sign Out</a>
-			</div>
-			<div class="flex flex-col">
-				<h4 class="text-lg text-white">Developers</h4>
-				<a class="text-sm mt-2 hover:text-gray-300 text-white" href="https://github.com/AurelienS/airtime" target="_blank" rel="noopener noreferrer">GitHub ↗</a>
-			</div>
-			<div class="flex flex-col">
-				<h4 class="text-lg text-white">Contacts</h4>
-				<a class="text-sm mt-2 hover:text-gray-300 text-white" href="mailto:aurelien.sberro@gmail.com">Mail</a>
+			<h4 class="text-lg text-white">© 2024 Airtime</h4>
+			<div class="flex">
+				<a class="text-xs text-white" href="/logout">Sign out</a>
+				<p class="text-xs text-white mx-4">·</p>
+				<a class="text-xs text-white" href="mailto:aurelien.sberro@gmail.com">Contact</a>
 			</div>
 		</div>
 	</footer>
