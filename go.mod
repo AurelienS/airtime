@@ -1,11 +1,13 @@
 module github.com/AurelienS/airtime
 
-go 1.21.5
+go 1.23
+
+toolchain go1.23.5
 
 require (
 	entgo.io/ent v0.12.5
 	github.com/Pallinder/go-randomdata v1.2.0
-	github.com/a-h/templ v0.2.513
+	github.com/a-h/templ v0.3.819
 	github.com/ezgliding/goigc v0.4.0
 	github.com/golang/geo v0.0.0-20230421003525-6adc56603217
 	github.com/gorilla/sessions v1.1.1
@@ -43,13 +45,13 @@ require (
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.2 // indirect
 	github.com/zclconf/go-cty v1.8.0 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/mod v0.10.0 // indirect
-	golang.org/x/net v0.19.0 // indirect
+	golang.org/x/crypto v0.31.0 // indirect
+	golang.org/x/mod v0.20.0 // indirect
+	golang.org/x/net v0.33.0 // indirect
 	golang.org/x/oauth2 v0.15.0 // indirect
-	golang.org/x/sync v0.1.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
-	golang.org/x/text v0.14.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
 	google.golang.org/protobuf v1.31.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
