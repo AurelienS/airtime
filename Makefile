@@ -4,8 +4,14 @@
 
 watch: templ build trigger-refresh
 
+run: templ build-dev
+	./main
+
 dev:
 	./dev.sh
+
+build-dev:
+	@go build -o ./main ./cmd/server/main.go
 
 build: templ css
 	@go build -o ./tmp/main ./cmd/server/main.go
