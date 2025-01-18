@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"github.com/AurelienS/cigare/internal/domain"
-	"github.com/AurelienS/cigare/internal/service"
-	"github.com/AurelienS/cigare/web/session"
-	"github.com/AurelienS/cigare/web/transformer"
-	"github.com/AurelienS/cigare/web/view/statistics"
+	"github.com/AurelienS/airtime/internal/domain"
+	"github.com/AurelienS/airtime/internal/service"
+	"github.com/AurelienS/airtime/web/session"
+	"github.com/AurelienS/airtime/web/transformer"
+	"github.com/AurelienS/airtime/web/view/statistics"
 	"github.com/labstack/echo/v4"
 )
 

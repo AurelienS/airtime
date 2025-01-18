@@ -3,8 +3,8 @@ package handler
 import (
 	"net/http"
 
-	"github.com/AurelienS/cigare/internal/service"
-	"github.com/AurelienS/cigare/web/view"
+	"github.com/AurelienS/airtime/internal/service"
+	"github.com/AurelienS/airtime/web/view"
 	"github.com/labstack/echo/v4"
 )
 

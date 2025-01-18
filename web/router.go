@@ -3,8 +3,8 @@ package web
 import (
 	"os"
 
-	"github.com/AurelienS/cigare/web/handler"
-	"github.com/AurelienS/cigare/web/middleware"
+	"github.com/AurelienS/airtime/web/handler"
+	"github.com/AurelienS/airtime/web/middleware"
 	"github.com/labstack/echo/v4"
 )
 

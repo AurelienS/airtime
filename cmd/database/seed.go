@@ -1,6 +1,6 @@
 package main
 
-import "github.com/AurelienS/cigare/internal/storage"
+import "github.com/AurelienS/airtime/internal/storage"
 
 func main() {
 	storage.WriteSeedData()

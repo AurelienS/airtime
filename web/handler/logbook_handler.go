@@ -5,12 +5,12 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/AurelienS/cigare/internal/service"
-	"github.com/AurelienS/cigare/internal/util"
-	"github.com/AurelienS/cigare/web/session"
-	"github.com/AurelienS/cigare/web/transformer"
-	"github.com/AurelienS/cigare/web/view/logbook"
-	"github.com/AurelienS/cigare/web/viewmodel"
+	"github.com/AurelienS/airtime/internal/service"
+	"github.com/AurelienS/airtime/internal/util"
+	"github.com/AurelienS/airtime/web/session"
+	"github.com/AurelienS/airtime/web/transformer"
+	"github.com/AurelienS/airtime/web/view/logbook"
+	"github.com/AurelienS/airtime/web/viewmodel"
 	"github.com/labstack/echo/v4"
 )
 

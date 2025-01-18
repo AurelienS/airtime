@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/AurelienS/cigare/internal/storage/ent"
+	"github.com/AurelienS/airtime/internal/storage/ent"
 	// required by schema hooks.
-	_ "github.com/AurelienS/cigare/internal/storage/ent/runtime"
+	_ "github.com/AurelienS/airtime/internal/storage/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/AurelienS/cigare/internal/storage/ent/migrate"
+	"github.com/AurelienS/airtime/internal/storage/ent/migrate"
 )
 
 type (

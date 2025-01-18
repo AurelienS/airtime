@@ -3,8 +3,8 @@ package middleware
 import (
 	"net/http"
 
-	"github.com/AurelienS/cigare/internal/util"
-	"github.com/AurelienS/cigare/web/session"
+	"github.com/AurelienS/airtime/internal/util"
+	"github.com/AurelienS/airtime/web/session"
 	"github.com/labstack/echo/v4"
 )
 

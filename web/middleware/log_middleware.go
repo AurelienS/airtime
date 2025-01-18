@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/airtime/internal/util"
 	"github.com/Pallinder/go-randomdata"
 	"github.com/labstack/echo/v4"
 	"github.com/rs/zerolog"

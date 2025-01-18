@@ -3,7 +3,7 @@ package handler
 import (
 	"net/http"
 
-	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/airtime/internal/util"
 	"github.com/a-h/templ"
 	"github.com/labstack/echo/v4"
 )

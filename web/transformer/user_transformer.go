@@ -1,8 +1,8 @@
 package transformer
 
 import (
-	"github.com/AurelienS/cigare/internal/domain"
-	"github.com/AurelienS/cigare/web/viewmodel"
+	"github.com/AurelienS/airtime/internal/domain"
+	"github.com/AurelienS/airtime/web/viewmodel"
 )
 
 func TransformUserToViewModel(user domain.User) viewmodel.UserView {

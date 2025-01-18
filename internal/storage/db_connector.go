@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent/dialect"
 	entsql "entgo.io/ent/dialect/sql"
-	"github.com/AurelienS/cigare/internal/storage/ent"
+	"github.com/AurelienS/airtime/internal/storage/ent"
 	_ "github.com/jackc/pgx/v5/stdlib" // for postgres driver
 )
 

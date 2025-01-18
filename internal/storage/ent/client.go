@@ -9,14 +9,14 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/AurelienS/cigare/internal/storage/ent/migrate"
+	"github.com/AurelienS/airtime/internal/storage/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/user"
+	"github.com/AurelienS/airtime/internal/storage/ent/flight"
+	"github.com/AurelienS/airtime/internal/storage/ent/user"
 )
 
 // Client is the client that holds all ent builders.

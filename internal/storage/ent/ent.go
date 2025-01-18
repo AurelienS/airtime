@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/user"
+	"github.com/AurelienS/airtime/internal/storage/ent/flight"
+	"github.com/AurelienS/airtime/internal/storage/ent/user"
 )
 
 // ent aliases to avoid import conflicts in user's code.

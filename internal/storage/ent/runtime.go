@@ -5,8 +5,8 @@ package ent
 import (
 	"time"
 
-	"github.com/AurelienS/cigare/internal/storage/ent/schema"
-	"github.com/AurelienS/cigare/internal/storage/ent/user"
+	"github.com/AurelienS/airtime/internal/storage/ent/schema"
+	"github.com/AurelienS/airtime/internal/storage/ent/user"
 )
 
 // The init function reads all schema descriptors with runtime code

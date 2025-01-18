@@ -3,8 +3,8 @@ package converter
 import (
 	"time"
 
-	"github.com/AurelienS/cigare/internal/domain"
-	"github.com/AurelienS/cigare/internal/storage/ent"
+	"github.com/AurelienS/airtime/internal/domain"
+	"github.com/AurelienS/airtime/internal/storage/ent"
 )
 
 func DBToDomainFlight(flightDB *ent.Flight) domain.Flight {

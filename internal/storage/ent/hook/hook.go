@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/AurelienS/cigare/internal/storage/ent"
+	"github.com/AurelienS/airtime/internal/storage/ent"
 )
 
 // The FlightFunc type is an adapter to allow the use of ordinary

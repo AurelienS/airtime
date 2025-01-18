@@ -3,11 +3,11 @@ package repository
 import (
 	"context"
 
-	"github.com/AurelienS/cigare/internal/converter"
-	"github.com/AurelienS/cigare/internal/domain"
-	"github.com/AurelienS/cigare/internal/storage/ent"
-	"github.com/AurelienS/cigare/internal/storage/ent/user"
-	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/airtime/internal/converter"
+	"github.com/AurelienS/airtime/internal/domain"
+	"github.com/AurelienS/airtime/internal/storage/ent"
+	"github.com/AurelienS/airtime/internal/storage/ent/user"
+	"github.com/AurelienS/airtime/internal/util"
 )
 
 type UserRepository struct {

@@ -1,4 +1,4 @@
-module github.com/AurelienS/cigare
+module github.com/AurelienS/airtime
 
 go 1.21.5
 

@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/airtime/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
 	"github.com/golang/geo/s2"
 )

@@ -4,11 +4,11 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/AurelienS/cigare/internal/domain"
-	"github.com/AurelienS/cigare/internal/service"
-	"github.com/AurelienS/cigare/internal/util"
-	"github.com/AurelienS/cigare/web/session"
-	"github.com/AurelienS/cigare/web/view/userview"
+	"github.com/AurelienS/airtime/internal/domain"
+	"github.com/AurelienS/airtime/internal/service"
+	"github.com/AurelienS/airtime/internal/util"
+	"github.com/AurelienS/airtime/web/session"
+	"github.com/AurelienS/airtime/web/view/userview"
 	"github.com/labstack/echo/v4"
 	"github.com/markbates/goth/gothic"
 )

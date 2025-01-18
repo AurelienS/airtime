@@ -3,7 +3,7 @@ package domain
 import (
 	"encoding/json"
 
-	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/airtime/internal/util"
 	"github.com/ezgliding/goigc/pkg/igc"
 )
 

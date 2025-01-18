@@ -1,10 +1,10 @@
 package web
 
 import (
-	"github.com/AurelienS/cigare/internal/repository"
-	"github.com/AurelienS/cigare/internal/service"
-	"github.com/AurelienS/cigare/internal/storage/ent"
-	"github.com/AurelienS/cigare/web/handler"
+	"github.com/AurelienS/airtime/internal/repository"
+	"github.com/AurelienS/airtime/internal/service"
+	"github.com/AurelienS/airtime/internal/storage/ent"
+	"github.com/AurelienS/airtime/web/handler"
 
 	"github.com/gorilla/sessions"
 	"github.com/labstack/echo/v4"

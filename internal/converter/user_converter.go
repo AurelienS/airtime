@@ -1,8 +1,8 @@
 package converter
 
 import (
-	"github.com/AurelienS/cigare/internal/domain"
-	"github.com/AurelienS/cigare/internal/storage/ent"
+	"github.com/AurelienS/airtime/internal/domain"
+	"github.com/AurelienS/airtime/internal/storage/ent"
 )
 
 func DBToDomainUser(userDB *ent.User) domain.User {

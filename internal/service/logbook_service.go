@@ -9,9 +9,9 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/AurelienS/cigare/internal/domain"
-	"github.com/AurelienS/cigare/internal/repository"
-	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/airtime/internal/domain"
+	"github.com/AurelienS/airtime/internal/repository"
+	"github.com/AurelienS/airtime/internal/util"
 )
 
 type LogbookService struct {

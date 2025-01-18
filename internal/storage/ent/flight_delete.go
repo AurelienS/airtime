@@ -8,8 +8,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/predicate"
+	"github.com/AurelienS/airtime/internal/storage/ent/flight"
+	"github.com/AurelienS/airtime/internal/storage/ent/predicate"
 )
 
 // FlightDelete is the builder for deleting a Flight entity.

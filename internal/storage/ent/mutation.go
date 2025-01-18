@@ -11,9 +11,9 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/AurelienS/cigare/internal/storage/ent/flight"
-	"github.com/AurelienS/cigare/internal/storage/ent/predicate"
-	"github.com/AurelienS/cigare/internal/storage/ent/user"
+	"github.com/AurelienS/airtime/internal/storage/ent/flight"
+	"github.com/AurelienS/airtime/internal/storage/ent/predicate"
+	"github.com/AurelienS/airtime/internal/storage/ent/user"
 )
 
 const (

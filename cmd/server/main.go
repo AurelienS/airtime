@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/AurelienS/cigare/internal/app"
-	"github.com/AurelienS/cigare/internal/util"
+	"github.com/AurelienS/airtime/internal/app"
+	"github.com/AurelienS/airtime/internal/util"
 )
 
 const isProd = false // Set to true when serving over https

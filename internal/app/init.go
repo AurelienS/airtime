@@ -4,11 +4,11 @@ import (
 	"context"
 	"log"
 
-	"github.com/AurelienS/cigare/internal/storage"
-	"github.com/AurelienS/cigare/internal/storage/ent"
-	"github.com/AurelienS/cigare/internal/storage/ent/migrate"
-	"github.com/AurelienS/cigare/web"
-	"github.com/AurelienS/cigare/web/session"
+	"github.com/AurelienS/airtime/internal/storage"
+	"github.com/AurelienS/airtime/internal/storage/ent"
+	"github.com/AurelienS/airtime/internal/storage/ent/migrate"
+	"github.com/AurelienS/airtime/web"
+	"github.com/AurelienS/airtime/web/session"
 )
 
 func Initialize(isProd bool) (*web.Server, error) {

@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/AurelienS/cigare/internal/domain"
-	"github.com/AurelienS/cigare/internal/repository"
+	"github.com/AurelienS/airtime/internal/domain"
+	"github.com/AurelienS/airtime/internal/repository"
 )
 
 type FlightService struct {
