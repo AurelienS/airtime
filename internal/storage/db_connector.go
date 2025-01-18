@@ -2,7 +2,6 @@ package storage
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 	"os"
 
@@ -13,24 +12,12 @@ import (
 )
 
 var (
-	port     = os.Getenv("DB_PORT")
-	user     = os.Getenv("DB_USER")
-	password = os.Getenv("DB_PASSWORD")
-	dbname   = os.Getenv("DB_NAME")
-	dbhost   = os.Getenv("DB_HOST")
+	connectionString = os.Getenv("DB")
 )
 
-// User ID=%s;Password=%s;Host=%s;Port=%s;Database=%s.
 func Open() *ent.Client {
-	databaseURL := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
-		user,
-		password,
-		dbhost,
-		port,
-		dbname,
-	)
-	fmt.Println("file: db_connector.go ~ line 32 ~ funcOpen ~ databaseURL : ", databaseURL)
-	db, err := sql.Open("pgx", databaseURL)
+
+	db, err := sql.Open("pgx", connectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
