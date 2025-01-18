@@ -19,7 +19,7 @@ func SetupLogger() {
 	multi := zerolog.MultiLevelWriter(
 		zerolog.ConsoleWriter{Out: os.Stderr, TimeFormat: "15:04:05"},
 		&lumberjack.Logger{
-			Filename:   "/logs/airtime.log",
+			Filename:   "./logs/airtime.log",
 			MaxSize:    1,    // Max size in MB before log is rotated
 			MaxBackups: 3,    // Max number of old log files to keep
 			MaxAge:     28,   // Max age in days to retain log files
