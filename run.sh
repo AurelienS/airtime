@@ -1,10 +1,6 @@
 #!/bin/sh
 
-# Generate templates
+go mod download
+go install github.com/a-h/templ/cmd/templ@latest
 templ generate
-
-# Build the project for Render with the necessary flags
 go build -tags netgo -ldflags '-s -w' -o main cmd/server/main.go
-
-# Run the built binary
-./main
