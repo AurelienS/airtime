@@ -1,39 +1,30 @@
 version: '3.8'
-services:
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    ports:
-      - "${EXTERNAL_PORT}:3000"
-    depends_on:
-      - db
-    volumes:
-      - ${LOG_PATH}:/logs
-    environment:
-      DB_NAME: ${DB_NAME}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      ENV: ${ENV}
-    command: >
-      /bin/bash -c "
-      while !</dev/tcp/db/5432; do
-        echo 'Waiting for PostgreSQL...'
-        sleep 1
-      done;
-      echo 'PostgreSQL is up and running';
-      exec /app/main
-      "
-  db:
-    image: postgres:16.1
-    environment:
-      POSTGRES_USER: ${DB_USER}
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_DB: db
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
 
-volumes:
-  postgres_data:
+services:
+  airtime:
+    build: .
+    container_name: airtime-app
+    env_file:
+      - .env.production
+    volumes:
+      - /mnt/data/airtime/data:/app/tmp
+      - /mnt/data/airtime/logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+    networks:
+      - traefik_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.airtime.rule=Host(`airtime.codeas.me`)"
+      - "traefik.http.routers.airtime.entrypoints=websecure"
+      - "traefik.http.routers.airtime.tls.certresolver=letsencrypt"
+      - "traefik.http.services.airtime.loadbalancer.server.port=3000"
+
+networks:
+  traefik_default:
+    external: true
