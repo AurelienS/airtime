@@ -4,14 +4,8 @@
 
 watch: templ build trigger-refresh
 
-render: templ build-render
-	./main
-
 dev:
 	./dev.sh
-
-build-render:
-	@go build -tags netgo -ldflags '-s -w' -o main cmd/server/main.go
 
 build: templ css
 	@go build -o ./tmp/main ./cmd/server/main.go
